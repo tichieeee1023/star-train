@@ -44,7 +44,7 @@ export function ScenicViewer({scenery,phase,light,weather,moment=0,momentAction=
      </div>
    </div>
    <button className="scenic-stage" type="button" onClick={()=>setControls(v=>!v)} aria-label={controls?'감상 메뉴 숨기기':'감상 메뉴 펼치기'}>
-     {station?<Vista scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>:<Cabin scenery={scenery} state={phase}/>}
+     {station?<Vista scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>:<Cabin scenery={scenery} state={phase} light={light} weather={weather}/>}
    </button>
    <div className="scenic-bottom" data-visible={controls}><span>소녀와 고양이가 같은 풍경을 바라보고 있어요.</span><span>풍경을 터치하면 메뉴가 사라져요.</span><small>↻ 휴대폰을 가로로 돌려 주세요.</small>{message&&<span role="status">{message}</span>}</div>
    {!controls&&<button className="scenic-reveal" type="button" onClick={()=>setControls(true)} aria-label="감상 메뉴 보기">⋯</button>}

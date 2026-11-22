@@ -306,3 +306,64 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @keyframes crystal-heartbeat{0%,100%{opacity:.25;transform:scale(.96);transform-origin:120px 143px}50%{opacity:.85;transform:scale(1.08);transform-origin:120px 143px}}
 @keyframes crystal-orbit{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.crystal-svg .crystal-sparkle{animation:none;opacity:.55;will-change:auto}.crystal-svg .crystal-aura,.crystal-svg .crystal-refraction,.crystal-svg .crystal-core-pulse,.crystal-svg .crystal-orbit-particles{animation:none;will-change:auto}}
+
+/* v2.2 — Little Prince-style photo atlas: only previously encountered skies are selectable. */
+.scene-gallery-page{padding:22px 15px 35px;flex:1}
+.galaxy-album{max-width:520px;margin:0 auto;color:#f6e9e6}
+.album-overline{text-align:center;color:#d7c3d7;letter-spacing:.13em;font-size:11px}
+.album-header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:5px}
+.album-header h1{margin:0;font-family:Georgia,'Nanum Myeongjo',serif;font-weight:500;font-size:26px;color:#ffeddf}
+.album-header span{font-size:12px;color:#dbcabf}
+.album-help{font-size:12px;line-height:1.85;color:#c6c8d7;word-break:keep-all;margin:15px 0}
+.album-sections{display:flex;gap:8px;margin:21px 0 18px}
+.album-sections button{flex:1;background:#35415d;border:1px solid #b9a4bd60;color:#d9d0e0;min-height:38px;border-radius:18px;font-size:12px}
+.album-sections button[aria-pressed=true]{background:#786988;color:#fff1de;border-color:#f1cda9}
+.album-count{font-size:12px;color:#e5d4ca;margin:13px 0 14px}
+.album-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.album-photo{display:flex;flex-direction:column;text-align:left;border:1px solid #eadbe156;border-radius:12px;padding:8px;background:#354057;color:#f6e8e5;min-width:0;box-shadow:0 7px 16px #0c122330}
+.gallery-photograph{display:block;width:100%;height:auto;aspect-ratio:346/195;object-fit:cover;border-radius:7px}
+.album-photo strong{font-size:12px;margin:9px 3px 0;word-break:keep-all}
+.album-photo small{font-size:10px;margin:3px 3px;color:#d1bcd0}
+.album-dots{display:flex;gap:6px;margin:7px 4px 2px}
+.album-dots i{width:7px;height:7px;border:1px solid #d4c3ce70;background:#36405a;border-radius:50%}
+.album-dots i.lit{background:#f0d7ae;box-shadow:0 0 7px #f0d7ae88}
+.album-locked{margin-top:18px;border-top:1px solid #d5bac145;padding-top:12px}
+.album-locked summary{cursor:pointer;font-size:12px;color:#d9c7d4;margin-bottom:12px}
+.album-locked summary span{color:#aab2c2}
+.album-photo.locked{opacity:.65;cursor:default}
+.locked-art{height:auto;aspect-ratio:346/195;display:grid;place-items:center;background:linear-gradient(150deg,#2a344b,#202b45);font-size:32px;color:#b3a9c17c;border-radius:8px;width:100%}
+.album-empty{text-align:center;border:1px solid #e6c8d541;border-radius:16px;padding:30px 12px;color:#c5c8d9;font-size:12px;line-height:1.8}
+.album-empty>span{display:block;font-size:32px;color:#e7d5c5}
+.album-empty button{border:1px solid #d6c4d4;background:#655777;color:#fff3e6;border-radius:12px;padding:10px 20px}
+.album-dialog{padding:15px 13px;border:1px solid #e7d2d78c;border-radius:17px;width:min(94vw,620px);max-height:89dvh;background:#222e48;color:#f8ece8;overflow-y:auto}
+.album-dialog::backdrop{background:#0a1024da}
+.album-dialog-top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.album-dialog-top strong{font-size:16px;font-family:Georgia,serif}
+.album-dialog-top>div{display:flex;gap:6px}
+.album-dialog-top button,.album-selector button{background:#3b4a65;border:1px solid #d5c2ca79;border-radius:10px;color:#f2e1e4;padding:8px 10px;font-size:11px}
+.album-landscape{aspect-ratio:16/9;border-radius:10px;overflow:hidden}
+.album-landscape>.vista{width:100%;height:100%}
+.album-selector{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+.album-selector button[aria-pressed=true]{color:#fff0d6;background:#806b87;border-color:#f5d1a4}
+.album-selector button:disabled{opacity:.34;cursor:not-allowed}
+.album-crystal-card{background:#303c55;border:1px solid #e4d1da4b;border-radius:12px;display:flex;flex-direction:column;align-items:center;padding:10px 5px;gap:5px;min-width:0}
+.album-crystal-card>.crystal-svg{width:100%;height:auto;max-width:145px}
+.album-crystal-card strong{font-size:12px}
+.album-crystal-card small{font-size:10px;color:#d3c5d7}
+.album-crystal-variants{display:flex;justify-content:center;flex-wrap:wrap;gap:4px}
+.album-crystal-variants button{font-size:9px;color:#ffefe2;background:#565c79;border:1px solid #cbbace82;padding:5px;border-radius:7px}
+.album-crystal-variants button:disabled{opacity:.3;cursor:not-allowed}
+.album-crystal-card.locked{opacity:.55}
+.album-crystal-card .locked-art{aspect-ratio:1.2;height:115px}
+.album-discovery-list{display:grid;gap:9px}
+.album-discovery-list article{padding:14px;background:#303b54;border:1px solid #d3bfd04f;border-radius:13px}
+.album-discovery-list article strong{font-size:10px;color:#e3c2d2}
+.album-discovery-list h3{font-size:14px;margin:4px 0}
+.album-discovery-list p{font-size:12px;color:#cad0df;margin:6px 0;line-height:1.6}
+@media(max-width:380px){.scene-gallery-page{padding:15px 10px}.album-grid{gap:7px}.album-photo{padding:5px}.album-photo strong{font-size:11px}.album-header h1{font-size:22px}.album-header span{font-size:10px}.album-dialog{padding:9px}}
+
+.album-star-map{margin:10px 0 14px;padding:10px 12px;border:1px solid #e5ced14b;border-radius:15px;background:#19253c}
+.album-star-map summary{cursor:pointer;font-size:12px;color:#e9d9db}
+.album-star-map summary span{float:right;color:#b9c1cc}
+.album-sky-map{width:100%;height:auto;display:block;margin-top:8px}
+.album-star-map p{font-size:10px;color:#c2c3d1;text-align:center;margin:6px 0}
