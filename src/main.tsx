@@ -37,7 +37,7 @@ function App(){
     </header>}
     <section className="hero" aria-label={atPlatform?'역 풍경':'은하 열차 메인 객실'}>
       <div className={`scene-container${atPlatform?' platform-open':''}`} key={`${scenery}-${atPlatform?'platform':'cabin'}`}>
-        {atPlatform?<StationView scenery={scenery}/>:<Cabin scenery={scenery} state={phase==='platform'?'stopped':phase}/>}
+        {atPlatform?<StationView scenery={scenery}/>:<Cabin scenery={scenery} state={phase}/>}
       </div>
       {!scenic&&<>
         <span className="location">✦ &nbsp; {atPlatform||phase==='stopped'?station.name:current.name}</span>
