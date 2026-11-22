@@ -1,16 +1,17 @@
-import {Sky, type Scenery} from './Sky'
+import type {Scenery} from './Sky'
+import {Vista, type Light, type Weather} from './Vista'
 
 export const stationInfo = {
   nebula: {
     name: '라일락 성운역',
     subtitle: '보랏빛 별들이 머무는 정거장',
-    caption: '조용한 플랫폼에 별빛을 닮은 가로등 하나가 켜졌어요.',
+    caption: '성운의 물결 아래, 소녀와 고양이가 나란히 하늘을 바라봐요.',
     accent: '#ceb8f5'
   },
   city: {
     name: '유리도시 중앙역',
     subtitle: '불빛이 잠들지 않는 도시',
-    caption: '아득한 도시의 불빛 아래, 작은 플랫폼이 반짝여요.',
+    caption: '발아래로 펼쳐진 유리도시의 불빛과 새벽의 하늘을 바라봐요.',
     accent: '#ffe0a8'
   }
 } satisfies Record<Scenery, {name:string; subtitle:string; caption:string; accent:string}>
@@ -94,10 +95,9 @@ export function StationApproach({scenery, arriving}: {scenery: Scenery; arriving
   </div>
 }
 
-/** 소녀가 걷는 애니메이션 없이 화면 전환만으로 하차를 표현합니다. */
-export function StationView({scenery}: {scenery: Scenery}) {
-  return <div className="station-view scene-still" role="img" aria-label={`${stationInfo[scenery].name}의 조용한 플랫폼과 단 하나의 가로등, 그리고 끝없이 펼쳐진 은하 풍경`}>
-    <Sky scenery={scenery}/>
-    <StationPlatform scenery={scenery}/>
+/** 하차하면 전혀 다른 16:9 풍경으로 전환합니다. 가로등/역명판은 절대 렌더링하지 않습니다. */
+export function StationView({scenery,light,weather}: {scenery: Scenery; light:Light;weather:Weather}) {
+  return <div className="station-view" aria-label={`${stationInfo[scenery].name}에서 풍경을 바라보는 소녀와 고양이`}>
+    <Vista scenery={scenery} light={light} weather={weather}/>
   </div>
 }

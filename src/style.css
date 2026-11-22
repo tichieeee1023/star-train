@@ -37,7 +37,7 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @media(max-width:360px){.app-header{padding:0 13px}.brand{font-size:17px}.location{font-size:10px;max-width:55%}.caption{padding:23px 13px 10px}.caption h1{font-size:17px}.bottom-nav>span{gap:3px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
-/* 1.1단계: 일부 별에만 낮은 강도의 반짝임을 부여합니다.
+/* 1.1단계: 일부 별에만 낮은 강도의 반짝임을 부여합니다. 
    대다수 별, 하늘, 성운, 행성은 정적인 상태입니다. */
 .twinkling-star{animation:star-twinkle 5s ease-in-out infinite;will-change:opacity}
 @keyframes star-twinkle{0%,100%{opacity:.45}48%{opacity:1}78%{opacity:.74}}
@@ -93,3 +93,67 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.station-approach.is-arriving,.platform-open{animation:none}}
 /* 차창에서는 기둥이 소녀를 가리지 않도록 플랫폼을 오른쪽으로 배치 */
 .station-approach .platform-art{transform:translateX(30%)}
+
+/* v1.4 — 하차 후 전용 16:9 풍경: 플랫폼/가로등/역 표지판을 렌더링하지 않는다. */
+.scene-container-vista{aspect-ratio:16/9}
+.scene-container-vista>.station-view{height:100%;aspect-ratio:16/9}
+.station-view .vista{width:100%;height:100%}
+.vista{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#142743;isolation:isolate}
+.vista-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vista-nebula-flow{animation:vista-drift-a 58s ease-in-out infinite alternate;transform-origin:50% 50%}
+.vista-nebula-flow-alt{animation:vista-drift-b 76s ease-in-out infinite alternate;transform-origin:50% 50%}
+.vista-twinkle{animation:vista-twinkle 5s ease-in-out infinite}
+.vista-cat-tail{transform-origin:284px 443px;animation:vista-cat-tail 7.8s ease-in-out infinite}
+.vista-mist{animation:vista-mist 22s ease-in-out infinite alternate}
+.vista-aurora{animation:vista-aurora 27s ease-in-out infinite alternate}
+.vista-rain{animation:vista-rain 1.3s linear infinite}
+.vista-snow{animation:vista-snow 8s linear infinite}
+.vista-meteor{animation:vista-meteor 12s ease-out infinite}
+.vista-ripple{animation:vista-ripple 3s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes vista-drift-a{from{transform:translate(-18px,-4px)}to{transform:translate(19px,10px)}}
+@keyframes vista-drift-b{from{transform:translate(9px,9px)}to{transform:translate(-20px,-10px)}}
+@keyframes vista-twinkle{0%,100%{opacity:.36}40%{opacity:1}72%{opacity:.58}}
+@keyframes vista-cat-tail{0%,35%,100%{transform:rotate(0)}51%{transform:rotate(-10deg)}66%{transform:rotate(7deg)}80%{transform:rotate(-3deg)}}
+@keyframes vista-mist{from{opacity:.55;transform:translateX(-18px)}to{opacity:.86;transform:translateX(26px)}}
+@keyframes vista-aurora{from{opacity:.68;transform:translateY(-8px)}to{opacity:1;transform:translateY(16px)}}
+@keyframes vista-rain{from{transform:translate(0,-125px)}to{transform:translate(-80px,410px)}}
+@keyframes vista-snow{from{transform:translate(-8px,-140px)}to{transform:translate(49px,490px)}}
+@keyframes vista-meteor{0%,8%{opacity:0;transform:translate(0,0)}13%{opacity:1}32%{opacity:0;transform:translate(-215px,125px)}100%{opacity:0;transform:translate(-215px,125px)}}
+@keyframes vista-ripple{0%{opacity:.8;scale:.3 1}100%{opacity:0;scale:2.2 1.7}}
+
+/* 풍경 영역에는 텍스트를 겹치지 않고 제목을 아래 본문으로 이동. */
+.scene-container-vista ~ .caption{display:none}
+.vista-intro{text-align:center;margin:15px auto 18px}
+.vista-intro h1{font-family:Georgia,"Nanum Myeongjo",serif;font-size:clamp(19px,5vw,24px);font-weight:500;letter-spacing:.06em;color:#f3e6db;margin:0 0 9px}
+.vista-intro p{color:#d6d6df;line-height:1.75;font-size:13px;margin:0;word-break:keep-all}
+.view-controls{padding:16px 0 10px;border-top:1px solid #e9d3bb21;border-bottom:1px solid #e9d3bb21;margin-bottom:20px}
+.control-heading{display:block;color:#e6d1bb;font-size:12px;margin-bottom:11px;letter-spacing:.02em}
+.control-heading-weather{margin:19px 0 9px}
+.light-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.light-switch button,.weather-switch button{min-width:0;color:#d0d6e0;background:#2d3854;border:1px solid #afb8cb40;border-radius:12px;padding:11px 6px;min-height:40px;font-size:12px;white-space:nowrap}
+.light-switch button.active,.weather-switch button.active{background:#6b647f;border-color:#dfc7ad;color:#fff2df;box-shadow:inset 0 0 0 1px #f3dfc018}
+.weather-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.weather-switch button{padding:9px 3px;font-size:11px}
+.vista-actions{margin:20px 0 10px}
+.stage-footnote{color:#aab1c1;font-size:11px;line-height:1.7;text-align:center;margin:23px 0 0}
+/* 기존의 크고 긴 개발 안내 상자는 더 이상 화면을 가리지 않습니다. */
+.body{padding-top:25px}
+@media(max-width:359px){.light-switch button{font-size:11px}.weather-switch button{font-size:10px}.journey-button{padding:10px 11px}}
+
+/* 어린왕자와 같은 16:9 파노라마 감상: 화면을 터치해 UI 숨김. */
+.scenic-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#080f1e;color:#f9edde;overflow:hidden}
+.scenic-stage{display:block;position:relative;width:min(100vw,calc(100dvh * 16 / 9));max-height:100dvh;aspect-ratio:16/9;border:0;padding:0;background:transparent;cursor:default;overflow:hidden;flex:none;border-radius:0}
+.scenic-stage>.vista{height:100%}
+.scenic-stage>.cabin{width:100%;height:100%;aspect-ratio:16/9}
+.scenic-topbar{position:absolute;z-index:3;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:calc(env(safe-area-inset-top) + 13px) 16px 18px;background:linear-gradient(180deg,#070e20e8,transparent);transition:opacity .25s ease;pointer-events:auto}
+.scenic-topbar[data-visible="false"],.scenic-bottom[data-visible="false"]{opacity:0;pointer-events:none}
+.scenic-heading{display:flex;flex-direction:column;gap:3px;font-size:11px;color:#e9d8c7}
+.scenic-heading>strong{font-size:15px;color:#fff3e0;letter-spacing:.025em}
+.scenic-heading small{font-size:10px;color:#c5c0d4}
+.scenic-toolbar{display:flex;gap:8px;align-items:center}
+.scenic-toolbar button,.scenic-reveal{border:1px solid #d9d2d06b;background:#202b43e0;color:#fff5eb;border-radius:10px;padding:11px 12px;font-size:12px}
+.scenic-bottom{position:absolute;z-index:3;bottom:0;left:0;right:0;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;text-align:center;padding:15px 15px calc(env(safe-area-inset-bottom) + 20px);font-size:11px;color:#dfd8df;background:linear-gradient(0deg,#070e20e8,transparent);transition:opacity .25s ease;pointer-events:none}
+.scenic-bottom small{font-size:10px;color:#b4b9cd}
+.scenic-reveal{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);right:12px;font-size:20px;padding:7px 12px}
+@media(orientation:landscape){.scenic-topbar{padding:8px 18px 20px}.scenic-heading{gap:0}.scenic-heading small{display:none}.scenic-bottom{padding:8px 12px}.scenic-bottom span:not([role="status"]){display:none}}
+@media(prefers-reduced-motion:reduce){.vista-nebula-flow,.vista-nebula-flow-alt,.vista-twinkle,.vista-cat-tail,.vista-mist,.vista-aurora,.vista-rain,.vista-snow,.vista-meteor,.vista-ripple{animation:none!important}}

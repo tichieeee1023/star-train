@@ -12,10 +12,11 @@
  <linearGradient id="rim" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#70849a"/><stop offset=".55" stop-color="#9fa2a7"/><stop offset="1" stop-color="#695f73"/></linearGradient>
  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6c596a"/><stop offset="1" stop-color="#2e3549"/></linearGradient>
  <linearGradient id="bench" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#667b8c"/><stop offset=".56" stop-color="#53617a"/><stop offset="1" stop-color="#33455f"/></linearGradient>
- <linearGradient id="coat" x1=".15" y1="0" x2=".95" y2="1"><stop stop-color="#c4b9c9"/><stop offset=".5" stop-color="#998da9"/><stop offset="1" stop-color="#776e8f"/></linearGradient>
+ <linearGradient id="coat" x1=".14" y1="0" x2=".14" y2="1"><stop stop-color="#182443"/><stop offset=".28" stop-color="#233960"/><stop offset=".66" stop-color="#3d5487"/><stop offset="1" stop-color="#778bc1"/></linearGradient>
  <linearGradient id="hair" x1=".1" y1="0" x2="1" y2="1"><stop stop-color="#242438"/><stop offset=".5" stop-color="#39314a"/><stop offset="1" stop-color="#534458"/></linearGradient>
  <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4b793"/><stop offset=".48" stop-color="#bb8d79"/><stop offset="1" stop-color="#826b72"/></linearGradient>
- <linearGradient id="cat-fur" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#fff3e1"/><stop offset=".52" stop-color="#e3d8d1"/><stop offset="1" stop-color="#c4b9c8"/></linearGradient>
+ <linearGradient id="star-pin" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#fff6c5"/><stop offset=".45" stop-color="#f6d37a"/><stop offset="1" stop-color="#d99846"/></linearGradient>
+ <linearGradient id="cat-fur" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#fffdf9"/><stop offset=".52" stop-color="#f3f1f3"/><stop offset="1" stop-color="#c9cfdd"/></linearGradient>
  <radialGradient id="lamp-light"><stop stop-color="#ffe2ab" stop-opacity=".48"/><stop offset=".42" stop-color="#fbd7af" stop-opacity=".18"/><stop offset="1" stop-color="#ffeac8" stop-opacity="0"/></radialGradient>
  <radialGradient id="table-light"><stop stop-color="#f6e7c4" stop-opacity=".3"/><stop offset="1" stop-color="#f6e7c4" stop-opacity="0"/></radialGradient>
  <linearGradient id="glass-wash" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ffe9dc" stop-opacity=".04"/><stop offset=".33" stop-color="#fff5de" stop-opacity=".018"/><stop offset=".74" stop-color="#d7dcfa" stop-opacity=".03"/><stop offset="1" stop-color="#fff4e9" stop-opacity=".1"/></linearGradient>
@@ -59,25 +60,34 @@
 <g>
   <ellipse cx="228" cy="562" rx="107" ry="17" fill="#131b35" opacity=".31"/>
   <!-- Legs and hem -->
-  <path d="M176 508Q182 529 181 564L221 574L243 565L256 574L299 559Q294 532 286 513Z" fill="#5c637e"/>
+  <path d="M176 508Q182 529 181 564L221 574L243 565L256 574L299 559Q294 532 286 513Z" fill="#26365b"/>
   <path d="M172 553Q215 571 258 568Q287 566 306 557" fill="none" stroke="#cdc5d0" stroke-opacity=".28" stroke-width="3"/>
-  <!-- Subtle cardigan shoulders and back -->
-  <path d="M188 405Q167 413 154 446L151 520Q172 544 216 548L288 546Q306 507 304 464Q300 419 269 404Q222 399 188 405Z" fill="url(#coat)" stroke="#d2c7d2" stroke-opacity=".35" stroke-width="2"/>
-  <path d="M170 446Q174 494 181 530M286 446Q285 487 282 530" fill="none" stroke="#ece3df" stroke-opacity=".22" stroke-width="3"/>
-  <path d="M187 523Q231 540 283 523" stroke="#665f80" stroke-opacity=".3" stroke-width="3" fill="none"/>
+  <!-- Seated navy A-line dress: same color stops as the standing dress. -->
+  <path d="M188 405Q169 413 161 442L166 475Q156 512 145 539Q173 556 218 557Q271 561 316 540Q303 499 296 469L300 444Q292 415 269 404Q222 399 188 405Z" fill="url(#coat)" stroke="#a2b4d8" stroke-opacity=".40" stroke-width="2"/>
+  <path d="M195 473Q190 513 174 543M226 474Q222 519 220 551M264 473Q276 519 290 541" fill="none" stroke="#d5ddf7" stroke-opacity=".20" stroke-width="3"/>
+  <path d="M152 539Q220 561 309 540" stroke="#c1cdeb" stroke-opacity=".28" stroke-width="3" fill="none"/>
+  <!-- Fine scattered constellations embroidered on the indigo skirt. -->
+  <g fill="#d9e4ff" opacity=".78">
+    <circle cx="218" cy="470" r="1.7"/><circle cx="251" cy="485" r="1.1"/>
+    <circle cx="194" cy="510" r="1.3"/><circle cx="277" cy="522" r="1.5"/>
+    <circle cx="219" cy="534" r="1.4"/><circle cx="238" cy="515" r="1"/>
+  </g>
+  <g stroke="#d9def7" stroke-width="1.3" stroke-linecap="round" opacity=".68"><path d="M248 525v8m-4-4h8M182 493v5m-2.5-2.5h5"/></g>
   <!-- Hair and rear neck. No face is visible. -->
   <path d="M213 395L212 424L246 430L261 405Z" fill="#d3aca8"/>
   <path d="M194 386Q181 357 196 328Q207 299 237 296Q271 295 286 325Q296 347 282 382Q281 406 290 430Q281 437 272 431Q263 444 254 430Q242 444 231 435Q219 448 208 433Q198 442 190 426Q195 411 194 386Z" fill="url(#hair)" stroke="#2d2b42" stroke-width="2"/>
   <path d="M237 302Q221 341 226 370Q224 396 234 427" fill="none" stroke="#78677d" stroke-opacity=".45" stroke-width="4"/>
   <path d="M255 305Q269 343 266 387Q267 404 261 429" fill="none" stroke="#160f30" stroke-opacity=".46" stroke-width="4"/>
   <path d="M201 333Q195 381 203 405" stroke="#b0a0a5" stroke-opacity=".13" stroke-width="3" fill="none"/>
-  <!-- A tiny ribbon at the back, static -->
-  <path d="M237 394Q217 378 216 395Q217 409 240 399Q257 412 266 399Q271 384 241 394Z" fill="#ba9aab" opacity=".88"/>
-  <circle cx="241" cy="397" r="4.1" fill="#ece0d0"/>
-  <!-- Arms on lap; sleeves visible from rear -->
-  <path d="M161 449Q151 478 158 505Q174 526 200 527L210 520Q184 512 177 494Z" fill="#a89bb8"/>
-  <path d="M296 451Q309 478 299 504Q289 524 271 526L261 518Q286 503 282 492Z" fill="#887e9e"/>
-  <path d="M202 522Q215 526 224 522M261 520Q249 525 240 519" stroke="#e7c0b4" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Small golden star hairpin, near the upper-right of her hair. -->
+  <g transform="translate(268 335) rotate(9)">
+    <path d="M0-14L3.5-4.8L13.5-4.4L5.7 2L8.3 11.8L0 6.8L-8.3 11.8L-5.7 2L-13.5-4.4L-3.5-4.8Z" fill="url(#star-pin)" stroke="#9f744a" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M-2-6L0-10L2-5" fill="none" stroke="#fff8db" stroke-width="1.1" opacity=".8"/>
+  </g>
+  <!-- Both arms rest naturally along her sides, rather than folded behind her back. -->
+  <path d="M178 419Q165 425 156 447Q148 473 143 504L143 514Q149 521 158 514Q160 493 171 467L187 438Z" fill="#263960" stroke="#627bad" stroke-opacity=".46" stroke-width="1.7"/>
+  <path d="M284 421Q303 428 309 450Q319 480 323 505L324 514Q316 521 308 513Q301 485 290 468L275 440Z" fill="#263960" stroke="#627bad" stroke-opacity=".46" stroke-width="1.7"/>
+  <path d="M143 512Q144 523 150 524Q156 523 156 514M309 512Q310 524 316 524Q323 523 323 512" fill="#e7c4b5" stroke="#e3baae" stroke-width="1"/>
   <!-- Backlit trim -->
   <path d="M186 409Q168 419 159 445" fill="none" stroke="#f6dbcf" stroke-opacity=".38" stroke-width="2"/>
 </g>
@@ -99,19 +109,19 @@
   <path d="M661 503Q761 494 890 498" stroke="#fff1d1" stroke-opacity=".24" stroke-width="2" fill="none"/>
 </g>
 <!-- Cat tail goes behind the body and above the tabletop. -->
-<g class="cat-tail"><path d="M701 472Q677 458 658 461Q646 464 648 450Q652 431 670 440" fill="none" stroke="#dfd2cf" stroke-width="13" stroke-linecap="round"/><path d="M648 451Q650 435 667 439" fill="none" stroke="#f9e7db" stroke-width="3" stroke-linecap="round"/></g>
+<g class="cat-tail"><path d="M701 472Q677 458 658 461Q646 464 648 450Q652 431 670 440" fill="none" stroke="#e3e6ec" stroke-width="13" stroke-linecap="round"/><path d="M648 451Q650 435 667 439" fill="none" stroke="#fffefd" stroke-width="3" stroke-linecap="round"/></g>
 <g>
   <!-- Sleeping body and head -->
   <ellipse cx="752" cy="474" rx="75" ry="26" fill="#aa9dab" opacity=".3"/>
   <path d="M688 473Q691 448 725 443Q774 435 804 452Q824 457 820 481Q789 494 727 490Q698 487 688 473Z" fill="url(#cat-fur)" stroke="#fff6ec" stroke-opacity=".55" stroke-width="2"/>
   <path d="M792 456Q794 443 806 435L821 444L840 434Q849 447 846 463Q847 483 822 485Q798 483 792 466Z" fill="url(#cat-fur)" stroke="#ddcbd0" stroke-width="1.5"/>
-  <path d="M800 445L805 431L816 439M828 441L842 431L847 449" fill="#efdfd7" stroke="#d1bec2" stroke-width="1.4"/>
-  <path d="M804 444L806 437L811 441M836 442L842 437L842 447" fill="#dbaeb8" opacity=".8"/>
+  <path d="M800 445L805 431L816 439M828 441L842 431L847 449" fill="#f9f7f6" stroke="#d5d9e2" stroke-width="1.4"/>
+  <path d="M804 444L806 437L811 441M836 442L842 437L842 447" fill="#e5bfc7" opacity=".8"/>
   <path d="M808 464q5 4 10 0m10 0q5 4 10 0" fill="none" stroke="#70606b" stroke-width="1.6" stroke-linecap="round"/>
   <path d="M819 469q3 2 6 0q-3 5-6 0" fill="#aa858c"/>
-  <path d="M811 474L798 472M830 475L844 471" fill="none" stroke="#bda5a7" stroke-width=".9" stroke-linecap="round"/>
-  <ellipse cx="773" cy="485" rx="15" ry="6" fill="#f4e4d9"/>
-  <path d="M729 445Q755 454 757 476" fill="none" stroke="#fff6eb" stroke-opacity=".45" stroke-width="3"/>
+  <path d="M811 474L798 472M830 475L844 471" fill="none" stroke="#c4c8d0" stroke-width=".9" stroke-linecap="round"/>
+  <ellipse cx="773" cy="485" rx="15" ry="6" fill="#fefcf9"/>
+  <path d="M729 445Q755 454 757 476" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="3"/>
 </g>
 <!-- Notebook and cup close to the cat: tiny calm details -->
 <g transform="translate(694 491)">
