@@ -13,7 +13,7 @@ const atmosphereTypes:Weather[]=['rain','snow','meteor','aurora']
 /** Original Gallery's collapsible night-sky map, adapted to the six railway stations. */
 function StarMap({found}:{found:Set<Scenery>}){
  const points:[[number,number],[number,number],[number,number],[number,number],[number,number],[number,number]]=[[60,68],[190,39],[312,88],[440,53],[156,145],[377,155]]
- const lines:[[number,number],[number,number]][]=[[0,1],[1,2],[2,3],[1,4],[4,5],[5,3]]
+ const lines:[number,number][]=[[0,1],[1,2],[2,3],[1,4],[4,5],[5,3]]
  return <svg className="album-sky-map" viewBox="0 0 500 200" role="img" aria-label={`이어진 별자리 ${found.size} / ${sceneryOrder.length}`}>
   {lines.map(([a,b],index)=>{
    const on=found.has(sceneryOrder[a])&&found.has(sceneryOrder[b]);return <line key={index} x1={points[a][0]} y1={points[a][1]} x2={points[b][0]} y2={points[b][1]} stroke={on?'#f6dcb5':'#8c93a9'} strokeOpacity={on?.83:.15} strokeWidth={on?1.5:.8}/>
