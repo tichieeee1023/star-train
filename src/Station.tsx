@@ -1,19 +1,14 @@
+import type {MomentAction} from './PlaceMoment'
 import type {Scenery} from './Sky'
 import {Vista, type Light, type Weather} from './Vista'
 
 export const stationInfo = {
-  nebula: {
-    name: '라일락 성운역',
-    subtitle: '보랏빛 별들이 머무는 정거장',
-    caption: '성운의 물결 아래, 소녀와 고양이가 나란히 하늘을 바라봐요.',
-    accent: '#ceb8f5'
-  },
-  city: {
-    name: '유리도시 중앙역',
-    subtitle: '불빛이 잠들지 않는 도시',
-    caption: '발아래로 펼쳐진 유리도시의 불빛과 새벽의 하늘을 바라봐요.',
-    accent: '#ffe0a8'
-  }
+ nebula:{name:'라일락 성운역',subtitle:'보랏빛 별들이 머무는 정거장',caption:'은하의 물결을 바라보며 별빛 사이에 머물러요.',accent:'#ceb8f5'},
+ ringsea:{name:'청람 고리해안역',subtitle:'행성 고리 아래 푸르게 물드는 바다',caption:'거대한 고리행성이 비치는 바다에 은빛 물결이 일어요.',accent:'#9ce7df'},
+ snowfield:{name:'혜성 설원역',subtitle:'혜성이 스쳐 지나가는 고요한 설산',caption:'새하얀 능선 위로 차가운 별빛이 내려앉아요.',accent:'#cbebfb'},
+ auroraforest:{name:'오로라 숲역',subtitle:'초록빛 오로라가 잠든 숲',caption:'별과 빛의 장막 아래 오래된 나무들이 서 있어요.',accent:'#95e4c8'},
+ canyon:{name:'황금 유성협곡역',subtitle:'빛나는 유성들이 머무는 암석 계곡',caption:'황금빛으로 물든 협곡 위에 별의 꼬리가 길게 그려져요.',accent:'#f3c59c'},
+ city:{name:'유리도시 중앙역',subtitle:'멀리서 반짝이는 작은 도시',caption:'먼 지평선의 불빛을 지나 다시 넓은 우주를 바라봐요.',accent:'#ffe0a8'}
 } satisfies Record<Scenery, {name:string; subtitle:string; caption:string; accent:string}>
 
 /**
@@ -23,7 +18,7 @@ export const stationInfo = {
  */
 export function StationPlatform({scenery}: {scenery: Scenery}) {
   const city = scenery === 'city'
-  const glow = city ? '#ffda91' : '#c6c0ff'
+  const glow = stationInfo[scenery].accent
   const sign = stationInfo[scenery].name
   return <svg className="platform-art" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <defs>
@@ -96,8 +91,8 @@ export function StationApproach({scenery, arriving}: {scenery: Scenery; arriving
 }
 
 /** 하차하면 전혀 다른 16:9 풍경으로 전환합니다. 가로등/역명판은 절대 렌더링하지 않습니다. */
-export function StationView({scenery,light,weather}: {scenery: Scenery; light:Light;weather:Weather}) {
+export function StationView({scenery,light,weather,moment=0,momentAction=null}: {scenery: Scenery; light:Light;weather:Weather;moment?:number;momentAction?:MomentAction|null}) {
   return <div className="station-view" aria-label={`${stationInfo[scenery].name}에서 풍경을 바라보는 소녀와 고양이`}>
-    <Vista scenery={scenery} light={light} weather={weather}/>
+    <Vista scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>
   </div>
 }

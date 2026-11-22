@@ -104,7 +104,6 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .vista-nebula-flow-alt{animation:vista-drift-b 76s ease-in-out infinite alternate;transform-origin:50% 50%}
 .vista-twinkle{animation:vista-twinkle 5s ease-in-out infinite}
 .vista-cat-tail{transform-origin:284px 443px;animation:vista-cat-tail 7.8s ease-in-out infinite}
-.vista-mist{animation:vista-mist 22s ease-in-out infinite alternate}
 .vista-aurora{animation:vista-aurora 27s ease-in-out infinite alternate}
 .vista-rain{animation:vista-rain 1.3s linear infinite}
 .vista-snow{animation:vista-snow 8s linear infinite}
@@ -114,7 +113,6 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @keyframes vista-drift-b{from{transform:translate(9px,9px)}to{transform:translate(-20px,-10px)}}
 @keyframes vista-twinkle{0%,100%{opacity:.36}40%{opacity:1}72%{opacity:.58}}
 @keyframes vista-cat-tail{0%,35%,100%{transform:rotate(0)}51%{transform:rotate(-10deg)}66%{transform:rotate(7deg)}80%{transform:rotate(-3deg)}}
-@keyframes vista-mist{from{opacity:.55;transform:translateX(-18px)}to{opacity:.86;transform:translateX(26px)}}
 @keyframes vista-aurora{from{opacity:.68;transform:translateY(-8px)}to{opacity:1;transform:translateY(16px)}}
 @keyframes vista-rain{from{transform:translate(0,-125px)}to{transform:translate(-80px,410px)}}
 @keyframes vista-snow{from{transform:translate(-8px,-140px)}to{transform:translate(49px,490px)}}
@@ -156,4 +154,155 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .scenic-bottom small{font-size:10px;color:#b4b9cd}
 .scenic-reveal{position:absolute;z-index:4;top:calc(env(safe-area-inset-top) + 12px);right:12px;font-size:20px;padding:7px 12px}
 @media(orientation:landscape){.scenic-topbar{padding:8px 18px 20px}.scenic-heading{gap:0}.scenic-heading small{display:none}.scenic-bottom{padding:8px 12px}.scenic-bottom span:not([role="status"]){display:none}}
-@media(prefers-reduced-motion:reduce){.vista-nebula-flow,.vista-nebula-flow-alt,.vista-twinkle,.vista-cat-tail,.vista-mist,.vista-aurora,.vista-rain,.vista-snow,.vista-meteor,.vista-ripple{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.vista-nebula-flow,.vista-nebula-flow-alt,.vista-twinkle,.vista-cat-tail,.vista-aurora,.vista-rain,.vista-snow,.vista-meteor,.vista-ripple{animation:none!important}}
+
+/* v1.5: 여섯 노선 중 5곳이 우주 자연 풍경. 길게 이어진 항로 메뉴만 가로 스크롤. */
+.scene-picker{justify-content:flex-start;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#a194b0 transparent;padding:2px 3px 12px;-webkit-overflow-scrolling:touch}
+.scene-picker .scene-option{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start}
+.vista-water-shimmer{animation:vista-shimmer 18s ease-in-out infinite alternate}
+.vista-forest-glow{animation:vista-shimmer 28s ease-in-out infinite alternate}
+@keyframes vista-shimmer{from{opacity:.55}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.vista-water-shimmer,.vista-forest-glow{animation:none}}
+
+/* v1.5.1 — 각 장소의 단 한 가지 특별한 순간. 풍경을 가리지 않도록 하단에 배치. */
+.place-encounter{padding:18px 0 16px;margin:19px auto 0;max-width:450px;border-top:1px solid #d6c7df3a;border-bottom:1px solid #d6c7df3a;text-align:center}
+.encounter-caption{display:flex;justify-content:center;align-items:center;gap:9px;margin-bottom:14px;color:#dbc9b5;font-size:13px;letter-spacing:.025em}
+.encounter-caption>span{font-size:21px;color:#efc99e}
+.place-encounter-button{border:1px solid #e9d3b497;border-radius:14px;min-height:48px;max-width:100%;padding:11px 15px;background:linear-gradient(130deg,#6c698a,#465779);color:#fff5e8;font-size:14px;display:inline-flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;transition:background .2s ease,transform .2s ease}
+.place-encounter-button:hover{background:#7a7397}
+.place-encounter-button:active{transform:scale(.98)}
+.place-encounter-button small{font-size:10px;color:#efe4dc;opacity:.84}
+.encounter-result{min-height:44px;max-width:420px;margin:12px auto 0;color:#e0dde6;font-size:12px;line-height:1.85;word-break:keep-all}
+.vista-place-moment{pointer-events:none;opacity:0;animation:place-moment-appear 7.5s ease-in-out both}
+.vista-place-moment .moment-shine{transform-box:fill-box;transform-origin:center;animation:place-moment-shine 2.5s ease-in-out 2 both}
+.vista-place-moment .moment-rise{animation:place-moment-rise 6s ease-out both}
+.vista-place-moment .moment-ripple{transform-box:fill-box;transform-origin:center;animation:place-moment-ripple 3.6s ease-out 2 both}
+@keyframes place-moment-appear{0%{opacity:0}13%,80%{opacity:1}100%{opacity:.38}}
+@keyframes place-moment-shine{0%,100%{opacity:.35;scale:.72}52%{opacity:1;scale:1.13}}
+@keyframes place-moment-rise{0%{opacity:0;transform:translateY(32px)}20%{opacity:1}100%{opacity:.45;transform:translateY(-42px)}}
+@keyframes place-moment-ripple{0%{opacity:.9;scale:.2}100%{opacity:0;scale:3}}
+@media(prefers-reduced-motion:reduce){.vista-place-moment,.vista-place-moment .moment-shine,.vista-place-moment .moment-rise,.vista-place-moment .moment-ripple{animation:none;opacity:1;transform:none}}
+
+/* Canvas-first landscapes: SVG is reserved for passengers and train furniture. */
+.vista-canvas,.vista-people{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.vista-canvas{z-index:0}
+.vista-people{z-index:1}
+/* Canvas has a 16:9 coordinate system while the cabin glass scales to its frame. */
+.cabin>.sky-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+@media(prefers-reduced-motion:reduce){.vista-people .vista-cat-tail{animation:none}}
+
+/* v1.7 — 장소별 두 가지 발견. 행위 버튼은 모바일에서 쉽게 누를 수 있는 크기. */
+.place-encounter-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 8px}
+.place-encounter-button{width:100%;min-width:0;min-height:76px;padding:12px 9px;display:flex;align-items:center;gap:7px;text-align:left;border-radius:13px;background:#414e6e;border-color:#bbb4ce65}
+.place-encounter-button>span:nth-child(2){display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:1.45;word-break:keep-all}
+.place-encounter-button>span:first-child{color:#f4d4a6;font-size:16px;flex:none}
+.place-encounter-button small{font-size:10px;color:#e0d7e7;opacity:.8;line-height:1.45}
+.place-encounter-button.selected{background:linear-gradient(125deg,#6c638a,#505c80);border-color:#f1d4ab}
+.encounter-result{min-height:62px;font-size:12px;margin-top:14px;line-height:1.85}
+.encounter-footnote{font-size:10px;line-height:1.6;margin:0;color:#aeb5ca}
+@media(max-width:350px){.place-encounter-choices{gap:6px}.place-encounter-button{padding:9px 7px}.place-encounter-button>span:nth-child(2){font-size:11px}}
+
+
+/* v1.8 — 소녀와 느긋한 우주고양이의 대화. 풍경을 가리지 않는 본문 영역. */
+.arrival-conversation{max-width:450px;margin:4px auto 23px;padding:16px 0 13px;border-top:1px solid #d6c7df3a;border-bottom:1px solid #d6c7df3a}
+.dialogue-card{display:flex;flex-direction:column;gap:10px;max-width:450px;margin:13px auto}
+.dialogue-line{padding:11px 13px;border:1px solid #bfc5e435;background:#35425b;border-radius:14px 14px 14px 5px;text-align:left}
+.dialogue-line.cat{background:#34364f;border-color:#d4becb47;margin-left:17px;border-radius:14px 14px 5px 14px}
+.dialogue-speaker{display:block;font-size:11px;font-weight:650;letter-spacing:.025em;color:#f1d4ad;margin-bottom:4px}
+.dialogue-line.cat .dialogue-speaker{color:#e6d5e5}
+.dialogue-line p{margin:0;color:#f0eaf2;font-size:13px;line-height:1.7;word-break:keep-all}
+.dialogue-next{display:block;margin:12px auto 2px;padding:9px 16px;border:1px solid #c9bed15c;border-radius:22px;color:#eee3ef;background:#48516c;font-size:12px;min-height:42px}
+.dialogue-next:hover{background:#5b607d}
+.place-encounter .dialogue-card{margin:13px auto 15px}
+.place-encounter .encounter-result{min-height:0;margin:16px auto 5px;color:#c5d5e5}
+@media(max-width:360px){.dialogue-line{padding:10px}.dialogue-line.cat{margin-left:12px}.dialogue-line p{font-size:12px}}
+
+/* v1.9 — 수정 씨앗: 항해 보상, 재배병, 영양제, 색상 변이, 도감. */
+.bottom-nav>button{display:flex;align-items:center;justify-content:center;gap:6px;flex:1;border:0;background:transparent;color:#aeb9ca;min-height:64px;padding:7px 3px;font-size:12px}
+.bottom-nav>button span{font-size:17px}
+.bottom-nav>button.active-tab{color:#f4d6a9;background:#f8eddd0b}
+.bottom-nav>button small{font-size:10px;color:#c8c0d1}
+.crystal-page{padding:22px 16px 26px;flex:1}
+.crystal-panel{color:#ece7f2;max-width:510px;margin:0 auto}
+.crystal-section-heading{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:17px}
+.crystal-section-heading small{font-size:12px;color:#cabcd6}
+.crystal-section-heading h2{font-family:Georgia,'Nanum Myeongjo',serif;font-weight:600;color:#fff0df;font-size:24px;margin:5px 0 0}
+.crystal-section-heading>span{border:1px solid #dacbc65f;padding:6px 10px;border-radius:18px;font-size:12px;color:#ebd1ab;white-space:nowrap}
+.crystal-growing,.crystal-empty{background:linear-gradient(140deg,#34415e,#29364e);border:1px solid #b6a6bd55;border-radius:20px;padding:18px;box-shadow:inset 0 0 32px #6e709117}
+.crystal-growing{display:flex;gap:13px;align-items:center}
+.crystal-svg{display:block;max-width:100%;height:auto;flex-shrink:0}
+.crystal-growing>.crystal-svg{width:44%;max-width:205px}
+.crystal-growing-info{flex:1;min-width:0}
+.crystal-growing-info h3{font-family:Georgia,'Nanum Myeongjo',serif;font-size:21px;margin:5px 0 12px;color:#fff2e2}
+.crystal-growing-info p{font-size:12px;line-height:1.6;margin:7px 0;color:#d2d3e1}
+.crystal-rarity{display:inline-block;border:1px solid #c8c6dc75;padding:4px 9px;border-radius:15px;font-size:10px;color:#f8ecde}
+.crystal-rarity.rare{color:#ffdcaa;border-color:#d9b18c}
+.crystal-rarity.mystic{color:#d6b9ff;border-color:#b9a7e5}
+.crystal-progress,.journey-in-progress progress{display:block;width:100%;height:9px;accent-color:#e5c4ae;border:0;overflow:hidden;border-radius:30px;background:#141f33}
+.crystal-progress::-webkit-progress-bar,.journey-in-progress progress::-webkit-progress-bar{background:#18223a;border-radius:30px}
+.crystal-progress::-webkit-progress-value,.journey-in-progress progress::-webkit-progress-value{border-radius:30px;background:linear-gradient(90deg,#89bbd8,#d5ade7,#f1c9a9)}
+.crystal-help{font-size:11px;line-height:1.8;color:#c5cad9;word-break:keep-all}
+.crystal-help.centered{text-align:center;margin:15px auto;max-width:460px}
+.crystal-success{color:#eddaab!important}
+.crystal-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.crystal-actions button,.crystal-primary,.seed-item button,.nutrient-item button,.landing-reward button{border:1px solid #d4c0bd91;background:#695f82;color:#fff3e9;border-radius:12px;min-height:40px;padding:10px 12px;font-size:12px;cursor:pointer}
+.crystal-actions button{flex:1;white-space:nowrap}
+.crystal-primary{background:#857093;margin-top:8px}
+.crystal-panel button:disabled,.journey-actions button:disabled{opacity:.42;cursor:not-allowed}
+.crystal-empty{text-align:center;padding:32px 19px}
+.crystal-empty>span{font-size:42px;color:#e3cde8}
+.crystal-empty p{font-size:13px;color:#d4cfdf;line-height:1.9}
+.crystal-detail{border:1px solid #d1c5d047;border-radius:14px;margin-top:13px;background:#29344b;overflow:hidden}
+.crystal-detail>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 15px;font-size:13px;color:#f5e4d3;cursor:pointer;list-style:none;font-weight:600}
+.crystal-detail>summary::-webkit-details-marker{display:none}
+.crystal-detail>summary>span{font-weight:400;font-size:11px;color:#d0bfca}
+.crystal-detail>.crystal-help{padding:0 15px;margin:0 0 14px}
+.seed-grid,.nutrient-grid{padding:3px 12px 15px;display:flex;flex-direction:column;gap:8px}
+.seed-item,.nutrient-item{display:flex;align-items:center;gap:10px;min-width:0;border:1px solid #b7b4c22c;background:#ffffff08;border-radius:12px;padding:7px 9px}
+.seed-item>.crystal-svg{width:70px;height:70px}
+.seed-item>div:not(:first-child),.nutrient-item>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.seed-item strong,.nutrient-item strong{font-size:12px;color:#f0e8ed}
+.seed-item small,.nutrient-item small{font-size:10px;color:#c0bfce;line-height:1.4}
+.seed-item button,.nutrient-item button{padding:8px 10px;flex:none;min-height:35px}
+.nutrient-item>span{color:#edcfba;font-size:12px}
+.crystal-album{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:5px 12px 16px}
+.crystal-album-item{display:flex;flex-direction:column;align-items:center;padding:8px 5px 12px;border-radius:12px;background:#ffffff08;border:1px solid #faf1ef1c}
+.crystal-album-item>.crystal-svg{width:115px;height:115px}
+.crystal-album-item strong{font-size:12px;color:#f4e6ec}
+.crystal-album-item small{font-size:10px;margin:5px 0;color:#c4c3d4}
+.crystal-variants{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+.crystal-variants button{border:1px solid #c6b7ce7a;background:#525a74;color:#fff2ea;font-size:9px;padding:4px 6px;border-radius:9px}
+.crystal-variants button:disabled{background:#253048;opacity:.45}
+.crystal-modal{position:fixed;inset:0;background:#090f20cc;display:flex;align-items:center;justify-content:center;z-index:9999;padding:25px}
+.crystal-modal-content{max-width:370px;width:100%;padding:20px;background:#2c3752;border:1px solid #d8c4d2a3;border-radius:20px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.crystal-modal-content>.crystal-svg{width:220px}
+.crystal-modal-content h2{margin:6px 0 0;font-size:20px}
+.crystal-modal-content p{font-size:12px;color:#c9cedb;line-height:1.7}
+.travel-lengths{display:flex;justify-content:center;gap:8px;margin:14px 0 5px}
+.travel-lengths button{background:#35435d;color:#d8d6e5;border-radius:25px;padding:9px 18px;border:1px solid #c4b8d061;font-size:13px;min-width:75px}
+.travel-lengths button.selected{background:#887597;color:#fff2df;border-color:#edd4ba}
+.journey-in-progress{margin:17px 0 30px}
+.journey-in-progress progress{max-width:420px;margin:0 auto 18px}
+.rare-offer{padding:12px 14px;border:1px solid #ddca9c75;background:#bf9b691f;border-radius:11px;font-size:12px;text-align:center;line-height:1.7}
+.landing-reward{border:1px solid #d5c7ce70;border-radius:14px;padding:16px;margin:13px 0 20px;background:linear-gradient(135deg,#3d506a,#48435e);color:#fff0df}
+.landing-reward strong{font-size:14px}
+.landing-reward p{font-size:12px;color:#e8dfec;line-height:1.65;margin:9px 0}
+@media(max-width:370px){.crystal-growing{padding:11px;gap:5px}.crystal-growing>.crystal-svg{width:38%}.crystal-growing-info h3{font-size:17px}.crystal-actions{flex-direction:column}.crystal-album-item>.crystal-svg{width:93px;height:93px}.crystal-detail>summary{padding:12px}}
+
+.crystal-light-switch{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 13px} .crystal-light-switch>span{width:100%;font-size:11px;color:#c9c4d8} .crystal-light-switch button{flex:1;min-width:76px;background:#33405c;border:1px solid #bdb9c65e;color:#e4dbe8;padding:10px 4px;border-radius:20px;font-size:11px}.crystal-light-switch button.selected{background:#827393;border-color:#ead3bf;color:#fff4df}
+
+/* v2.0 — 수정의 종류·성장도·레어도에 따른 애니메이션. 순수 SVG/CSS, 타이머 없음. */
+.crystal-svg .crystal-sparkle{opacity:0;animation:crystal-glint 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center;will-change:opacity}
+.crystal-svg .crystal-aura{opacity:.72;animation:crystal-halo 7s ease-in-out infinite}
+.crystal-svg.crystal-common .crystal-aura{opacity:.32;animation-duration:9s}
+.crystal-svg.crystal-special .crystal-aura{opacity:.51;animation-duration:7s}
+.crystal-svg.crystal-rare .crystal-aura{opacity:.75;animation-duration:5s}
+.crystal-svg.crystal-mystic .crystal-aura{opacity:.95;animation-duration:3.4s}
+.crystal-svg .crystal-refraction{animation:crystal-glint 4.5s ease-in-out infinite}
+.crystal-svg .crystal-core-pulse{mix-blend-mode:screen;animation:crystal-heartbeat 3.2s ease-in-out infinite}
+.crystal-svg .crystal-orbit-particles{animation:crystal-orbit 14s linear infinite;transform-origin:120px 143px}
+@keyframes crystal-glint{0%,18%,73%,100%{opacity:0;transform:scale(.74)}27%,36%{opacity:.95;transform:scale(1.1)}47%{opacity:.15;transform:scale(.86)}}
+@keyframes crystal-halo{0%,100%{opacity:.45}50%{opacity:.9}}
+@keyframes crystal-heartbeat{0%,100%{opacity:.25;transform:scale(.96);transform-origin:120px 143px}50%{opacity:.85;transform:scale(1.08);transform-origin:120px 143px}}
+@keyframes crystal-orbit{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.crystal-svg .crystal-sparkle{animation:none;opacity:.55;will-change:auto}.crystal-svg .crystal-aura,.crystal-svg .crystal-refraction,.crystal-svg .crystal-core-pulse,.crystal-svg .crystal-orbit-particles{animation:none;will-change:auto}}

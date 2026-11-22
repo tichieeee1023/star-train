@@ -1,0 +1,1021 @@
+import type {Scenery} from './routeData'
+
+export type Speaker = 'girl' | 'cat'
+export type DialogueLine = {speaker:Speaker; text:string}
+export type Conversation = readonly DialogueLine[]
+
+/** 정차 후 두 친구의 대화: 역마다 3종, '더 이야기하기'로 순환합니다. */
+export const arrivalConversations:Record<Scenery,readonly Conversation[]> = {
+  "nebula": [
+    [
+      {
+        "speaker": "girl",
+        "text": "와, 저 하늘 좀 봐! 누가 라일락색 잉크를 풀어놓은 것 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. 난 솜사탕처럼 보이는데."
+      },
+      {
+        "speaker": "girl",
+        "text": "저건 성운이거든. 먹는 거 아니야."
+      },
+      {
+        "speaker": "cat",
+        "text": "먹을 수 있는지는 아직 확인 안 했잖아."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "별이 저렇게 가까워 보여도 되는 거야? 저쪽이랑 이쪽 색도 완전히 달라!"
+      },
+      {
+        "speaker": "cat",
+        "text": "그렇구나. 그럼 구경은 네가 하고, 난 여기 앉아 있을게."
+      },
+      {
+        "speaker": "girl",
+        "text": "너도 좀 감동해 봐. 우주라고, 우주!"
+      },
+      {
+        "speaker": "cat",
+        "text": "감동은 하고 있어. 배가 좀 고플 뿐."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "여긴 하루 종일 있어도 질리지 않을 것 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐옹. 네가 질릴 때까지 자고 있을게."
+      },
+      {
+        "speaker": "girl",
+        "text": "그건 매일 하잖아."
+      },
+      {
+        "speaker": "cat",
+        "text": "꾸준히 잘하는 일이 하나쯤 있어야지."
+      }
+    ]
+  ],
+  "ringsea": [
+    [
+      {
+        "speaker": "girl",
+        "text": "잠깐, 저 고리행성 좀 봐! 바다 위에 고리가 비치잖아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. 저 물에 생선도 살까?"
+      },
+      {
+        "speaker": "girl",
+        "text": "이렇게 예쁜 풍경을 보고 첫 생각이 생선이야?"
+      },
+      {
+        "speaker": "cat",
+        "text": "물가에 오면 당연한 순서지."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "하늘이랑 바다가 어디서 나뉘는지 모르겠어. 멋지다."
+      },
+      {
+        "speaker": "cat",
+        "text": "나는 나뉘는 지점 알아."
+      },
+      {
+        "speaker": "girl",
+        "text": "정말? 어디?"
+      },
+      {
+        "speaker": "cat",
+        "text": "내 발이 젖는 데부터 바다야. 그래서 안 갈래."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "저기 수면에 반짝이는 건 별이 비친 걸까?"
+      },
+      {
+        "speaker": "cat",
+        "text": "아마. 아니면 누가 간식을 흘렸거나."
+      },
+      {
+        "speaker": "girl",
+        "text": "네 눈에는 온 세상이 먹을 거구나."
+      },
+      {
+        "speaker": "cat",
+        "text": "응. 넌 별을 찾고, 난 가능성을 찾는 거야."
+      }
+    ]
+  ],
+  "snowfield": [
+    [
+      {
+        "speaker": "girl",
+        "text": "세상이 온통 하얘! 발자국 하나 없는 눈밭이야."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아… 발이 차가워질 것 같은데."
+      },
+      {
+        "speaker": "girl",
+        "text": "조금만 걸으면 반짝이는 눈을 볼 수 있을 텐데."
+      },
+      {
+        "speaker": "cat",
+        "text": "그럼 네가 보고 와. 나는 따뜻한 곳을 지킬게."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "저 멀리 혜성이 지나가고 있어. 눈 위에 빛이 번지는 것 봐!"
+      },
+      {
+        "speaker": "cat",
+        "text": "눈이 저렇게 많으면 생선도 얼어 있겠지?"
+      },
+      {
+        "speaker": "girl",
+        "text": "또 먹을 생각이야?"
+      },
+      {
+        "speaker": "cat",
+        "text": "잘 보관된 식량은 중요한 문제야."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "조용해서 별빛 떨어지는 소리까지 들릴 것 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. …배에서 소리 나면 미안."
+      },
+      {
+        "speaker": "girl",
+        "text": "이 엄숙한 순간에?"
+      },
+      {
+        "speaker": "cat",
+        "text": "우주고양이의 배는 우주보다 솔직하거든."
+      }
+    ]
+  ],
+  "auroraforest": [
+    [
+      {
+        "speaker": "girl",
+        "text": "세상에, 나무 위로 빛이 강처럼 흐르고 있어!"
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. 저 빛은 왜 안 떨어져?"
+      },
+      {
+        "speaker": "girl",
+        "text": "글쎄, 숲이 하늘을 붙잡고 있는 걸까?"
+      },
+      {
+        "speaker": "cat",
+        "text": "그럼 나는 여기서 낮잠을 붙잡을래."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "저 오로라 색, 한 번만 더 바뀌는 걸 보고 싶어."
+      },
+      {
+        "speaker": "cat",
+        "text": "기다리면 바뀌겠지. 나는 기다리는 데 전문가야."
+      },
+      {
+        "speaker": "girl",
+        "text": "너는 그냥 자는 전문가잖아."
+      },
+      {
+        "speaker": "cat",
+        "text": "둘은 꽤 비슷해."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "이 숲은 반짝이는 것들이 정말 많아. 하나씩 세어 볼까?"
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아. 네가 세는 동안 난 꿈에서 생선을 셀게."
+      },
+      {
+        "speaker": "girl",
+        "text": "도움이 하나도 안 되잖아!"
+      },
+      {
+        "speaker": "cat",
+        "text": "내 꿈속에선 아주 중요한 조사야."
+      }
+    ]
+  ],
+  "canyon": [
+    [
+      {
+        "speaker": "girl",
+        "text": "와, 저 협곡! 바위에 금빛이 차곡차곡 쌓인 것 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. 꼭 구운 과자 색이네."
+      },
+      {
+        "speaker": "girl",
+        "text": "그 비유는 좀 마음에 든다."
+      },
+      {
+        "speaker": "cat",
+        "text": "그러면 하나 먹어 봐도 돼?"
+      },
+      {
+        "speaker": "girl",
+        "text": "아니, 바위야!"
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "유성이 지나가니까 바위 끝이 반짝였어. 봤어?"
+      },
+      {
+        "speaker": "cat",
+        "text": "봤지. 대단하네."
+      },
+      {
+        "speaker": "girl",
+        "text": "뭐가?"
+      },
+      {
+        "speaker": "cat",
+        "text": "네가 저걸 보고도 배고픈 걸 잊었다는 게."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "여긴 아무도 없는데 이상하게 따뜻해 보여."
+      },
+      {
+        "speaker": "cat",
+        "text": "햇빛이 좋으니까. 눕기 딱인데."
+      },
+      {
+        "speaker": "girl",
+        "text": "너, 모든 장소의 기준이 낮잠이야?"
+      },
+      {
+        "speaker": "cat",
+        "text": "먹을 곳이 없을 때는 그렇지."
+      }
+    ]
+  ],
+  "city": [
+    [
+      {
+        "speaker": "girl",
+        "text": "저 멀리 도시가 보여! 하늘의 별이 땅에도 내려앉은 것 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "냐아아. 불 켜진 집이 많네."
+      },
+      {
+        "speaker": "girl",
+        "text": "누가 살까? 어떤 하루를 보냈을까?"
+      },
+      {
+        "speaker": "cat",
+        "text": "저 집 중 하나는 맛있는 저녁을 먹고 있겠지."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "도시는 멀리서 보니까 별자리 같아."
+      },
+      {
+        "speaker": "cat",
+        "text": "그 말은 괜찮네."
+      },
+      {
+        "speaker": "girl",
+        "text": "오, 네가 드디어 풍경을 감상하네?"
+      },
+      {
+        "speaker": "cat",
+        "text": "아니. 저 많은 창문 중 식당을 찾고 있었어."
+      }
+    ],
+    [
+      {
+        "speaker": "girl",
+        "text": "저쪽 창문이 방금 반짝였어. 누가 우리한테 인사한 걸까?"
+      },
+      {
+        "speaker": "cat",
+        "text": "냐옹. 아마 불을 켠 거겠지."
+      },
+      {
+        "speaker": "girl",
+        "text": "그냥 인사라고 생각하면 더 재밌잖아."
+      },
+      {
+        "speaker": "cat",
+        "text": "그럼 나 대신 저녁도 보내 달라고 인사해 줘."
+      }
+    ]
+  ]
+}
+
+/** 하차 후 각 행동별 대화: 6곳 × 2행동 × 3회차. */
+export const interactionConversations:Record<Scenery,readonly (readonly Conversation[])[]> = {
+  "nebula": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "수정에 빛을 비췄더니 옆에 있는 수정까지 반짝였어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 연쇄 반응이네. 간식도 그렇게 늘어나면 좋겠다."
+        },
+        {
+          "speaker": "girl",
+          "text": "너는 정말 일관적이구나."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이번엔 빛이 더 멀리 갔어. 수정들이 서로 대화하는 것 같지 않아?"
+        },
+        {
+          "speaker": "cat",
+          "text": "그러면 나 대신 저녁 메뉴 좀 물어봐 줘."
+        },
+        {
+          "speaker": "girl",
+          "text": "수정은 대답 못 하거든. …아마도."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "우와, 수정 사이에 작은 은하가 생겼어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "작아도 은하는 은하지."
+        },
+        {
+          "speaker": "girl",
+          "text": "너도 꽤 감탄하는구나?"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐앙. 근데 저 은하는 배달이 안 되겠지?"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "별들을 이어 보니까 길이 생겼어. 저 별자리는 뭐라고 부를까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "길쭉한 생선."
+        },
+        {
+          "speaker": "girl",
+          "text": "별자리 이름을 좀 진지하게 지어 봐."
+        },
+        {
+          "speaker": "cat",
+          "text": "잘 구워진 길쭉한 생선."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "마지막 별이 유난히 오래 반짝이네. 꼭 답장을 받은 기분이야."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아아. 별도 네 말이 많다는 걸 알겠지."
+        },
+        {
+          "speaker": "girl",
+          "text": "칭찬인 거지, 그거?"
+        },
+        {
+          "speaker": "cat",
+          "text": "아마도."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이번 별자리는 고양이 모양 같아! 봐 봐!"
+        },
+        {
+          "speaker": "cat",
+          "text": "나보다 귀가 작네."
+        },
+        {
+          "speaker": "girl",
+          "text": "그게 중요한 거야?"
+        },
+        {
+          "speaker": "cat",
+          "text": "우주고양이는 디테일에 엄격해."
+        }
+      ]
+    ]
+  ],
+  "ringsea": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "별빛 하나를 물에 띄웠더니 파문이 세 겹으로 퍼졌어."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 물은 참 부지런하네."
+        },
+        {
+          "speaker": "girl",
+          "text": "넌 그저 앉아서 보고 있잖아."
+        },
+        {
+          "speaker": "cat",
+          "text": "훌륭한 관객이지."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "수평선 끝까지 반짝이는 길이 생겼어. 따라가 보고 싶다."
+        },
+        {
+          "speaker": "cat",
+          "text": "걸어가면 젖어."
+        },
+        {
+          "speaker": "girl",
+          "text": "알아, 그냥 해본 말이야."
+        },
+        {
+          "speaker": "cat",
+          "text": "그럼 나도 그냥 말할게. 생선 먹고 싶다."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "어? 파문 하나가 다시 돌아왔어."
+        },
+        {
+          "speaker": "cat",
+          "text": "돌아오는 건 좋은 거야. 특히 저녁밥이."
+        },
+        {
+          "speaker": "girl",
+          "text": "저렇게 조그만 파문도 집을 기억하나 봐."
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "행성의 고리가 반짝이니까 바다까지 밝아졌어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 조명 켠 식당 같네."
+        },
+        {
+          "speaker": "girl",
+          "text": "저걸 보고 식당 생각을 한다고?"
+        },
+        {
+          "speaker": "cat",
+          "text": "분위기가 좋잖아."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이번엔 반사광이 파랗게 번졌어. 색이 계속 바뀌네."
+        },
+        {
+          "speaker": "cat",
+          "text": "너는 색을 잘 보고, 나는 냄새를 잘 맡지."
+        },
+        {
+          "speaker": "girl",
+          "text": "그런데 여기 아무 냄새도 안 나잖아."
+        },
+        {
+          "speaker": "cat",
+          "text": "그래서 심각한 상황이야."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "하늘의 고리랑 바닷속 고리가 하나로 이어진 것 같아."
+        },
+        {
+          "speaker": "cat",
+          "text": "그 사이에 앉아서 낮잠 자면 좋겠다."
+        },
+        {
+          "speaker": "girl",
+          "text": "거긴 물 한가운데야!"
+        },
+        {
+          "speaker": "cat",
+          "text": "아, 그럼 취소."
+        }
+      ]
+    ]
+  ],
+  "snowfield": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "눈 위에 별을 그렸어! 조금 삐뚤어졌지만 귀엽지?"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐앙. 내 발자국보다는 반듯해."
+        },
+        {
+          "speaker": "girl",
+          "text": "그건 네 발자국이 더 귀여울지도."
+        },
+        {
+          "speaker": "cat",
+          "text": "안 찍을래. 발 시려."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이번에는 별이 살짝 빛났어. 눈이 반응하는 걸까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "네가 열심히 그려서 그런가 봐."
+        },
+        {
+          "speaker": "girl",
+          "text": "어라, 방금 칭찬했어?"
+        },
+        {
+          "speaker": "cat",
+          "text": "…냐아아."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "눈이 다시 내리면 내가 그린 별도 사라지겠지?"
+        },
+        {
+          "speaker": "cat",
+          "text": "그래도 네가 봤잖아."
+        },
+        {
+          "speaker": "girl",
+          "text": "그렇네. 그리고 너도 봤고."
+        },
+        {
+          "speaker": "cat",
+          "text": "응. 이제 따뜻한 객실로 가자."
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "저기! 가장 높은 봉우리부터 빛이 옆으로 번지고 있어."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 얼음이 서로 깨우는 것 같네."
+        },
+        {
+          "speaker": "girl",
+          "text": "이런 표현도 할 줄 알아?"
+        },
+        {
+          "speaker": "cat",
+          "text": "가끔은."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "설산 꼭대기에서 푸른 가루가 떨어져. 정말 예뻐!"
+        },
+        {
+          "speaker": "cat",
+          "text": "눈이랑 별이랑 누가 더 빛나나 겨루는 건가?"
+        },
+        {
+          "speaker": "girl",
+          "text": "그런 경기라면 밤새 구경할 수 있겠어."
+        },
+        {
+          "speaker": "cat",
+          "text": "나는 잠깐만."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "빛나는 능선이 별자리처럼 이어졌어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "산에도 별이 살 수 있나 보네."
+        },
+        {
+          "speaker": "girl",
+          "text": "너답지 않게 낭만적인데?"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐옹. 추워서 말이 헛나왔어."
+        }
+      ]
+    ]
+  ],
+  "auroraforest": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "숲속에서 작은 빛들이 깨어났어! 반딧불 같아."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아아. 잘 자고 있었는데 왜 깨웠어?"
+        },
+        {
+          "speaker": "girl",
+          "text": "어… 그러고 보니 너도 자고 있었지."
+        },
+        {
+          "speaker": "cat",
+          "text": "둘 다 비슷한 처지야."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "빛들이 모여서 동그란 별무리가 됐어."
+        },
+        {
+          "speaker": "cat",
+          "text": "생각보다 협동심이 좋네."
+        },
+        {
+          "speaker": "girl",
+          "text": "우리도 저렇게 움직여 볼까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "우린 둘뿐이야. 그리고 나는 안 움직여."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "빛들이 다시 숲으로 돌아가네."
+        },
+        {
+          "speaker": "cat",
+          "text": "집에 가는 거지. 우리도 돌아갈까?"
+        },
+        {
+          "speaker": "girl",
+          "text": "조금만 더 보자."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 그럼 나는 조금 더 잘게."
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "오로라에 손을 흔들었더니 정말 움직였어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "원래도 움직이고 있었잖아."
+        },
+        {
+          "speaker": "girl",
+          "text": "그렇게 말하면 낭만이 없잖아!"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아아. 그럼 네 인사 덕분이라고 하자."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "초록빛 사이로 연보라색이 흘러들어 왔어. 예쁘다."
+        },
+        {
+          "speaker": "cat",
+          "text": "잘 섞은 음료 같네."
+        },
+        {
+          "speaker": "girl",
+          "text": "음료라면 무슨 맛일 것 같아?"
+        },
+        {
+          "speaker": "cat",
+          "text": "좋은 질문이야. 한 잔만 줘 봐."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "저 빛이 우리 쪽으로 굽어지는 것 같지 않아?"
+        },
+        {
+          "speaker": "cat",
+          "text": "응. 오늘은 숲도 네 이야기를 듣고 싶나 봐."
+        },
+        {
+          "speaker": "girl",
+          "text": "…그럼 나도 조용히 들어 볼래."
+        }
+      ]
+    ]
+  ],
+  "canyon": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "암석 틈을 따라 금빛 길이 생겼어. 어디까지 이어질까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "식당까지 이어지면 최고겠지."
+        },
+        {
+          "speaker": "girl",
+          "text": "넌 꼭 마지막에 그 얘기구나."
+        },
+        {
+          "speaker": "cat",
+          "text": "처음에도 할 수 있어."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "빛이 여러 갈래로 갈라졌다가 다시 모였어. 신기해!"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 길을 잃었다가 돌아왔나 봐."
+        },
+        {
+          "speaker": "girl",
+          "text": "우리도 저 길을 따라가 볼까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "나는 여기서 돌아올 때까지 기다릴게."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이제 암석 끝에만 조그만 빛이 남았어."
+        },
+        {
+          "speaker": "cat",
+          "text": "꺼지기 전의 촛불 같네."
+        },
+        {
+          "speaker": "girl",
+          "text": "오늘은 말이 좀 예쁘다?"
+        },
+        {
+          "speaker": "cat",
+          "text": "잘하면 간식이 늘어나나?"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "유성이 협곡 안으로 내려앉았어! 저 빛 봤어?"
+        },
+        {
+          "speaker": "cat",
+          "text": "봤어. 꽤 멀리 떨어졌네."
+        },
+        {
+          "speaker": "girl",
+          "text": "가까이 가서 찾을 수 있을까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아… 멀어."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "바위 틈에서 둥근 빛이 올라왔어. 아직 따뜻한 걸까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "갓 구운 빵처럼?"
+        },
+        {
+          "speaker": "girl",
+          "text": "하필 빵이야?"
+        },
+        {
+          "speaker": "cat",
+          "text": "따뜻함의 기준은 중요해."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "별이 떨어진 길은 금세 사라지네."
+        },
+        {
+          "speaker": "cat",
+          "text": "그래도 네가 기억하잖아."
+        },
+        {
+          "speaker": "girl",
+          "text": "응. 이 장면은 오래 기억할 것 같아."
+        },
+        {
+          "speaker": "cat",
+          "text": "그럼 내 저녁도 기억해 줘."
+        }
+      ]
+    ]
+  ],
+  "city": [
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "저 멀리 창문 하나가 켜졌어. 우리 인사를 받은 걸까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아아. 이제 저녁 준비를 시작했을지도."
+        },
+        {
+          "speaker": "girl",
+          "text": "좀 더 낭만적으로 생각해 봐."
+        },
+        {
+          "speaker": "cat",
+          "text": "그 집 저녁은 아주 맛있겠다."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "이번에는 창문 여러 개가 차례로 반짝였어!"
+        },
+        {
+          "speaker": "cat",
+          "text": "한 집씩 답장하는 걸 수도 있지."
+        },
+        {
+          "speaker": "girl",
+          "text": "드디어 내 의견에 동의하는 거야?"
+        },
+        {
+          "speaker": "cat",
+          "text": "응. 다들 밥 먹으러 오라고 하는 거야."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "불빛이 다시 조용해졌어. 왠지 마음이 따뜻해."
+        },
+        {
+          "speaker": "cat",
+          "text": "멀리서도 사는 소리가 보이는 것 같네."
+        },
+        {
+          "speaker": "girl",
+          "text": "우와, 넌 가끔 진짜 시인이야."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐옹. 시인은 저녁을 먹니?"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "speaker": "girl",
+          "text": "도시의 불빛을 이어 보니까 하늘까지 길이 생겼어."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아. 길 찾는 데는 소질 있네."
+        },
+        {
+          "speaker": "girl",
+          "text": "그럼 다음엔 어디로 갈까?"
+        },
+        {
+          "speaker": "cat",
+          "text": "식당."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "별길이 마지막 별까지 닿았어. 진짜 기차 노선도 같지 않아?"
+        },
+        {
+          "speaker": "cat",
+          "text": "그 노선엔 식당칸도 있겠지."
+        },
+        {
+          "speaker": "girl",
+          "text": "너는 어느 행성에 내려도 안 바뀌겠구나."
+        },
+        {
+          "speaker": "cat",
+          "text": "안정적인 성격이지."
+        }
+      ],
+      [
+        {
+          "speaker": "girl",
+          "text": "저 길을 따라가면 또 새로운 풍경이 있겠지?"
+        },
+        {
+          "speaker": "cat",
+          "text": "응. 그리고 쉬어 갈 곳도 있겠지."
+        },
+        {
+          "speaker": "girl",
+          "text": "좋아, 그럼 조금만 더 구경하고 출발하자."
+        },
+        {
+          "speaker": "cat",
+          "text": "냐아아. 천천히."
+        }
+      ]
+    ]
+  ]
+}
