@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+<title>은하 전망 객실: 창가에 앉은 소녀와 테이블 위의 고양이</title>
+<style>
+ .cat-tail{transform-origin:701px 473px;animation:tail-sway 8s ease-in-out infinite}
+ @keyframes tail-sway{0%,30%,100%{transform:rotate(0deg)}42%{transform:rotate(-9deg)}55%{transform:rotate(5deg)}68%{transform:rotate(-3deg)}79%{transform:rotate(0deg)}}
+ @media(prefers-reduced-motion:reduce){.cat-tail{animation:none}}
+</style>
+<defs>
+ <linearGradient id="ceiling" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#142539"/><stop offset=".55" stop-color="#2c3345"/><stop offset="1" stop-color="#485269"/></linearGradient>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2=".4"><stop stop-color="#2b3c4c"/><stop offset=".52" stop-color="#36435a"/><stop offset="1" stop-color="#26394e"/></linearGradient>
+ <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4ddb5"/><stop offset=".34" stop-color="#c9aa82"/><stop offset=".7" stop-color="#a27d73"/><stop offset="1" stop-color="#736771"/></linearGradient>
+ <linearGradient id="rim" x1="0" y1="0" x2="1" y2=".8"><stop stop-color="#70849a"/><stop offset=".55" stop-color="#9fa2a7"/><stop offset="1" stop-color="#695f73"/></linearGradient>
+ <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#6c596a"/><stop offset="1" stop-color="#2e3549"/></linearGradient>
+ <linearGradient id="bench" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#667b8c"/><stop offset=".56" stop-color="#53617a"/><stop offset="1" stop-color="#33455f"/></linearGradient>
+ <linearGradient id="coat" x1=".15" y1="0" x2=".95" y2="1"><stop stop-color="#c4b9c9"/><stop offset=".5" stop-color="#998da9"/><stop offset="1" stop-color="#776e8f"/></linearGradient>
+ <linearGradient id="hair" x1=".1" y1="0" x2="1" y2="1"><stop stop-color="#242438"/><stop offset=".5" stop-color="#39314a"/><stop offset="1" stop-color="#534458"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4b793"/><stop offset=".48" stop-color="#bb8d79"/><stop offset="1" stop-color="#826b72"/></linearGradient>
+ <linearGradient id="cat-fur" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#fff3e1"/><stop offset=".52" stop-color="#e3d8d1"/><stop offset="1" stop-color="#c4b9c8"/></linearGradient>
+ <radialGradient id="lamp-light"><stop stop-color="#ffe2ab" stop-opacity=".48"/><stop offset=".42" stop-color="#fbd7af" stop-opacity=".18"/><stop offset="1" stop-color="#ffeac8" stop-opacity="0"/></radialGradient>
+ <radialGradient id="table-light"><stop stop-color="#f6e7c4" stop-opacity=".3"/><stop offset="1" stop-color="#f6e7c4" stop-opacity="0"/></radialGradient>
+ <linearGradient id="glass-wash" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ffe9dc" stop-opacity=".04"/><stop offset=".33" stop-color="#fff5de" stop-opacity=".018"/><stop offset=".74" stop-color="#d7dcfa" stop-opacity=".03"/><stop offset="1" stop-color="#fff4e9" stop-opacity=".1"/></linearGradient>
+ <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
+</defs>
+<!-- The foreground alone is opaque: sky underneath remains visible through the wide window. -->
+<!-- Minimal upper shell, framing a huge uninterrupted observation window. -->
+<path d="M0 0H960V35H916Q915 17 883 15H75Q43 17 43 35H0Z" fill="url(#ceiling)"/>
+<path d="M0 0H48L46 448L0 493Z" fill="url(#wall)"/>
+<path d="M914 23H960V496L914 449Z" fill="url(#wall)"/>
+<path d="M40 445H921L960 486V600H0V490Z" fill="url(#floor)"/>
+<!-- Wide glass border: a single observation pane rather than small carriage windows. -->
+<path d="M43 441V61Q43 22 76 22H883Q918 22 918 61V441" fill="none" stroke="#273b50" stroke-width="17"/>
+<path d="M49 439V60Q49 29 77 29H881Q912 29 912 60V439" fill="none" stroke="url(#brass)" stroke-width="4" opacity=".95"/>
+<path d="M55 437V60Q55 35 79 35H880Q906 35 906 61V436" fill="none" stroke="#c7cfdb" stroke-opacity=".23" stroke-width="2"/>
+<rect x="59" y="41" width="841" height="389" fill="url(#glass-wash)"/>
+<!-- The city and nebula will be animated BEHIND this glass in later stages. -->
+<path d="M112 43Q96 201 113 426" stroke="#fff7ef" stroke-opacity=".045" stroke-width="30" fill="none"/>
+<path d="M866 47Q891 179 877 420" stroke="#fff7ee" stroke-opacity=".07" stroke-width="18" fill="none"/>
+<!-- The observation deck sill and ledge. -->
+<path d="M38 431H923L942 462H18Z" fill="#45556c"/>
+<path d="M39 433H922L930 444H29Z" fill="url(#brass)" opacity=".78"/>
+<path d="M22 460H938" stroke="#bd9a86" stroke-opacity=".55" stroke-width="2"/>
+<path d="M0 491L49 464H914L960 495V600H0Z" fill="url(#floor)"/>
+<path d="M0 497Q457 480 960 499" fill="none" stroke="#e4c1ae" stroke-opacity=".13" stroke-width="3"/>
+<path d="M0 570Q475 545 960 574" fill="none" stroke="#131e37" stroke-opacity=".22" stroke-width="3"/>
+<g stroke="#b6a1a2" stroke-opacity=".13" stroke-width="2"><path d="M60 497L-20 600M204 491L169 600M390 490L408 600M571 491L645 600M745 494L857 600"/></g>
+<!-- Lamp: stays static; a warm contrast to the cool night sky. -->
+<ellipse cx="855" cy="90" rx="119" ry="115" fill="url(#lamp-light)"/>
+<path d="M852 0V64" stroke="#ccbda9" stroke-width="3"/>
+<path d="M831 66L844 51H862L876 66Z" fill="#a38d87"/>
+<path d="M832 68H876L867 95Q853 103 840 95Z" fill="url(#brass)" stroke="#eed6ad" stroke-width="2"/>
+<ellipse cx="854" cy="91" rx="15" ry="4" fill="#ffedc0"/>
+<path d="M841 78H868" stroke="#ffedc0" stroke-width="2" opacity=".65"/>
+<!-- Slim wood-and-brass ledge furniture -->
+<path d="M92 504Q124 480 312 486L341 509L333 571Q192 564 101 575Z" fill="#26384d"/>
+<path d="M90 496Q136 480 311 485L338 499L320 519Q158 509 103 521Z" fill="url(#bench)" stroke="#8c8892" stroke-width="2"/>
+<path d="M102 526L107 593M323 521L328 591" stroke="#a49391" stroke-opacity=".39" stroke-width="4"/>
+<path d="M110 542Q173 549 320 540" stroke="#d5c3b6" stroke-opacity=".11" stroke-width="3" fill="none"/>
+<!-- Girl: permanently seated, shown ONLY from behind. No arm/head animation. -->
+<g>
+  <ellipse cx="228" cy="562" rx="107" ry="17" fill="#131b35" opacity=".31"/>
+  <!-- Legs and hem -->
+  <path d="M176 508Q182 529 181 564L221 574L243 565L256 574L299 559Q294 532 286 513Z" fill="#5c637e"/>
+  <path d="M172 553Q215 571 258 568Q287 566 306 557" fill="none" stroke="#cdc5d0" stroke-opacity=".28" stroke-width="3"/>
+  <!-- Subtle cardigan shoulders and back -->
+  <path d="M188 405Q167 413 154 446L151 520Q172 544 216 548L288 546Q306 507 304 464Q300 419 269 404Q222 399 188 405Z" fill="url(#coat)" stroke="#d2c7d2" stroke-opacity=".35" stroke-width="2"/>
+  <path d="M170 446Q174 494 181 530M286 446Q285 487 282 530" fill="none" stroke="#ece3df" stroke-opacity=".22" stroke-width="3"/>
+  <path d="M187 523Q231 540 283 523" stroke="#665f80" stroke-opacity=".3" stroke-width="3" fill="none"/>
+  <!-- Hair and rear neck. No face is visible. -->
+  <path d="M213 395L212 424L246 430L261 405Z" fill="#d3aca8"/>
+  <path d="M194 386Q181 357 196 328Q207 299 237 296Q271 295 286 325Q296 347 282 382Q281 406 290 430Q281 437 272 431Q263 444 254 430Q242 444 231 435Q219 448 208 433Q198 442 190 426Q195 411 194 386Z" fill="url(#hair)" stroke="#2d2b42" stroke-width="2"/>
+  <path d="M237 302Q221 341 226 370Q224 396 234 427" fill="none" stroke="#78677d" stroke-opacity=".45" stroke-width="4"/>
+  <path d="M255 305Q269 343 266 387Q267 404 261 429" fill="none" stroke="#160f30" stroke-opacity=".46" stroke-width="4"/>
+  <path d="M201 333Q195 381 203 405" stroke="#b0a0a5" stroke-opacity=".13" stroke-width="3" fill="none"/>
+  <!-- A tiny ribbon at the back, static -->
+  <path d="M237 394Q217 378 216 395Q217 409 240 399Q257 412 266 399Q271 384 241 394Z" fill="#ba9aab" opacity=".88"/>
+  <circle cx="241" cy="397" r="4.1" fill="#ece0d0"/>
+  <!-- Arms on lap; sleeves visible from rear -->
+  <path d="M161 449Q151 478 158 505Q174 526 200 527L210 520Q184 512 177 494Z" fill="#a89bb8"/>
+  <path d="M296 451Q309 478 299 504Q289 524 271 526L261 518Q286 503 282 492Z" fill="#887e9e"/>
+  <path d="M202 522Q215 526 224 522M261 520Q249 525 240 519" stroke="#e7c0b4" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Backlit trim -->
+  <path d="M186 409Q168 419 159 445" fill="none" stroke="#f6dbcf" stroke-opacity=".38" stroke-width="2"/>
+</g>
+<!-- Small travel bag by the bench -->
+<g transform="translate(63 542)">
+  <path d="M1 10Q2 0 15 0H53Q68 0 68 11V48Q34 55 0 48Z" fill="#52667c" stroke="#9b99a2" stroke-width="2"/>
+  <path d="M21 2Q21 -14 33 -14Q46 -14 46 2" fill="none" stroke="#c2a68a" stroke-width="5"/>
+  <path d="M31 2V50" stroke="#c8a78f" stroke-width="4"/>
+  <path d="M5 28Q33 37 63 28" fill="none" stroke="#ddbea8" stroke-opacity=".35" stroke-width="2"/>
+  <circle cx="32" cy="21" r="3" fill="#e4d1a7"/>
+</g>
+<!-- Cat and table on the right, foreground. Cat tail sways; all else is static. -->
+<ellipse cx="780" cy="503" rx="145" ry="22" fill="url(#table-light)"/>
+<g>
+  <path d="M649 508Q760 491 901 503L900 521Q780 531 652 522Z" fill="#765b66"/>
+  <path d="M635 491Q759 478 897 486L915 502Q782 515 629 507Z" fill="url(#wood)" stroke="#f0c6a2" stroke-opacity=".64" stroke-width="2"/>
+  <path d="M663 511L671 595M882 513L892 595" stroke="#927c80" stroke-width="13" stroke-linecap="round"/>
+  <path d="M665 535L884 537" fill="none" stroke="#695b69" stroke-width="5"/>
+  <path d="M661 503Q761 494 890 498" stroke="#fff1d1" stroke-opacity=".24" stroke-width="2" fill="none"/>
+</g>
+<!-- Cat tail goes behind the body and above the tabletop. -->
+<g class="cat-tail"><path d="M701 472Q677 458 658 461Q646 464 648 450Q652 431 670 440" fill="none" stroke="#dfd2cf" stroke-width="13" stroke-linecap="round"/><path d="M648 451Q650 435 667 439" fill="none" stroke="#f9e7db" stroke-width="3" stroke-linecap="round"/></g>
+<g>
+  <!-- Sleeping body and head -->
+  <ellipse cx="752" cy="474" rx="75" ry="26" fill="#aa9dab" opacity=".3"/>
+  <path d="M688 473Q691 448 725 443Q774 435 804 452Q824 457 820 481Q789 494 727 490Q698 487 688 473Z" fill="url(#cat-fur)" stroke="#fff6ec" stroke-opacity=".55" stroke-width="2"/>
+  <path d="M792 456Q794 443 806 435L821 444L840 434Q849 447 846 463Q847 483 822 485Q798 483 792 466Z" fill="url(#cat-fur)" stroke="#ddcbd0" stroke-width="1.5"/>
+  <path d="M800 445L805 431L816 439M828 441L842 431L847 449" fill="#efdfd7" stroke="#d1bec2" stroke-width="1.4"/>
+  <path d="M804 444L806 437L811 441M836 442L842 437L842 447" fill="#dbaeb8" opacity=".8"/>
+  <path d="M808 464q5 4 10 0m10 0q5 4 10 0" fill="none" stroke="#70606b" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M819 469q3 2 6 0q-3 5-6 0" fill="#aa858c"/>
+  <path d="M811 474L798 472M830 475L844 471" fill="none" stroke="#bda5a7" stroke-width=".9" stroke-linecap="round"/>
+  <ellipse cx="773" cy="485" rx="15" ry="6" fill="#f4e4d9"/>
+  <path d="M729 445Q755 454 757 476" fill="none" stroke="#fff6eb" stroke-opacity=".45" stroke-width="3"/>
+</g>
+<!-- Notebook and cup close to the cat: tiny calm details -->
+<g transform="translate(694 491)">
+  <path d="M0 0l26-6 26 2-24 7Z" fill="#f7e1c9" stroke="#aa8f91" stroke-width="1"/>
+  <path d="M25 -5v7" stroke="#c9b0a7" stroke-width="1"/>
+  <path d="M9 -1l14-3M31 -3l11 1" stroke="#bba4aa" stroke-width=".8" opacity=".7"/>
+</g>
+<g transform="translate(869 477)">
+  <ellipse cx="0" cy="12" rx="14" ry="4" fill="#634e58" opacity=".5"/>
+  <path d="M-10 -3h20l-3 17h-14Z" fill="#e8d5c5" stroke="#fff5e7" stroke-width="1"/>
+  <path d="M10 0q14-1 8 10q-3 5-9 0" fill="none" stroke="#e8d5c5" stroke-width="3"/>
+  <path d="M-6 -8Q-10-18 -5-24M3-8Q0-17 4-23" fill="none" stroke="#f2e4e5" stroke-opacity=".34" stroke-width="2"/>
+</g>
+<!-- Edge vignette and discreet hardware details -->
+<path d="M0 0H960V600H0Z" fill="none" stroke="#0b1730" stroke-width="8" opacity=".34"/>
+<g fill="#dcc3a6" opacity=".6"><circle cx="40" cy="95" r="2"/><circle cx="40" cy="312" r="2"/><circle cx="920" cy="95" r="2"/><circle cx="920" cy="310" r="2"/></g>
+</svg>
