@@ -36,3 +36,60 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .scenic-mode .scenic-toggle{right:14px;top:14px}
 @media(max-width:360px){.app-header{padding:0 13px}.brand{font-size:17px}.location{font-size:10px;max-width:55%}.caption{padding:23px 13px 10px}.caption h1{font-size:17px}.bottom-nav>span{gap:3px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* 1.1단계: 일부 별에만 낮은 강도의 반짝임을 부여합니다.
+   대다수 별, 하늘, 성운, 행성은 정적인 상태입니다. */
+.twinkling-star{animation:star-twinkle 5s ease-in-out infinite;will-change:opacity}
+@keyframes star-twinkle{0%,100%{opacity:.45}48%{opacity:1}78%{opacity:.74}}
+@media(prefers-reduced-motion:reduce){.twinkling-star{animation:none;will-change:auto}}
+
+/* 2단계: 무리하지 않는 속도로 살아 움직이는 은하 풍경. */
+.nebula-drift-a{animation:nebula-drift-a 64s ease-in-out infinite alternate}
+.nebula-drift-b{animation:nebula-drift-b 78s ease-in-out infinite alternate}
+.nebula-breathe,.city-haze-breathe{animation:nebula-breathe 23s ease-in-out infinite alternate}
+.planet-float{animation:planet-float 54s ease-in-out infinite alternate}
+/* 혜성은 화면 밖에서 시작해 가로로 지나간 뒤 다시 돌아옵니다. */
+.travel-comet{animation:travel-comet 27s linear infinite;animation-delay:-9s;will-change:transform}
+.city-far-slide{animation:city-slide-far 170s linear infinite;will-change:transform}
+.city-near-slide{animation:city-slide-near 94s linear infinite;will-change:transform}
+@keyframes nebula-drift-a{from{transform:translate(-11px,-5px) scale(1)}to{transform:translate(20px,10px) scale(1.025)}}
+@keyframes nebula-drift-b{from{transform:translate(14px,5px) scale(1.01)}to{transform:translate(-24px,-12px) scale(.985)}}
+@keyframes nebula-breathe{from{opacity:.7}to{opacity:1}}
+/* 부모 g에 SVG transform이 있으므로 행성은 미세한 이동만 적용 */
+@keyframes planet-float{from{translate:0 0}to{translate:-8px 5px}}
+@keyframes travel-comet{0%,9%{transform:translateX(0);opacity:0}12%{opacity:1}73%{opacity:1}82%,100%{transform:translateX(1330px);opacity:0}}
+@keyframes city-slide-far{from{transform:translateX(0)}to{transform:translateX(-960px)}}
+@keyframes city-slide-near{from{transform:translateX(0)}to{transform:translateX(-960px)}}
+.scene-picker{display:flex;justify-content:center;gap:10px;margin:18px 0 10px}
+.scene-option{font-size:12px;color:#d7cde0;background:#3d4763;border:1px solid #abb3cb40;padding:10px 14px;border-radius:24px;transition:background .15s ease}
+.scene-option.selected{color:#fff2dc;background:#6a607b;border-color:#e9c6ae99}
+.scene-option:hover{background:#596784}
+@media(max-width:360px){.scene-picker{gap:7px}.scene-option{padding:9px 11px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.nebula-drift-a,.nebula-drift-b,.nebula-breathe,.city-haze-breathe,.planet-float,.travel-comet,.city-far-slide,.city-near-slide{animation:none;will-change:auto}}
+
+/* 3단계: 역 접근 · 정차 · 플랫폼 전경. 모든 위치는 객실과 같은 960×600 좌표계. */
+.scene-container{position:relative;aspect-ratio:960/600;overflow:hidden}
+.scene-container>.cabin,.scene-container>.station-view{height:100%}
+.platform-art{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;pointer-events:none}
+.station-view{position:relative;isolation:isolate;aspect-ratio:960/600;overflow:hidden;background:#263d62}
+.station-view .sky-art{z-index:0}
+.station-view>.platform-art{z-index:1}
+.station-approach{position:absolute;inset:0;z-index:1;pointer-events:none}
+.station-approach.is-arriving{animation:platform-arrival 3.3s cubic-bezier(.14,.7,.26,1) both}
+.station-approach.is-stopped{transform:translateX(0)}
+@keyframes platform-arrival{from{transform:translateX(100%)}to{transform:translateX(0)}}
+/* 정차하면 이동하는 건물·혜성 레이어만 멈추고, 별 반짝임은 유지합니다. */
+.scene-still .city-far-slide,.scene-still .city-near-slide,.scene-still .travel-comet,.scene-still .planet-float{animation-play-state:paused}
+.platform-open{animation:platform-reveal .6s ease-out both}
+@keyframes platform-reveal{from{opacity:.15;filter:blur(3px)}to{opacity:1;filter:blur(0)}}
+.journey-actions{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin:6px 0 21px}
+.journey-button{border-radius:28px;padding:11px 17px;font-size:12px;border:1px solid #ead7bb79;transition:background .2s ease,transform .2s ease;min-height:42px}
+.journey-button:active{transform:scale(.98)}
+.journey-button.primary{background:#8b7797;color:#fff4ea;box-shadow:0 2px 14px #11172c33}
+.journey-button.primary:hover{background:#a28aab}
+.journey-button.secondary{background:#303c58;color:#e6d7d1;border-color:#afa1ae63}
+.journey-button.secondary:hover{background:#46516e}
+.journey-wait{font-size:12px;color:#e3d6e7;border:1px solid #e0cada52;background:#3b435b;padding:12px 20px;border-radius:30px}
+@media(prefers-reduced-motion:reduce){.station-approach.is-arriving,.platform-open{animation:none}}
+/* 차창에서는 기둥이 소녀를 가리지 않도록 플랫폼을 오른쪽으로 배치 */
+.station-approach .platform-art{transform:translateX(30%)}
