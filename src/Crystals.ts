@@ -89,9 +89,9 @@ const pools:Record<Scenery,readonly (readonly [CrystalId,number])[]>={
  ruins:[['stardrop',4],['orbit',4],['lilac',2],['meteor',1]],
  volcano:[['amber',5],['stardrop',3],['meteor',2],['orbit',1]]
 }
-/** 8시간·희귀 지역·보장(guarantee)은 확정. 나머지는 1시간 40%, 3시간 60%. */
+/** 8시간·희귀 지역·보장(guarantee)은 확정. 1시간 75%, 3시간 90%. */
 export function rollSeed(destination:Scenery,hours:TripHours,journeyId:string,now:number,random:()=>number=Math.random,guarantee=false):Seed|null{
- const chance=guarantee||hours===8||rareLocations.includes(destination)?1:hours===3?.6:.4
+ const chance=guarantee||hours===8||rareLocations.includes(destination)?1:hours===3?.9:.75
  if(random()>=chance)return null
  const rareBoost=hours===8?2.2:hours===3?1.3:1
  const weighted=pools[destination].map(([id,weight])=>[id,weight*(species[id].rarity==='common'?1:rareBoost)] as const)
@@ -115,9 +115,9 @@ export function settleJourney(game:CrystalGame,now:number,random:()=>number=Math
  const journey=game.journey
  if(!journey||now<journey.end||journey.settled||game.settledJourneyIds.includes(journey.id))return game
  const rare=rareLocations.includes(journey.destination)
- // 첫 항해는 씨앗을 꼭 주고, 연속으로 두 번 놓치면 세 번째는 보장한다(빈 재배실로 오래 기다리지 않도록).
+ // 첫 항해는 확정, 한 번 씨앗을 못 얻으면 다음 여행은 확정. 저장된 실패 기록을 이어 사용한다.
  const firstEver=game.settledJourneyIds.length===0&&game.seeds.length===0&&!game.current&&Object.keys(game.album).length===0
- const seed=rollSeed(journey.destination,journey.hours,journey.id,journey.end,random,firstEver||(game.seedMisses??0)>=2)
+ const seed=rollSeed(journey.destination,journey.hours,journey.id,journey.end,random,firstEver||(game.seedMisses??0)>=1)
  const weather=rollWeather(journey.destination,journey.hours,random)
  const sceneKey=`${journey.destination}:${voyageLight(journey.hours)}:${weather}`
  const sceneRecords=game.sceneRecords??[]

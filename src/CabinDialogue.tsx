@@ -8,7 +8,7 @@ export function CabinDialogue({story,index,onIndex,onClose,guest}:{story:Story;i
  const line=story.lines[index],last=index>=story.lines.length-1
  return <section className="cabin-story" role="region" aria-label={story.title} aria-live="polite">
    <div className="cabin-story-top"><span>{guest?'✧ 차장의 방문':story.title}</span><button ref={closeRef} type="button" onClick={onClose} aria-label="대화 닫기">×</button></div>
-   <div className="cabin-story-speaker">{line.speaker==='girl'?'✦ 소녀':line.speaker==='cat'?'🐾 우주고양이':'✧ 차장'}</div>
+   <div className="cabin-story-speaker">{line.speaker==='girl'?'✦ 소녀':line.speaker==='cat'?'🐾 우주고양이':line.speaker==='canary'?'♪ 카나리아 아가씨':'✧ 차장'}</div>
    <p className="cabin-story-line" aria-atomic="true">“{line.text}”</p>
    <div className="cabin-story-controls"><span>{index+1} / {story.lines.length}</span><div><button type="button" disabled={index===0} onClick={()=>onIndex(index-1)}>이전</button><button type="button" className="cabin-story-next" onClick={()=>last?onClose():onIndex(index+1)}>{last?'마치기':'다음 ›'}</button></div></div>
  </section>

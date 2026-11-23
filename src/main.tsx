@@ -13,7 +13,8 @@ import {SpecialCG} from './SpecialCG'
 import {triggerSnack,triggerPet} from './Companions'
 import {snacks,conductorReady,greetConductor,claimDaily,buySnack,eatSnack,snackStories,snackStory,trainBanter,conductorStoryFor,memoryNames,memorySnack,type SnackId,type MemoryId,type Story} from './TrainLife'
 import {CabinCare} from './CabinCare'
-import {petCat,talkGirl,grantBondRewards,levelOf,bondStories} from './CabinBond'
+import {petCat,talkGirl,talkCanary,grantBondRewards,levelOf,bondStories} from './CabinBond'
+import {canaryConversation,canaryChapters,canaryArrivalStories} from './CanaryStories'
 import {CrystalGarden} from './CrystalGarden'
 import {SceneryGallery} from './SceneryGallery'
 import {voyageStage,stageNames} from './VoyageSky'
@@ -97,7 +98,7 @@ function App(){
   setFeedback(`${snacks[id].name}을(를) 함께 먹었어요.`)
   openStory(snackStory(id,turns))
  }
- function replayMemory(id:MemoryId){const s=snackStories[memorySnack[id]][0];openStory({...s,title:memoryNames[id],memory:id})}
+ function replayMemory(id:MemoryId){const s=snackStory(memorySnack[id],0);openStory({...s,title:memoryNames[id],memory:id})}
 function handlePet(){
   const result=petCat(crystal,Date.now());setCareNote(result.message)
   if(result.ok){setCrystal(previous=>petCat(previous,Date.now()).game);setHeart(n=>n+1);triggerPet()}
@@ -107,6 +108,16 @@ function handlePet(){
   if(!result.ok){setCareNote(result.message);return}
   setCrystal(previous=>talkGirl(previous,Date.now()).game);setCareNote('')
   openStory(trainBanter(travelStage??undefined,((result.talkIndex??0)+1)*42000,crystal.journey?.start??17372591))
+ }
+ function handleCanaryTalk(){
+  const result=talkCanary(crystal,Date.now())
+  if(!result.ok){setCareNote(result.message);return}
+  setCrystal(previous=>talkCanary(previous,Date.now()).game);setCareNote('')
+  openStory(canaryConversation(result.talkIndex??0,travelStage??undefined))
+ }
+ function listenCanaryChapter(index:number){
+  if((crystal.life?.bond?.canaryTalks??0)<=([0,2,5,9,14][index]??Infinity))return
+  const chapter=canaryChapters[index];if(chapter)openStory(chapter)
  }
  function listenBond(level:number){
   const story=bondStories[level-1];if(!story)return
@@ -190,7 +201,7 @@ function handlePet(){
    {!story?.memory&&<button className="scenic-toggle" type="button" onClick={()=>setViewer(true)} aria-label="16대9 풍경 감상 화면 열기">⛶ 풍경 감상</button>}
   </section>
   <div className="cabin-talk">
-   {story?<CabinDialogue story={story} index={storyIndex} onIndex={setStoryIndex} onClose={closeStory} guest={story.title.startsWith('차장')}/>:<button className="ambient-story" type="button" onClick={()=>openStory(ambient)} aria-label="소녀와 고양이 대화 듣기"><span>✧ 선실에서 나눈 이야기</span><strong>{ambient.lines[0].text}</strong><small>대화 듣기 ›</small></button>}
+   {story?<CabinDialogue story={story} index={storyIndex} onIndex={setStoryIndex} onClose={closeStory} guest={story.title.startsWith('차장')}/>:<button className="ambient-story" type="button" onClick={()=>openStory(ambient)} aria-label="세 친구의 선실 대화 듣기"><span>✧ 세 친구가 나누는 이야기</span><strong>{ambient.lines[0].text}</strong><small>대화 듣기 ›</small></button>}
   </div>
   <section className="body">
    <div className="intro-rule"><span>✦</span><span>{atPlatform?'별 사이의 풍경':phase==='moving'?'다음 정거장으로':'열차가 잠시 멈추는 곳'}</span><span>✦</span></div>
@@ -232,7 +243,7 @@ function handlePet(){
      <button onClick={()=>changePage('crystal')}>◇ 수정 재배실 열기</button>
     </div>}
 
-    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory({title:'창가에서 나눈 이야기',lines:arrivalConversations[scenery][landed?.dialogue??0]})}>✦ 소녀와 고양이 대화 듣기</button></div>
+    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory({title:'창가에서 나눈 이야기',lines:arrivalConversations[scenery][landed?.dialogue??0]})}>✦ 소녀와 고양이 대화 듣기</button><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
     <div className="journey-actions"><button className="journey-button primary" onClick={()=>setPhase('platform')}>✧ 내려서 풍경 보기</button><button className="journey-button secondary" onClick={depart}>다음 항로 출발</button></div>
    </>}
    {atPlatform&&<>
@@ -246,13 +257,14 @@ function handlePet(){
      </button></div>:null}
      {landed?.experienced&&<>
       <p className="encounter-result" role="status">{placeMoments[scenery].actions[landed.action??0].lines[landed.dialogue??0]}</p>
-      <button type="button" className="journey-button secondary" onClick={()=>openStory({title:'이곳에서의 작은 발견',lines:interactionConversations[scenery][landed.action??0][landed.dialogue??0]})}>✦ 둘의 대화 다시 듣기</button>
+      <button type="button" className="journey-button secondary" onClick={()=>openStory({title:'이곳에서의 작은 발견',lines:interactionConversations[scenery][landed.action??0][landed.dialogue??0]})}>✦ 소녀와 고양이의 대화 다시 듣기</button>
       <p className="encounter-footnote">이 여행의 발견을 기억했어요. 다음번에는 다른 순간이 찾아올 수 있어요.</p>
      </>}
     </section>
+    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
     <div className="journey-actions vista-actions"><button className="journey-button primary" onClick={()=>setViewer(true)}>⛶ 가로 풍경 감상</button><button className="journey-button secondary" onClick={()=>setPhase('stopped')}>← 객실로 돌아가기</button></div>
    </>}
-   {phase==='moving'&&<CabinCare game={crystal} note={careNote} onPet={handlePet} onTalk={handleTalk} onListen={listenBond} onShop={()=>changePage('shop')}/>}
+   {phase==='moving'&&<CabinCare game={crystal} note={careNote} onPet={handlePet} onTalk={handleTalk} onCanary={handleCanaryTalk} onCanaryChapter={listenCanaryChapter} onListen={listenBond} onShop={()=>changePage('shop')}/>}
    <p className="stage-footnote">다음 목적지 두 곳과 도착 기후는 항해마다 달라집니다. 같은 행성에서도 새로운 풍경을 만날 수 있어요. 씨앗 보상과 발견 기록은 기기에 저장됩니다.</p>
   </section>
   </>}

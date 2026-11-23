@@ -7,6 +7,7 @@ import type {CrystalGame,TripHours} from './Crystals'
 import {voyageStage,type Stage,type VoyageEventKind} from './VoyageArt'
 import {addCoins,normalizeLife,type LifeState,type Story} from './TrainLife'
 import type {Conversation} from './Dialogue'
+import {canaryEventStories} from './CanaryStories'
 export type {VoyageEventKind} from './VoyageArt'
 
 export type VoyageEvent={id:string;kind:VoyageEventKind;at:number;until:number;stage:Stage}
@@ -105,5 +106,5 @@ const stories:Record<VoyageEventKind,readonly Conversation[]>={
 }
 export function voyageEventStory(e:VoyageEvent):Story{
  const list=stories[e.kind]
- return {title:'창밖 · '+eventKinds[e.kind].name,lines:list[hash(e.id)%list.length]}
+ return {title:'창밖 · '+eventKinds[e.kind].name,lines:hash(e.id)%3===0?canaryEventStories[e.kind].lines:list[hash(e.id)%list.length]}
 }

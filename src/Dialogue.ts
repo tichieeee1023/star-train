@@ -1,6 +1,6 @@
 import type {Scenery} from './routeData'
 
-export type Speaker = 'girl' | 'cat' | 'conductor'
+export type Speaker = 'girl' | 'cat' | 'conductor' | 'canary'
 export type DialogueLine = {speaker:Speaker; text:string}
 export type Conversation = readonly DialogueLine[]
 const D=(...l:[Speaker,string][]):Conversation=>l.map(([speaker,text])=>({speaker,text}))

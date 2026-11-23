@@ -96,7 +96,7 @@ export function StationApproach({scenery, arriving}: {scenery: Scenery; arriving
 
 /** 하차하면 전혀 다른 16:9 풍경으로 전환합니다. 가로등/역명판은 절대 렌더링하지 않습니다. */
 export function StationView({scenery,light,weather,moment=0,momentAction=null}: {scenery: Scenery; light:Light;weather:Weather;moment?:number;momentAction?:MomentAction|null}) {
-  return <div className="station-view" aria-label={`${stationInfo[scenery].name}에서 풍경을 바라보는 소녀와 고양이`}>
+  return <div className="station-view" aria-label={`${stationInfo[scenery].name}에서 풍경을 바라보는 소녀와 고양이, 황금빛 카나리아`}>
     <Vista scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>
   </div>
 }

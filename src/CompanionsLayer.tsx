@@ -6,7 +6,7 @@ import type {Light} from './Palette'
 import type {Weather} from './CanvasPaint'
 
 /**
- * 소녀·고양이는 별도의 투명 Canvas. 정지 시 8fps, 몸짓·간식 연출 중에는 24fps.
+ * 소녀·고양이·카나리아는 별도의 투명 Canvas. 정지 시 8fps, 몸짓·간식 연출 중에는 24fps.
  * 실제 표시 크기를 기준으로 캔버스 해상도를 맞춰 작은 모바일 화면에서 메모리를 절약합니다.
  */
 function useLayer(w:number,h:number,draw:(c:CanvasRenderingContext2D,d:Director,t:number,calm:boolean)=>boolean,sceneKey:string){
@@ -43,12 +43,12 @@ function useLayer(w:number,h:number,draw:(c:CanvasRenderingContext2D,d:Director,
   },[w,h,sceneKey])
   return ref
 }
-/** 서 있는 소녀와 고양이 (960×540). */
+/** 서 있는 소녀·고양이와 공중의 카나리아 (960×540). */
 export function VistaPeople({scenery,light,weather}: {scenery:Scenery;light:Light;weather:Weather}){
   const ref=useLayer(960,540,(c,d,t,calm)=>{const p=d.pose(t);drawVistaPeople(c,p,t,calm,scenery,light,weather);return p.kind!=='idle'},`${scenery}:${light}:${weather}`)
   return <canvas ref={ref} className="vista-people" aria-hidden="true"/>
 }
-/** 객실에 앉아 있는 소녀와 고양이 (960×600). */
+/** 객실에 앉아 있는 소녀·고양이와 공중의 카나리아 (960×600). */
 export function Companions(){
   const ref=useLayer(960,600,(c,d,t,calm)=>{const p=d.pose(t);drawCompanions(c,p,t,calm);return p.kind!=='idle'},'cabin')
   return <canvas ref={ref} className="cabin-companions" aria-hidden="true"/>

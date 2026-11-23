@@ -2,9 +2,12 @@
 import type {Conversation} from './Dialogue'
 import type {Stage} from './VoyageSky'
 import type {TripHours} from './Crystals'
+import {extraBanters,extraStageBanters} from './CabinExtras'
+import {snackExtras} from './SnackExtras'
+import {canaryBanters,canaryStageBanters,canarySnackStories} from './CanaryStories'
 
-export type SnackId='stardust'|'cocoa'|'moonmilk'|'cometcorn'|'nebula'|'icecream'|'moontart'|'galaxybox'
-export type MemoryId='cocoa-night'|'moon-picnic'|'star-banquet'
+export type SnackId='stardust'|'cocoa'|'moonmilk'|'cometcorn'|'nebula'|'icecream'|'moontart'|'galaxybox'|'cloudbread'|'starchai'|'planetpie'|'nightfish'|'cherrymoon'|'nebularice'
+export type MemoryId='cocoa-night'|'moon-picnic'|'star-banquet'|'fish-starlight'|'cherry-moon'|'nebula-supper'
 export type Snack={name:string;symbol:string;price:number;description:string;exclusive?:boolean;memory?:MemoryId}
 export const snacks:Record<SnackId,Snack>={
  stardust:{name:'별가루 쿠키',symbol:'✧',price:4,description:'입에서 별빛처럼 사르르 부서지는 쿠키'},
@@ -14,17 +17,23 @@ export const snacks:Record<SnackId,Snack>={
  nebula:{name:'성운 젤리',symbol:'◈',price:8,description:'흔들면 은은히 빛나는 세 가지 젤리'},
  icecream:{name:'은하수 아이스크림',symbol:'❄',price:10,description:'파란 별빛 시럽을 곁들인 디저트'},
  moontart:{name:'달빛 생선 타르트',symbol:'☽',price:16,description:'차장의 간식 카트에서만 만나는 한정 타르트',exclusive:true,memory:'moon-picnic'},
- galaxybox:{name:'은하 도시락',symbol:'✺',price:23,description:'별 모양 반찬이 담긴 특별한 두 사람분 도시락',exclusive:true,memory:'star-banquet'}
+ galaxybox:{name:'은하 도시락',symbol:'✺',price:23,description:'별 모양 반찬이 담긴 특별한 두 사람분 도시락',exclusive:true,memory:'star-banquet'},
+ cloudbread:{name:'별구름 빵',symbol:'☁',price:6,description:'누르면 다시 부푸는 부드러운 구름빵'},
+ starchai:{name:'자스민 별차',symbol:'❀',price:8,description:'꽃향기가 은은한 따뜻한 우주 차'},
+ planetpie:{name:'고리행성 파이',symbol:'◎',price:11,description:'층층이 쌓인 과일과 설탕 고리'},
+ nightfish:{name:'밤바다 생선 과자',symbol:'♧',price:15,description:'차장이 특별히 챙겨 온 바삭한 생선 모양 과자',exclusive:true,memory:'fish-starlight'},
+ cherrymoon:{name:'체리달 마카롱',symbol:'◐',price:19,description:'달처럼 둥글고 분홍빛 체리향이 나는 마카롱',exclusive:true,memory:'cherry-moon'},
+ nebularice:{name:'성운 주먹밥',symbol:'◉',price:22,description:'별빛 김이 감싼 따뜻한 주먹밥',exclusive:true,memory:'nebula-supper'}
 }
 export const snackIds=Object.keys(snacks) as SnackId[]
 export type ConductorVisit={journeyId:string;appearAt:number;greeted:boolean;offers:SnackId[];purchases:Partial<Record<SnackId,number>>;special?:SnackId}
-/** 소녀·고양이와의 '마음'. 쓰다듬기·말 걸기·간식 나누기로 쌓이고, 단계마다 보상과 새 대화가 열린다. */
-export type BondState={points:number;rewarded:number;unheard:number[];lastPet:number;lastTalk:number;pets:number;talks:number}
-export const newBond=():BondState=>({points:0,rewarded:0,unheard:[],lastPet:0,lastTalk:0,pets:0,talks:0})
+/** 세 동료와 함께 쌓는 '마음'. 쓰다듬기·말 걸기·간식 나누기로 쌓이고, 단계마다 보상과 새 대화가 열린다. */
+export type BondState={points:number;rewarded:number;unheard:number[];lastPet:number;lastTalk:number;lastCanaryTalk:number;pets:number;talks:number;canaryTalks:number}
+export const newBond=():BondState=>({points:0,rewarded:0,unheard:[],lastPet:0,lastTalk:0,lastCanaryTalk:0,pets:0,talks:0,canaryTalks:0})
 export function normalizeBond(value?:Partial<BondState>):BondState{
  if(!value||typeof value!=='object')return newBond()
  const n=(x:unknown)=>typeof x==='number'&&Number.isFinite(x)?Math.max(0,Math.floor(x)):0
- return {points:n(value.points),rewarded:n(value.rewarded),unheard:Array.isArray(value.unheard)?value.unheard.filter(x=>Number.isInteger(x)&&x>0):[],lastPet:n(value.lastPet),lastTalk:n(value.lastTalk),pets:n(value.pets),talks:n(value.talks)}
+ return {points:n(value.points),rewarded:n(value.rewarded),unheard:Array.isArray(value.unheard)?value.unheard.filter(x=>Number.isInteger(x)&&x>0):[],lastPet:n(value.lastPet),lastTalk:n(value.lastTalk),lastCanaryTalk:n(value.lastCanaryTalk),pets:n(value.pets),talks:n(value.talks),canaryTalks:n(value.canaryTalks)}
 }
 export type LifeState={bond:BondState;coins:number;credits:string[];stock:Partial<Record<SnackId,number>>;used:Partial<Record<SnackId,number>>;memories:MemoryId[];daily:string;conductor:ConductorVisit|null;events:string[]}
 export const newLife=():LifeState=>({bond:newBond(),coins:0,credits:[],stock:{},used:{},memories:[],daily:'',conductor:null,events:[]})
@@ -49,10 +58,12 @@ export function journeyCoinReward(hours:TripHours,rare:boolean,firstPlace:boolea
 export function planConductor(life:LifeState,journeyId:string,start:number,end:number,hours:TripHours,random:()=>number=Math.random):LifeState{
  const chance=hours===8?1:hours===3?.8:.55
  if(random()>=chance)return {...life,conductor:null}
- const regular:SnackId[]=['stardust','cocoa','moonmilk','cometcorn','nebula','icecream']
+ const regular:SnackId[]=snackIds.filter(id=>!snacks[id].exclusive)
  const order=[...regular].sort((a,b)=>a.localeCompare(b))
  for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
- const offers:SnackId[]=[...order.slice(0,4),'moontart','galaxybox']
+ const limited=snackIds.filter(id=>snacks[id].exclusive)
+ for(let i=limited.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[limited[i],limited[j]]=[limited[j],limited[i]]}
+ const offers:SnackId[]=[...order.slice(0,4),...limited.slice(0,hours===8?3:2)]
  const special=offers[Math.floor(random()*offers.length)] // 오늘의 추천: 40% 할인
  return {...life,conductor:{journeyId,appearAt:start+(end-start)*(.16+random()*.48),greeted:false,offers,purchases:{},special}}
 }
@@ -64,11 +75,18 @@ export function greetConductor(life:LifeState,journeyId:string|undefined,now:num
  if(!visit||!conductorReady(life,journeyId,now)||visit.greeted)return life
  return {...addCoins(life,`conductor:${journeyId}`,2),conductor:{...visit,greeted:true},events:[...life.events,`conductor:${journeyId}`].slice(-180)}
 }
-export function snackPrice(id:SnackId,from:'shop'|'conductor',special?:SnackId){
- return from==='conductor'?Math.max(1,Math.floor(snacks[id].price*(special===id?.6:.8))):snacks[id].price
+/** 날짜별 상시 상점 추천 간식. 무료 새로고침 재추첨을 피하기 위해 날짜에서 결정합니다. */
+export function dailyDealId(now:number):SnackId{
+ const regular=snackIds.filter(id=>!snacks[id].exclusive)
+ const day=dailyKey(now),number=[...day].reduce((h,ch)=>Math.imul(h,31)+ch.charCodeAt(0)|0,0)
+ return regular[(number>>>0)%regular.length]
+}
+export function snackPrice(id:SnackId,from:'shop'|'conductor',special?:SnackId,now:number=Date.now()){
+ if(from==='conductor')return Math.max(1,Math.floor(snacks[id].price*(special===id?.6:.8)))
+ return Math.max(1,Math.floor(snacks[id].price*(id===dailyDealId(now)?.75:1)))
 }
 export function buySnack(life:LifeState,id:SnackId,from:'shop'|'conductor',journeyId:string|undefined,now:number):LifeState{
- const snack=snacks[id],price=snackPrice(id,from,life.conductor?.special)
+ const snack=snacks[id],price=snackPrice(id,from,life.conductor?.special,now)
  if(life.coins<price)return life
  if(from==='shop'&&snack.exclusive)return life
  if(from==='conductor'){
@@ -87,7 +105,7 @@ export function eatSnack(life:LifeState,id:SnackId):LifeState{
 }
 export type Story={title:string;lines:Conversation;memory?:MemoryId}
 const talk=(...entries:[string,string][]):Conversation=>entries.map(([speaker,text])=>({speaker:speaker==='girl'?'girl':'cat',text}))
-export const snackStories:Record<SnackId,readonly Story[]>={
+export const snackStories:Partial<Record<SnackId,readonly Story[]>>={
  stardust:[{title:'별가루 쿠키',lines:talk(['girl','과자가 정말 별 모양이네. 몇 개쯤 있을까?'],['cat','냐아. 난 하나, 둘…… 셋부터는 입으로 세고 싶어.'],['girl','그건 세는 게 아니라 먹는 거잖아!'],['cat','아는 만큼 먹어야 한다는 말도 있잖아.'])}],
  cocoa:[{title:'따뜻한 밤의 코코아',memory:'cocoa-night',lines:talk(['girl','우주가 이렇게 넓은데 우리 선실은 조그맣네.'],['cat','그래서 코코아 냄새가 금방 퍼지지.'],['girl','별빛이 거품 위에 내려앉았어. 정말 예쁘다.'],['cat','냐아아. 거품은 네가 봐. 나는 코코아를 마실게.'])}],
  moonmilk:[{title:'초승달 우유',lines:talk(['girl','잠이 안 와. 저 별은 얼마나 멀리 있을까?'],['cat','우유를 마시면 덜 궁금해질 거야.'],['girl','그런 과학적 근거는 없거든?'],['cat','냐아. 그럼 적어도 배는 따뜻해지겠지.'])}],
@@ -97,8 +115,8 @@ export const snackStories:Record<SnackId,readonly Story[]>={
  moontart:[{title:'달빛 아래의 소풍',memory:'moon-picnic',lines:talk(['girl','어쩐지 오늘은 달빛이 바로 우리 테이블까지 들어오는 것 같아.'],['cat','냐아. 이 타르트는 나눠 먹는 거래.'],['girl','너 원래 나눠 먹는 거 싫어하지 않았어?'],['cat','좋아하는 사람이랑은 괜찮아. 대신 큰 조각은 내 거.'])}],
  galaxybox:[{title:'별빛 도시락을 여는 밤',memory:'star-banquet',lines:talk(['girl','우와, 안에 별 모양 반찬도 있어! 하나씩 이름 붙여 볼래.'],['cat','냐아아. 다 식기 전에 하는 게 좋겠는데.'],['girl','그럼 저건 혜성, 저건 은하수, 그리고 이건……'],['cat','내 거. 별명도 내 거야.'],['girl','……어쩔 수 없네. 반 나눠 먹자.'],['cat','음. 이렇게 같이 먹는 건 꽤 괜찮네.'])}]
 }
-export const memoryNames:Record<MemoryId,string>={'cocoa-night':'따뜻한 밤의 코코아','moon-picnic':'달빛 아래의 소풍','star-banquet':'별빛 도시락을 여는 밤'}
-export const memorySnack:Record<MemoryId,SnackId>={'cocoa-night':'cocoa','moon-picnic':'moontart','star-banquet':'galaxybox'}
+export const memoryNames:Record<MemoryId,string>={'cocoa-night':'따뜻한 밤의 코코아','moon-picnic':'달빛 아래의 소풍','star-banquet':'별빛 도시락을 여는 밤','fish-starlight':'고양이를 위한 별빛 접시','cherry-moon':'체리빛 달 아래서','nebula-supper':'성운을 한입에 담아'}
+export const memorySnack:Record<MemoryId,SnackId>={'cocoa-night':'cocoa','moon-picnic':'moontart','star-banquet':'galaxybox','fish-starlight':'nightfish','cherry-moon':'cherrymoon','nebula-supper':'nebularice'}
 const generalBanters:Conversation[]=[
  talk(['girl','이렇게 많은 별들 중에 이름이 있는 건 몇 개나 될까?'],['cat','냐아아. 배고픈 고양이 별은 있겠지.'],['girl','네가 이름 붙인 거 아니고?'],['cat','좋은 이름은 누가 먼저 붙여도 좋은 이름이지.']),
  talk(['girl','저 별빛은 우리보다 훨씬 오래 여행했겠지?'],['cat','그럼 저 별빛도 중간에 쉬어 갈 곳이 있었을까?'],['girl','빛은 쉬지 않아.'],['cat','안됐네. 나는 다음 역에서 꼭 쉬어야지.']),
@@ -116,9 +134,13 @@ const stageBanters:Record<Stage,Conversation[]>={
 }
 export function trainBanter(stage:Stage|undefined,elapsedMs:number,seed:number):Story{
  const slot=Math.floor(Math.max(0,elapsedMs)/42000)
- const stageTalk=stage?stageBanters[stage]:[]
- const choose=slot%3===0&&stageTalk?.length?stageTalk:generalBanters
- const index=Math.abs((Math.floor(seed/1000)+slot)*7)%choose.length
+ const stageTalk=stage?[...stageBanters[stage],...extraStageBanters[stage],...canaryStageBanters[stage].map(s=>s.lines)]:[]
+ const stageSelected=slot%3===0&&stageTalk.length>0
+ const choose=stageSelected?stageTalk:[...generalBanters,...extraBanters,...canaryBanters.map(s=>s.lines)]
+ // 3회마다 지역 대사, 나머지는 일상 대사. 기존 곱셈 인덱스의 특정 대사 고정 현상 제거.
+ const offset=Math.floor(Math.abs(seed)/1000)%choose.length
+ const step=stageSelected?Math.floor(slot/3):slot-Math.floor(slot/3)
+ const index=(offset+step)%choose.length
  return {title:stage?'선실에서 · '+({departure:'출항',nebula:'성운',sea:'별의 바다',aurora:'오로라',islands:'떠다니는 섬',approach:'도착 전'} as Record<Stage,string>)[stage]:'선실에서 나눈 대화',lines:choose[index]}
 }
 export const conductorStory:Story={title:'차장님의 방문',lines:[
@@ -132,7 +154,7 @@ export const conductorStory:Story={title:'차장님의 방문',lines:[
 ]}
 
 /** 같은 간식을 여러 번 먹을 때도 같은 대사만 반복하지 않도록 별도의 후속 대화 제공. */
-export const snackFollowups:Record<SnackId,Story>={
+export const snackFollowups:Partial<Record<SnackId,Story>>={
  stardust:{title:'쿠키의 마지막 별',lines:talk(['cat','냐아. 별이 하나밖에 안 남았어.'],['girl','그러게 적당히 먹으랬잖아.'],['cat','아니, 네 거야.'],['girl','……응? 네가 양보도 해?'],['cat','아주 가끔. 오늘은 별이 예쁘니까.'])},
  cocoa:{title:'코코아가 식기 전에',memory:'cocoa-night',lines:talk(['girl','코코아 향이 나니까 여기가 정말 집 같아.'],['cat','우주를 달리는 집이라니, 꽤 좋네.'],['girl','네가 집이라고 부를 정도야?'],['cat','따뜻하고, 먹을 게 있고, 네가 있잖아. 냐아.'])},
  moonmilk:{title:'우유 수염',lines:talk(['girl','잠깐! 입에 하얀 우유 수염 났어.'],['cat','냐아아. 우주고양이의 위엄이야.'],['girl','지금 너무 귀여운걸.'],['cat','그런 말은 간식 하나 더 주면 듣겠어.'])},
@@ -142,7 +164,14 @@ export const snackFollowups:Record<SnackId,Story>={
  moontart:{title:'달빛 타르트의 마지막 한 입',memory:'moon-picnic',lines:talk(['girl','여기 마지막 한 입은 네 거야.'],['cat','냐아. 정말?'],['girl','응. 오늘은 네가 먼저 발견했잖아.'],['cat','……그럼 반 줄게. 네가 아까 달이 예쁘다고 했으니까.'])},
  galaxybox:{title:'여행 도시락의 비밀',memory:'star-banquet',lines:talk(['girl','이번 도시락에는 행성 모양 주먹밥도 있어.'],['cat','내가 가장 큰 행성을 맡을게.'],['girl','너는 왜 항상 제일 큰 것만 골라?'],['cat','냐아. 내가 큰 걸 먹으면 넌 가볍게 여행할 수 있잖아.'],['girl','대단한 배려다, 정말.'])}
 }
-export function snackStory(id:SnackId,used:number):Story{return used%2===0?snackStories[id][0]:snackFollowups[id]}
+/** 이미 보유한 간식 사용 기록만으로 순환: 저장 형식 변경 없이 새 대사를 만납니다. */
+export function snackStory(id:SnackId,used:number):Story{
+ const pool=[...(snackStories[id]??[]),...(snackFollowups[id]?[snackFollowups[id]!]:[]),...(snackExtras[id]??[]),canarySnackStories[id]]
+ if(!pool.length)throw new Error(`Missing snack story: ${id}`)
+ const pick=pool[Math.max(0,Math.floor(used))%pool.length]
+ return used===0&&snacks[id].memory?{...pick,memory:snacks[id].memory}:pick
+}
+export function snackStoryCount(id:SnackId):number{return (snackStories[id]?.length??0)+(snackFollowups[id]?1:0)+(snackExtras[id]?.length??0)+1}
 export const conductorStories:readonly Story[]=[
  conductorStory,
  {title:'차장님의 오늘의 안내',lines:[

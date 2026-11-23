@@ -1,6 +1,8 @@
 import {useState} from 'react'
 import type {Light} from './Palette'
 import {CrystalArt} from './CrystalArt'
+import {CabinDialogue} from './CabinDialogue'
+import {canaryResonanceStory} from './CanaryResonance'
 import {species,speciesIds,rarityNames,variants,variantNames,fertilizers,fertilizerIds,CARE_WINDOW,growthLabels,growthStage,growthPercent,careReadyIn,isReady,crystalVariant,type CrystalGame,type Fertilizer} from './Crystals'
 import type {Scenery} from './routeData'
 import {routeInfo} from './routeData'
@@ -10,8 +12,11 @@ function countdown(ms:number){if(ms<=0)return '지금 가능';const hrs=Math.flo
 const rarityOrder=['common','special','rare','mystic'] as const
 
 export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,onHarvest,onTravel}:Props){
+ const [resonanceVariation,setResonanceVariation]=useState(0)
+ const [resonanceIndex,setResonanceIndex]=useState<number|null>(null)
  const [selected,setSelected]=useState<{id:typeof speciesIds[number];variant:typeof variants[number]}|null>(null)
  const growing=game.current
+ const resonance=canaryResonanceStory(game,now,light,resonanceVariation)
  const pct=growing?growthPercent(growing):0
  const ready=growing?isReady(growing):false
  const uniqueFound=speciesIds.filter(id=>!!game.album[id])
@@ -37,13 +42,21 @@ export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,o
     {ready?<button type="button" className="crystal-primary" onClick={onHarvest}>✦ 완성한 수정 도감에 넣기</button>:<div className="crystal-actions"><button type="button" disabled={careReadyIn(growing,now)>0} onClick={()=>onCare('light')}>✧ 별빛 쬐기</button><button type="button" disabled={careReadyIn(growing,now)>0} onClick={()=>onCare('polish')}>◇ 표면 닦기</button></div>}
    </div>
   </div>:<div className="crystal-empty"><span aria-hidden="true">◇</span><p>수정 씨앗을 하나 심으면 조금씩 자라요.<br/>재배 중에 어떤 빛을 보여주느냐에 따라 완성된 색도 달라집니다.</p>{!owned&&<button className="crystal-primary" onClick={onTravel}>별 사이를 여행해 씨앗 찾기</button>}</div>}
+  <section className="canary-resonance" aria-labelledby="canary-resonance-title">
+   <div className="canary-resonance-head"><span aria-hidden="true">♪</span><div><strong id="canary-resonance-title">카나리아 아가씨의 수정 이야기</strong><small>수정의 종류와 성장, 오늘의 빛에 따라 달라지는 한마디</small></div></div>
+   {resonanceIndex===null?<><p className="canary-resonance-quote">“{resonance.lines[0].text}”</p>
+     <div className="canary-resonance-actions"><button type="button" onClick={()=>setResonanceIndex(0)}>✦ 아가씨와 이야기하기</button>
+     <button type="button" className="canary-alt" onClick={()=>{setResonanceVariation(v=>v+1);setResonanceIndex(null)}}>다른 한마디 ›</button></div></>:
+     <><CabinDialogue story={resonance} index={resonanceIndex} onIndex={setResonanceIndex} onClose={()=>setResonanceIndex(null)}/>
+     <button type="button" className="canary-another" onClick={()=>{setResonanceVariation(v=>v+1);setResonanceIndex(null)}}>♪ 다른 이야기 듣기</button></>}
+  </section>
   <details className="crystal-detail" open={!!owned}>
    <summary>✦ 수정 씨앗 주머니 <span>{owned}개</span></summary>
    {owned?<div className="seed-grid">{game.seeds.map(seed=><div className="seed-item" key={seed.key}>
      <CrystalArt id={seed.id} size="small" growing={{seed,plantedAt:seed.obtainedAt,points:0,accountedSlots:0,lastCareSlot:-1,lastCareAt:0,playerVisits:0,catVisits:0,influence:{normal:3,dawn:1,dusk:1,night:1},colorRoll:0,nutritionCount:0}}/>
      <div><strong>{species[seed.id].name}</strong><small>{rarityNames[species[seed.id].rarity]} · {routeInfo[seed.origin as Scenery].label}</small></div>
      <button disabled={!!growing} onClick={()=>onPlant(seed.key)} type="button">재배</button>
-   </div>)}</div>:<p className="crystal-help">아직 수정 씨앗이 없어요. 일반 방문에서는 확률로, 8시간 항해나 희귀 장소에서는 반드시 발견해요.</p>}
+   </div>)}</div>:<p className="crystal-help">아직 수정 씨앗이 없어요. 1시간 항해 75% · 3시간 항해 90% · 8시간과 희귀 장소는 확정! 한 번 못 찾으면 다음 항해에서 반드시 발견해요.</p>}
   </details>
   <details className="crystal-detail">
    <summary>✧ 별빛 영양액 <span>{fertilizerIds.reduce((sum,id)=>sum+game.stock[id],0)}개</span></summary>

@@ -1,10 +1,11 @@
 /**
- * 선실의 소녀와 고양이를 Canvas로 그립니다 (v2.7).
+ * 선실의 소녀·고양이·카나리아를 Canvas로 그립니다 (v2.7).
  * 자세를 코드로 보간하기 때문에 '간식 먹기', '고양이가 깨서 소녀를 바라보기' 같은 동작을
  * 장면별 그림 없이 만들 수 있습니다. 좌표계는 galaxy-cabin.svg 의 viewBox(960x600)와 같습니다.
  */
 import {TAU,clamp,lerp,smooth,sparkle,mix,rgba,softEllipse} from './PaintKit'
 import {palettes,type Light,type Palette} from './Palette'
+import {drawCanary,drawCanaryBack,isCanarySinging} from './Canary'
 import type {Scenery} from './routeData'
 import type {Weather} from './CanvasPaint'
 import type {SnackId} from './TrainLife'
@@ -88,7 +89,7 @@ function limb(c:Ctx,pts:[number,number][],radii:number[]){
 
 /* ───────── 간식 ───────── */
 type SnackShape='cookie'|'cup'|'milk'|'corn'|'jelly'|'cone'|'box'|'fish'
-const shapeOf:Record<SnackId,SnackShape>={stardust:'cookie',cocoa:'cup',moonmilk:'milk',cometcorn:'corn',nebula:'jelly',icecream:'cone',moontart:'fish',galaxybox:'box'}
+const shapeOf:Record<SnackId,SnackShape>={stardust:'cookie',cocoa:'cup',moonmilk:'milk',cometcorn:'corn',nebula:'jelly',icecream:'cone',moontart:'fish',galaxybox:'box',cloudbread:'cookie',starchai:'cup',planetpie:'cookie',nightfish:'fish',cherrymoon:'cookie',nebularice:'box'}
 function snackItem(c:Ctx,shape:SnackShape,x:number,y:number,s:number,t:number){
   if(s<=.04)return
   c.save();c.translate(x,y);c.scale(s,s)
@@ -264,8 +265,15 @@ function drawSparkles(c:Ctx,p:Pose){
 /** 한 프레임을 그린다. calm=true 이면 숨쉬기·흔들림 없이 정지 상태로 그린다(모션 줄이기). */
 export function drawCompanions(c:Ctx,p:Pose,t:number,calm=false){
   drawGirl(c,p,t,calm)
-  drawCat(c,p,t,calm)
+  const singing=isCanarySinging(t,calm)
+  // 아가씨의 노래에 단잠을 방해받는 고양이. 다른 간식/쓰다듬기 연출을 방해하지 않습니다.
+  const catPose=p.kind==='idle'&&singing
+    ?{...p,catEye:.22,catEar:Math.sin(t*13)*.32}
+    :p
+  drawCat(c,catPose,t,calm)
   drawProps(c,p,t,calm)
+  // 소녀 옆에서 작게 날갯짓하는 아가씨: 기존 디자인 대비 약 절반 크기.
+  drawCanary(c,353,352,.62,t,calm,{light:'#ffe3b6'})
   drawSparkles(c,p)
 }
 
@@ -446,6 +454,12 @@ export function drawVistaPeople(
   // 금빛 별 머리핀의 광택은 밤에도 흐리지 않되, 크기가 과하지 않게 유지합니다.
   // 실제 머리핀 도형은 vistaGirl() 안에서 그리며 여기서는 추가 발광만 얹습니다.
   softEllipse(c,243,325,9,9,'#ffdeb3',light==='night'?.075:.045)
+
+  // 전망대에서는 소녀·고양이와 같은 방향으로 풍경을 바라보는 뒷모습.
+  // 소녀의 왼쪽 어깨 옆, 살짝 떨어진 공중에 배치해 별 머리핀과 겹치지 않습니다.
+  // 선실의 카나리아 위치와 앞모습은 그대로 유지합니다.
+  const birdLight=weather==='aurora'?'#acf3dd':cold?'#d8efff':light==='night'?'#e6caff':'#ffe3b6'
+  drawCanaryBack(c,132,379,.44,t,calm,{light:birdLight})
 
   // 바닥의 약한 반사광, 부유 입자, 인물 앞을 지나가는 날씨.
   softEllipse(c,253,466,111,13,glowColor,light==='night'?.055:.075)

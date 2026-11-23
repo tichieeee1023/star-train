@@ -528,3 +528,21 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.voyage-sky-alert{animation:none}.voyage-event-button{transition:none}}
 
 .voyage-event-feedback{margin:9px 0;padding:8px 10px;border-radius:9px;background:#81749c5e;color:#ffe4b4;font-size:11px;line-height:1.55}
+
+/* v2.9.9 — 세 번째 고정 동료: 카나리아 아가씨의 생활 이야기와 수정 공명 */
+.care-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+.canary-log summary{color:#f2d49b}
+.dialogue-line.canary .dialogue-speaker{color:#f9d982}
+.canary-resonance{margin:14px 0 19px;padding:14px 14px 12px;border:1px solid #e3ce906d;border-radius:16px;background:linear-gradient(135deg,#3b3e61,#2c344f);color:#fff0df;box-shadow:inset 0 0 18px #f3d89a0d}
+.canary-resonance-head{display:flex;align-items:center;gap:9px}
+.canary-resonance-head>span{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:50%;background:#d7a94d22;border:1px solid #ecc98066;font-size:22px;color:#f7d87e}
+.canary-resonance-head>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.canary-resonance-head strong{font-size:13px;color:#ffe6b2}
+.canary-resonance-head small{font-size:10px;line-height:1.5;color:#cbd0e0;word-break:keep-all}
+.canary-resonance-quote{font-size:13px;line-height:1.8;margin:12px 1px;color:#fff0df;word-break:keep-all}
+.canary-resonance-actions{display:flex;flex-wrap:wrap;gap:7px}
+.canary-resonance-actions button,.canary-another{border:1px solid #e4c99785;border-radius:10px;background:#806d7e;color:#fff5e4;padding:9px 11px;font-size:12px;min-height:38px}
+.canary-resonance-actions button.canary-alt{background:#ffffff0d}
+.canary-resonance .cabin-story{position:relative;inset:auto;left:auto;right:auto;bottom:auto;z-index:auto;max-height:none;box-shadow:none;margin:12px 0 9px;padding:10px;width:100%}
+.canary-another{display:block;width:100%;margin-top:7px;background:#ffffff12}
+@media(max-width:370px){.canary-resonance{padding:12px 10px}.canary-resonance-actions button{flex:1}.care-actions{gap:7px}}

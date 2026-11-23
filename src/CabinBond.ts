@@ -5,6 +5,7 @@ import type {Conversation} from './Dialogue'
 
 export const PET_COOLDOWN=15*60*1000
 export const TALK_COOLDOWN=30*60*1000
+export const CANARY_TALK_COOLDOWN=20*60*1000
 export const bondThresholds=[6,16,30,48,70,96,126,160]
 export const maxBondLevel=bondThresholds.length
 export const levelOf=(points:number)=>bondThresholds.filter(t=>points>=t).length
@@ -44,6 +45,12 @@ export function talkGirl(game:CrystalGame,now:number):BondResult{
  const life=normalizeLife(game.life),b=life.bond,wait=waitLeft(b.lastTalk,TALK_COOLDOWN,now)
  if(wait>0)return {game,ok:false,message:`소녀가 방금 이야기를 마쳤어요. ${fmtWait(wait)} 뒤에 다시 말을 걸어 봐요.`}
  return {game:{...game,life:{...life,bond:{...b,points:b.points+2,lastTalk:now,talks:b.talks+1}}},ok:true,message:'',talkIndex:b.talks}
+}
+/** 가장 언니인 카나리아 아가씨와 대화하기. 기존 마음 점수·저장 키를 그대로 공유한다. */
+export function talkCanary(game:CrystalGame,now:number):BondResult{
+ const life=normalizeLife(game.life),b=life.bond,wait=waitLeft(b.lastCanaryTalk,CANARY_TALK_COOLDOWN,now)
+ if(wait>0)return {game,ok:false,message:`아가씨가 방금 이야기를 마쳤어요. ${fmtWait(wait)} 뒤에 다시 말을 걸어 봐요.`}
+ return {game:{...game,life:{...life,bond:{...b,points:b.points+2,lastCanaryTalk:now,canaryTalks:b.canaryTalks+1}}},ok:true,message:'',talkIndex:b.canaryTalks}
 }
 /** 단계가 오른 만큼 보상을 한 번씩만 지급하고, 새 마음 대화를 열어 둔다. */
 export function grantBondRewards(game:CrystalGame,now:number,random:()=>number=Math.random):{game:CrystalGame;levels:number[]}{

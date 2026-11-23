@@ -3,10 +3,11 @@ import type {MemoryId} from './TrainLife'
 const stars=Array.from({length:78},(_,i)=>({x:18+(i*139+((i*i*31)%333))%930,y:18+(i*67+((i*i*7)%157))%420,size:i%9===0?2.4:.6+(i%4)*.32,alpha:.22+(i%6)*.12}))
 /** 보상으로 열리는 선실 내 특별 CG. 외부 이미지/네트워크 없이 열리는 자체 SVG 장면. */
 export function SpecialCG({scene}:{scene:MemoryId}){
- const cocoa=scene==='cocoa-night',moon=scene==='moon-picnic',banquet=scene==='star-banquet'
- return <svg className="special-cg" viewBox="0 0 960 600" role="img" aria-label={cocoa?'코코아 향이 감도는 별빛 선실에서 소녀와 하얀 고양이':moon?'커다란 달 아래 타르트를 나누는 소녀와 고양이':'은하 도시락을 나누며 창밖으로 별을 바라보는 두 친구'} xmlns="http://www.w3.org/2000/svg">
+ const cocoa=scene==='cocoa-night',moon=scene==='moon-picnic',fish=scene==='fish-starlight',cherry=scene==='cherry-moon',rice=scene==='nebula-supper'
+ const sky=fish?['#10172e','#334a78','#6f9eba']:cherry?['#311b43','#936482','#e1a1b0']:rice?['#101f42','#41748c','#87aca5']:cocoa?['#101b3a','#435b89','#bc8caa']:moon?['#1a2554','#776c9f','#dca7b2']:['#0c203b','#416d83','#97b2aa']
+ return <svg className="special-cg" viewBox="0 0 960 600" role="img" aria-label={fish?'반짝이는 생선 과자와 우주고양이의 작은 잔치':cherry?'체리빛 달 아래서 마카롱을 나누는 소녀와 고양이':rice?'성운 주먹밥을 함께 먹는 두 친구':cocoa?'코코아 향이 감도는 별빛 선실에서 소녀와 하얀 고양이':moon?'커다란 달 아래 타르트를 나누는 소녀와 고양이':'은하 도시락을 나누며 창밖으로 별을 바라보는 두 친구'} xmlns="http://www.w3.org/2000/svg">
   <defs>
-   <linearGradient id="cg-sky" x1=".1" y1="0" x2=".9" y2="1"><stop stopColor={cocoa?'#101b3a':moon?'#1a2554':'#0c203b'}/><stop offset=".5" stopColor={cocoa?'#435b89':moon?'#776c9f':'#416d83'}/><stop offset="1" stopColor={cocoa?'#bc8caa':moon?'#dca7b2':'#97b2aa'}/></linearGradient>
+   <linearGradient id="cg-sky" x1=".1" y1="0" x2=".9" y2="1"><stop stopColor={sky[0]}/><stop offset=".5" stopColor={sky[1]}/><stop offset="1" stopColor={sky[2]}/></linearGradient>
    <radialGradient id="cg-moon"><stop stopColor="#fffaf3"/><stop offset=".45" stopColor="#fff0de"/><stop offset="1" stopColor="#b7c9e9"/></radialGradient>
    <linearGradient id="cg-wall" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#364661"/><stop offset="1" stopColor="#222944"/></linearGradient>
    <linearGradient id="cg-coat" x1="0" y1="0" x2=".2" y2="1"><stop stopColor="#263b68"/><stop offset="1" stopColor="#8094bd"/></linearGradient>
@@ -21,7 +22,7 @@ export function SpecialCG({scene}:{scene:MemoryId}){
   {stars.map((s,i)=><circle key={i} cx={s.x} cy={s.y} r={s.size} fill="#fff4ef" opacity={s.alpha}/>)}
   <path d="M69 383 Q230 275 443 374 T891 332 L891 445 H69Z" fill="#9980a9" opacity=".23"/>
   <path d="M69 405 Q240 342 425 409 T891 384 V445 H69Z" fill="#a9acdc" opacity=".29"/>
-  {moon?<><circle cx="673" cy="194" r="101" fill="url(#cg-moon)"/><ellipse cx="673" cy="194" rx="155" ry="46" fill="none" stroke="#eddfec" strokeOpacity=".6" strokeWidth="8" transform="rotate(-26 673 194)"/><ellipse cx="655" cy="169" rx="43" ry="13" fill="#fff7eb" opacity=".24"/></>:<><circle cx="724" cy="171" r="78" fill="url(#cg-moon)" opacity=".92"/><ellipse cx="724" cy="171" rx="132" ry="31" fill="none" stroke="#f6ebeb" strokeOpacity=".46" strokeWidth="9" transform="rotate(-27 724 171)"/></>}
+  {moon||cherry?<><circle cx="673" cy="194" r="101" fill="url(#cg-moon)"/><ellipse cx="673" cy="194" rx="155" ry="46" fill="none" stroke="#eddfec" strokeOpacity=".6" strokeWidth="8" transform="rotate(-26 673 194)"/><ellipse cx="655" cy="169" rx="43" ry="13" fill="#fff7eb" opacity=".24"/></>:<><circle cx="724" cy="171" r="78" fill="url(#cg-moon)" opacity=".92"/><ellipse cx="724" cy="171" rx="132" ry="31" fill="none" stroke="#f6ebeb" strokeOpacity=".46" strokeWidth="9" transform="rotate(-27 724 171)"/></>}
   <path d="M50 460 H910 L960 600 H0 Z" fill="#2f3652"/><path d="M0 533 H960" stroke="#84758d" strokeOpacity=".36" strokeWidth="3"/>
   <rect x="85" y="456" width="790" height="13" rx="6" fill="#d1ac9f"/>
   {/* girl's galaxy dress and hair, from slightly behind / side */}
@@ -48,6 +49,17 @@ export function SpecialCG({scene}:{scene:MemoryId}){
    <path d="M498 442 Q573 457 659 440" stroke="#b37b97" strokeWidth="5" fill="none"/>
    {[[521,432],[557,425],[588,427],[628,437]].map(([x,y],i)=><g key={i}><path d={`M${x} ${y-10}l5 8 9 -4 -1 11 -13 -1z`} fill="#f7e8bd"/><circle cx={x+5} cy={y-12} r="4" fill="#e6a6b2"/></g>)}
    <ellipse cx="743" cy="463" rx="36" ry="10" fill="#efdee3"/><path d="M722 448 L755 448 L746 461 L727 461Z" fill="#caadc5"/>
+  </>:fish?<>
+   <ellipse cx="584" cy="456" rx="122" ry="20" fill="#ddd4df" stroke="#f5e7da" strokeWidth="4"/>
+   {[[513,439],[562,437],[613,440],[665,439]].map(([x,y],i)=><g key={i} transform={`translate(${x} ${y})`}><path d="M-17 0 Q-8 -13 7 -5 L18 -15 V13 L7 6 Q-8 14 -17 0Z" fill={i%2?'#d3b2aa':'#eed8a7'} stroke="#fff0d8" strokeWidth="2"/><circle cx="-6" cy="-1" r="2" fill="#8e6882"/></g>)}
+   <path d="M478 402 Q561 367 671 394" fill="none" stroke="#cad7fc" strokeOpacity=".7" strokeWidth="2" strokeDasharray="3 15"/>
+  </>:cherry?<>
+   <ellipse cx="595" cy="458" rx="125" ry="20" fill="#f2d6de"/>
+   {[[540,437],[594,430],[653,438]].map(([x,y],i)=><g key={i}><ellipse cx={x} cy={y+8} rx="29" ry="11" fill="#bb779b"/><ellipse cx={x} cy={y} rx="29" ry="15" fill={i%2?'#f4bfd1':'#f1a9bd'} stroke="#fff0e5" strokeWidth="2"/><ellipse cx={x} cy={y+3} rx="25" ry="6" fill="#fff1d8"/><circle cx={x+9} cy={y-10} r="5" fill="#a53d75"/></g>)}
+   <path d="M500 413 Q594 379 696 417" fill="none" stroke="#ffdee5" strokeWidth="3" strokeDasharray="2 12"/>
+  </>:rice?<>
+   <rect x="463" y="410" width="265" height="62" rx="13" fill="#c1a1ad" stroke="#f3ddcd" strokeWidth="5"/>
+   {[[515,437],[593,435],[670,440]].map(([x,y],i)=><g key={i}><path d={`M${x-27} ${y+12}Q${x-33} ${y-20} ${x} ${y-20}Q${x+34} ${y-16} ${x+27} ${y+12}Z`} fill={['#bad9d3','#e1c5db','#b7c1e5'][i]} stroke="#f6eddf" strokeWidth="2"/><rect x={x-17} y={y+4} width="34" height="12" rx="3" fill="#50667a"/><circle cx={x+7} cy={y-8} r="4" fill="#fff1d7"/></g>)}
   </>:<>
    <path d="M450 445 Q591 403 783 441 L769 474 H455Z" fill="#d1b5b7" stroke="#f5dfcd" strokeWidth="4"/>
    {[[492,442],[545,433],[601,428],[656,435],[715,443]].map(([x,y],i)=><g key={i}><rect x={x-21} y={y-9} width="44" height="20" rx="5" fill={['#d8b88d','#a7baba','#9ba4cf','#d7aba1','#dfcea8'][i]}/><path d={`M${x} ${y-8}l4 6 8 0 -6 5 1 8 -7 -5 -7 5 1 -8 -6 -5 8 0Z`} fill="#f9eed1"/></g>)}
