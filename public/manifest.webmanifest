@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "은하 열차 일지",
+  "short_name": "은하 열차",
+  "description": "소녀와 우주고양이의 느긋한 별빛 항해. 수정 씨앗을 키우고 우주의 풍경을 기록해요.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#202a42",
+  "theme_color": "#202a42",
+  "lang": "ko",
+  "icons": [
+    {"src": "/icons/star-train.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+    {"src": "/icons/star-train-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/star-train-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/star-train-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

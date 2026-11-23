@@ -367,3 +367,59 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .album-star-map summary span{float:right;color:#b9c1cc}
 .album-sky-map{width:100%;height:auto;display:block;margin-top:8px}
 .album-star-map p{font-size:10px;color:#c2c3d1;text-align:center;margin:6px 0}
+
+/* v2.4: original Star Voyage's compact planet cards / route modal / mobile app navigation. */
+.app{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+.app-header{min-height:62px;padding:0 15px;gap:8px}
+.header-tools{display:flex;align-items:center;gap:7px;min-width:0}
+.header-tools>.top-label{font-size:10px;padding:5px 8px}
+.install-open{display:inline-flex;gap:4px;align-items:center;justify-content:center;padding:7px 9px;border-radius:17px;border:1px solid #f0d4ad7c;background:#685d7c;color:#fff2e3;white-space:nowrap;font-size:11px;min-height:35px}
+.install-open span:first-child{font-size:16px;line-height:1}
+.app .body{padding:16px 17px 20px}
+.intro-rule{margin-bottom:5px}
+.route-heading-compact{margin:12px 0 10px;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.route-heading-compact h3{margin:0;font-size:16px;color:#f5e3db;font-family:Georgia,'Nanum Myeongjo',serif}
+.route-heading-compact>span{font-size:11px;color:#bec6d5}
+.route-cards{display:grid;gap:9px}
+.route-card{display:flex;align-items:center;width:100%;min-height:70px;gap:12px;padding:10px 13px;text-align:left;border-radius:13px;border:1px solid #aab4ca68;background:linear-gradient(115deg,#36415b,#2b3651);color:#f4e6e9;transition:background .15s ease,transform .15s ease}
+.route-card:hover{background:linear-gradient(115deg,#4b526d,#35415f)}
+.route-card:active{transform:scale(.99)}
+.route-symbol{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;color:#ffebbf;background:radial-gradient(circle at 32% 29%,#8aa3bd,#6e6795 65%,#3a476a);box-shadow:0 0 12px #b9a9da40;font-size:25px}
+.route-card-copy{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.route-card-copy strong{font-size:14px}
+.route-card-copy small{font-size:11px;color:#c4c6d6;line-height:1.4;word-break:keep-all}
+.route-arrow{font-size:24px;color:#e9c7b6;margin-left:auto}
+.route-hint{font-size:11px;line-height:1.7;word-break:keep-all;color:#c6c5d6;margin:12px 2px 6px}
+.rare-discovery{margin:12px 0 0;padding:12px;border:1px solid #dfc9a07c;border-radius:14px;background:#8a75502c}
+.rare-discovery strong{display:block;font-size:12px;margin-bottom:8px;color:#f2dfbb}
+.rare-discovery .route-card{margin:0}
+.route-dialog,.install-dialog{width:min(94vw,450px);max-height:88dvh;overflow-y:auto;background:linear-gradient(150deg,#2d3954,#252e49);color:#f5e8e3;border:1px solid #e3cfcb94;border-radius:19px;padding:20px;box-shadow:0 20px 70px #03091ccc}
+.route-dialog::backdrop,.install-dialog::backdrop{background:#070e23d9;backdrop-filter:blur(4px)}
+.route-dialog-top,.install-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:9px;color:#e3c39d;font-size:12px}
+.route-dialog-top button,.install-dialog-head button{width:36px;height:36px;display:grid;place-items:center;border:1px solid #c4b6ce61;color:#f9e9df;background:#475471;border-radius:50%;font-size:20px}
+.route-dialog-preview{display:flex;gap:15px;align-items:center;margin:15px 0 17px}
+.route-orb{width:78px;height:78px;display:grid;place-items:center;flex:0 0 78px;border-radius:50%;background:radial-gradient(circle at 33% 27%,#d8cdde,#6c84a6 48%,#443d6f 80%);font-size:38px;box-shadow:0 0 25px #a4b6db55}
+.route-dialog-preview h2{font-size:20px;color:#ffebdc;margin:0 0 7px;font-family:Georgia,'Nanum Myeongjo',serif}
+.route-dialog-preview p{font-size:12px;color:#d2cdda;line-height:1.65;margin:0;word-break:keep-all}
+.route-dialog-question{font-size:13px;margin:10px 0 10px;color:#f0e1d2}
+.route-dialog .travel-lengths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0}
+.route-dialog .travel-lengths button{min-width:0;padding:12px 3px;min-height:66px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:5px;background:#303b55}
+.route-dialog .travel-lengths button b{font-size:14px}
+.route-dialog .travel-lengths button small{font-size:10px;color:#d4c5d4}
+.route-dialog .travel-lengths button.selected{background:#6f607d;border-color:#edd7b2}
+.route-dialog-note{color:#c0bfd0;font-size:11px;line-height:1.7;margin:13px 0 17px;word-break:keep-all}
+.route-depart,.install-done{display:block;width:100%;padding:13px 10px;min-height:47px;border-radius:12px;background:#806c8d;color:#fff2de;border:1px solid #e9c9b6a1;font-size:13px}
+.install-dialog h2{font:600 22px Georgia,'Nanum Myeongjo',serif;margin:12px 0;color:#f5e1c9}
+.install-dialog p{font-size:13px;line-height:1.75;word-break:keep-all;color:#e2d7e0}
+.install-dialog .install-steps{border:1px solid #e0cfbf65;padding:13px;background:#ffffff0c;border-radius:11px;color:#f5e1d9}
+.install-dialog .install-help{font-size:11px;color:#bfc5d6}
+/* Main destinations stay accessible after scrolling several screens. */
+.app .bottom-nav{position:fixed;z-index:60;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:540px;margin:0;background:#19253ceF;backdrop-filter:blur(14px);border-top:1px solid #ddc2c15a;min-height:calc(60px + env(safe-area-inset-bottom,0px));padding:2px 5px env(safe-area-inset-bottom,0px);box-shadow:0 -8px 32px #11152a55}
+.app .bottom-nav button{min-height:59px;display:flex;flex-direction:column;gap:1px;font-size:12px;padding:4px 5px;white-space:nowrap}
+.app .bottom-nav button span{font-size:21px;line-height:1.25}
+.app .bottom-nav button small{font-size:10px;line-height:1}
+.app .bottom-nav button.active-tab{background:#ffe4b015;border-radius:13px}
+.app .bottom-nav button:active{background:#ffffff0d}
+:where(button,summary):focus-visible{outline:2px solid #ffe4b4;outline-offset:2px}
+@media(max-width:375px){.app-header{padding:0 10px}.brand{font-size:16px;gap:4px}.brand-spark{font-size:25px}.top-label{display:none}.app .body{padding:13px 12px 18px}.route-card{padding:9px 10px}.route-dialog,.install-dialog{padding:15px}.route-dialog-preview h2{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.route-card{transition:none}}

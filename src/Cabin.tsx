@@ -2,13 +2,12 @@ import type {Light} from './Palette'
 import type {Weather} from './CanvasPaint'
 import {Sky, type Scenery} from './Sky'
 import {StationApproach} from './Station'
+import {VoyageSky,type TravelWindow} from './VoyageSky'
 
-/** 객실과 캐릭터는 그대로. 접근 중일 때 창밖에 플랫폼 실루엣만 겹칩니다. */
-export function Cabin({scenery, state, light='dusk',weather='clear'}: {scenery: Scenery; state: 'moving'|'arriving'|'stopped';light?:Light;weather?:Weather}) {
-  return <div className={`cabin${state==='stopped'?' scene-still':''}`} role="img" aria-label={scenery==='city'
-    ? '은하 전망 열차에서 바라보는 유리도시의 불빛. 소녀는 앉아 있고 고양이는 꼬리만 움직입니다.'
-    : '은하 전망 열차 창밖의 성운과 별, 고리행성. 소녀는 움직이지 않고 앉아 있습니다.'}>
-    <Sky scenery={scenery} light={light} weather={weather} stopped={state==='stopped'}/>
+/** 이동 중: 전용 우주 Canvas. 도착 후: 목적지 Canvas. 객실/캐릭터 SVG는 보존. */
+export function Cabin({scenery, state, light='dusk',weather='clear',journey=null}: {scenery: Scenery; state: 'moving'|'arriving'|'stopped';light?:Light;weather?:Weather;journey?:TravelWindow|null}) {
+  return <div className={`cabin${state==='stopped'?' scene-still':''}`} role="img" aria-label={state==='moving'?'우주를 달리는 은하 열차 선실. 창밖으로 별과 성운이 천천히 지나갑니다.':'도착한 행성의 풍경을 바라보는 은하 열차 선실.'}>
+    {state==='moving'?<VoyageSky journey={journey}/>:<Sky scenery={scenery} light={light} weather={weather} stopped={state==='stopped'}/>}
     {state!=='moving'&&<StationApproach scenery={scenery} arriving={state==='arriving'}/>}
     <img className="cabin-interior" src="/art/galaxy-cabin.svg" alt="" draggable={false}/>
   </div>
