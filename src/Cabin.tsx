@@ -3,6 +3,7 @@ import type {Weather} from './CanvasPaint'
 import {Sky, type Scenery} from './Sky'
 import {StationApproach} from './Station'
 import {VoyageSky,type TravelWindow} from './VoyageSky'
+import {Companions} from './CompanionsLayer'
 
 /** 이동 중: 전용 우주 Canvas. 도착 후: 목적지 Canvas. 객실/캐릭터 SVG는 보존. */
 export function Cabin({scenery, state, light='dusk',weather='clear',journey=null}: {scenery: Scenery; state: 'moving'|'arriving'|'stopped';light?:Light;weather?:Weather;journey?:TravelWindow|null}) {
@@ -10,5 +11,6 @@ export function Cabin({scenery, state, light='dusk',weather='clear',journey=null
     {state==='moving'?<VoyageSky journey={journey}/>:<Sky scenery={scenery} light={light} weather={weather} stopped={state==='stopped'}/>}
     {state!=='moving'&&<StationApproach scenery={scenery} arriving={state==='arriving'}/>}
     <img className="cabin-interior" src="/art/galaxy-cabin.svg" alt="" draggable={false}/>
+    <Companions/>
   </div>
 }

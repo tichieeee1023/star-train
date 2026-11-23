@@ -1,20 +1,52 @@
-# v2.3 작업 로그
+# v2.5 중간 체크포인트
 
-- 원본 참조: 별빛 항해일지 `src/Cabin.tsx` (`voyageStage`, `stageNames`, 창밖 항해 상태), `src/main.tsx` (`sailing?'space':destination`, 실제 시각과 도착 화면 전환).
-- 문제: v2.2.1은 항로 선택 즉시 해당 목적지 지형을 `Sky`에 전달하여 출발 전에도 행성 풍경이 보였음.
-- 변경: 객실 Canvas 항해 화면을 `VoyageSky`로 분리. 현재 선택된 목적지는 항해 표시용 별도의 우주 엔진에만 ‘접근 단계 행성 색상 힌트’로 전달.
-- 움직이는 별은 Canvas 시차 레이어를 사용하며 24fps 상한, 백그라운드 정지, 모션 감소 설정을 존중.
-- 1h: departure,nebula,sea,approach / 3h: departure,nebula,sea,aurora,approach / 8h: departure,nebula,islands,sea,aurora,approach.
-- 도착 후 3.3초 역 접근 연출; 정산된 여정의 기존 저장 상태를 복원하면 즉시 stopped.
-- 테스트: TS 구문 18개 / 단계 15개 / 브라우저 5구간 + 모바일 + 실제 움직임 이미지 차이.
-- 미해결: 로컬 npm ci 내부 오류로 정식 빌드 미검증.
-- 원격 배포: 보류.
+- v2.4.1 프로젝트를 기준으로 작업. v2.4.1의 PWA, Canvas 우주 항해, v2.2 도감, 수정 8종 유지.
+- 기존 사용자 저장 키 변경 없음. 기존 데이터는 보존하고 `life` 필드만 추가.
+- 수정 코인 획득: 출항 여행 고유 ID, 발견 고유 ID, 수정 씨앗 고유 ID, 날짜 키를 이용한 중복 지급 방지.
+- 항해 시작 시 차장의 방문 시간 및 카트 재고 6개 확정. 새로고침으로 재추첨하지 않음.
+- 대화 UI는 어린왕자 `SceneDialogue.tsx`의 1줄·이전·다음·닫기 구조를 원본으로 참고.
+- 기존 v1.8의 도착/지역 대사는 유지하되 하단 누적형 `DialogueCard`를 사용하지 않고 선실 위 `CabinDialogue` 표시.
+- 간식·CG는 모든 장면 자체 SVG 렌더링으로 포함, 외부 이미지 요청 필요 없음.
+- Playwright로 대화 패널, 8종 상점, CG 3종의 정적 렌더링 확인. React 전체 앱 통합 빌드는 환경 제약으로 검증하지 못함.
+- 코드·저장 테스트는 통과; 아직 배포하지 않음.
 
-## v2.4 — PWA + 《별빛 항해일지》 UI/UX 계승 (2026-11-23)
-- 원본 확인: `work-starvoyage-origin/index.html`, `public/manifest.webmanifest`, `public/sw.js`, `src/main.tsx`, `src/style.css`, `src/PlantCare.tsx`. 목적지 카드→출발 확인 모달, 1/3/8시간 선택, 3탭 네비게이션, 접기형 상세 UI, 화면 전환 시 스크롤 복귀, PWA 오프라인 앱 셸 참조.
-- 은하 열차 `index.html`: PWA 및 아이콘, iOS meta, viewport-fit=cover, theme color.
-- `public/manifest.webmanifest`, `public/sw.js`, `public/icons/*`, `public/icons/apple-touch-icon.png`: 완전히 새로 추가. 기존 localStorage 건드리지 않음. Vite 해시 에셋은 cache-first, HTML navigations는 network-first, offline fallback.
-- `src/InstallApp.tsx`: 설치 프롬프트/기기별 설치 도움말. 서비스 워커 프로덕션 등록.
-- `src/main.tsx`: 두 목적지 카드 선택 후 모달에서 1/3/8시간 고르는 흐름. 시간과 탭 기억, 탭 이동 시 상단으로. 목적지 선택만으로 창밖이 변하지 않는 v2.3 Canvas 유지.
-- `src/style.css`: 고정 하단 3탭, PWA 설치 버튼, 출항 모달, 작은 화면 카드/여백/안전 영역.
-- 검증: 19개 TS/TSX 구문 변환 0 오류, 서비스워커 `node --check`, manifest JSON·아이콘 파일·사이즈 통과; 360px/390px 뷰포트 정적 UI 미리보기 가로 넘침 0, 카드 클릭 시 모달 확인. **정식 타입 검사/Vite 빌드는 npm 의존성 폴더가 비어 있어 실패**, 해당 환경 npm 설치 요청은 시간 초과. Playwright 로컬 HTTP 접속은 관리자에 의해 차단되어 실제 SW/오프라인 점검 미수행. **배포하지 않음**.
+# v2.6
+
+- 대화창을 선실 그림 아래로 이동, 선실 돌보기(마음 시스템) 추가, 첫 항해 씨앗 보장(+연속 실패 보호).
+- 새 파일: CabinBond.ts(로직), CabinCare.tsx(화면). TrainLife.ts의 LifeState에 `bond` 추가.
+
+
+## v2.7 — 그래픽 업그레이드 (선실 창밖 · 도착 풍경 · 소녀와 고양이)
+- `PaintKit.ts` 신설: 노이즈 구름 질감, 입체 행성(명암·고리·대기광), 원근 지형 층, 반짝임 등 공용 붓 도구.
+- `VoyageArt.ts` 분리: 항해 창밖을 React 없이 그리는 순수 Canvas 모듈. 성운 구름·은하수 띠, 별의 바다와 고래, 떠다니는 섬(별가루 폭포), 광선형 오로라, 입체 행성 접근 연출.
+- `CanvasPaint.ts`: 도착 풍경 6종을 층층이 쌓은 원근 지형으로 재작성. 정적 레이어는 (풍경, 빛) 별로 캐시하고(LRU 8) 매 프레임에는 구름 흐름·별 깜빡임·물결·불빛만 덧그림. 기존 순간 연출 좌표(수정·봉우리·창문 등)는 그대로 유지.
+- `galaxy-cabin.svg`: 창 유리 반사띠·가장자리 어둠·창틀 불빛 번짐.
+- 소녀/고양이(`galaxy-cabin.svg`, `standing-travelers.svg`): 머리 광택과 림라이트, 원피스 주름·리본, 고양이 배 그늘·털결·홍조, 고양이 숨쉬기 애니메이션(감속 모션 설정 시 정지).
+- `sw.js` 캐시 v2.7.0으로 올려 설치된 PWA가 새 그림을 받도록 함.
+
+### v2.7 추가 — 은하열차 내부 꾸미기 · 소녀/고양이 캔버스화
+- `galaxy-cabin.svg`: 벨벳 커튼(금장·별 자수)과 스캘럽 가름대, 천장 노선도(열차 불빛이 오감), 흔들리는 가죽 손잡이, 별자리 모빌, 유리에 새긴 별자리, 별무늬 카펫, 벤치 누비 단추, 창틀 별 리벳·반짝이는 LED·`STAR TRAIN` 이름판, 벽등, 램프 빛 속 별가루.
+- 소녀·고양이는 SVG에서 빼고 `Companions.ts`(그리기·자세 보간·진행기) + `CompanionsLayer.tsx`(캔버스 레이어)로 이전. 960x600 좌표계라 선실 그림과 정확히 겹침.
+- 동작: 평소 숨쉬기·꼬리·가끔 귀 쫑긋, 이따금 고양이가 깨어 소녀를 바라봄(소녀는 항상 뒷모습). 간식을 먹이면(`handleEat` → `triggerSnack(id)`) 고양이가 깨어 소녀를 본 뒤 접시의 간식을 먹고 입맛을 다시며 다시 잠듦. 쓰다듬기(`triggerPet`)도 연결. 상점 화면에서 먹였다면 90초 안에 객실로 돌아올 때 재생됨.
+- 간식 8종마다 모양이 다름(쿠키·컵·우유·팝콘·젤리·아이스크림·생선과자·도시락). 모션 줄이기 설정에서는 숨쉬기·자동 동작은 멈추고 사용자가 일으킨 동작만 재생.
+
+### v2.7 – Vista 소녀·고양이 캔버스화
+- 풍경 보기의 서 있는 소녀(뒷모습)와 고양이를 `Companions.ts`의 `drawVistaPeople`로 캔버스에 그려 `VistaPeople` 레이어(`CompanionsLayer.tsx`)로 교체.
+- 소녀: 숨쉬기, 바람에 따른 옷·머리 흔들림. 고양이: 꼬리·호흡, 간식/쓰다듬기 시 소녀 쪽을 보고 접시의 간식을 먹음.
+- `standing-travelers.svg`는 폴백용으로 남겨 둠(미사용).
+
+
+## v2.8 — 새 행성 4곳
+- `routeData.ts`의 `sceneryOrder`에 `dunes`·`garden`·`ruins`·`volcano` 추가. `Record<Scenery,…>`를 쓰는 모든 표(팔레트·정거장·대사·행동·날씨·씨앗 풀·접근 행성·풍경 시드)를 채움(타입 검사로 누락 방지).
+- `CanvasPaint.ts`: 지형(`groundDunes/Garden/Ruins/Volcano`), 움직임(`animate…`), 행동 연출(`drawMoment` 분기), 천체(`paintBodies`) 추가. 공용 `flower`·`rune` 도구와 `LAVA`·`RUNES` 좌표 상수.
+- 전망대 바닥이 왼쪽 아래를 가리므로 행동 연출 좌표(발자국 길, 꽃봉오리, 룬)를 보이는 영역으로 맞춤.
+- `Dialogue.ts`: `D(...)` 헬퍼로 새 행성 대사 36편 추가. `Crystals.ts` 수정 변이: 은모래·불씨=노을빛, 정원=새벽빛, 시계탑=한밤빛 영향.
+- `SceneryGallery.tsx` 별자리 지도 10점. 서비스 워커 `v2.8.0`.
+
+## v2.9 — 항해 이벤트 이어서 완성
+- 사용자 제공 딥시크 작업 기록의 `VoyageEvents.ts`(이벤트 스케줄·대사·보상)와 `VoyageArt.ts`(이벤트 Canvas 애니메이션)를 v2.8 원본에 재구성하여 추가.
+- `main.tsx`의 항해 중 이벤트 알림·참여 버튼·진행 기록 및 도착 후 미확인 이벤트 수령을 연결. `Cabin`과 `ScenicViewer`에서 동일 이벤트 Canvas 데이터 사용.
+- 차장 방문 시 구간별 6편 대화 추가, 추천 간식 40% 할인과 상점의 표시 가격 통일. 기존 저장된 차장 데이터(추천 품목이 없는 기록)는 기본 20% 할인으로 유지.
+- 로직 테스트(1·3·8시간 이벤트 개수, 시간 고정, 새로고침 재현, 중복 방지, 도착 후 청구, 할인)와 6종 Canvas 렌더링 테스트 통과. TS/TSX 구문 검사 통과.
+- npm 레지스트리에 대한 DNS 접속 오류로 의존성 설치 불가. `npm run build` 및 앱 통합 브라우저 테스트는 검증하지 못함.
+- 기존 저장 키와 사용자 데이터 스키마는 그대로 유지, SW 캐시 `v2.9.0`.

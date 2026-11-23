@@ -13,6 +13,7 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .sky-art,.cabin-interior{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .sky-art{z-index:0}
 .cabin-interior{z-index:1;pointer-events:none;user-select:none}
+.cabin-companions{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;pointer-events:none}
 .location{position:absolute;z-index:3;top:12px;left:14px;padding:5px 10px;border:1px solid #e8d8c563;border-radius:30px;font-size:11px;letter-spacing:.045em;color:#fff0e0;background:#171e36a6;backdrop-filter:blur(5px)}
 .caption{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:34px 18px 15px;color:#fff7ee;pointer-events:none;background:linear-gradient(0deg,#1b2139e0 0%,#22253a7f 41%,transparent 100%)}
 .eyebrow{font-size:9px;letter-spacing:.18em;color:#f2d8b9}
@@ -184,7 +185,7 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.vista-place-moment,.vista-place-moment .moment-shine,.vista-place-moment .moment-rise,.vista-place-moment .moment-ripple{animation:none;opacity:1;transform:none}}
 
 /* Canvas-first landscapes: SVG is reserved for passengers and train furniture. */
-.vista-canvas,.vista-people{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.vista-canvas,.vista-people{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;object-fit:cover}
 .vista-canvas{z-index:0}
 .vista-people{z-index:1}
 /* Canvas has a 16:9 coordinate system while the cabin glass scales to its frame. */
@@ -423,3 +424,107 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 :where(button,summary):focus-visible{outline:2px solid #ffe4b4;outline-offset:2px}
 @media(max-width:375px){.app-header{padding:0 10px}.brand{font-size:16px;gap:4px}.brand-spark{font-size:25px}.top-label{display:none}.app .body{padding:13px 12px 18px}.route-card{padding:9px 10px}.route-dialog,.install-dialog{padding:15px}.route-dialog-preview h2{font-size:18px}}
 @media(prefers-reduced-motion:reduce){.route-card{transition:none}}
+
+/* v2.5 — SceneDialogue from the Little Prince: one line INSIDE the scenery, never a long transcript below. */
+.hero:has(.cabin-story) .caption{display:none}
+.cabin-story{position:absolute;z-index:12;left:10px;right:10px;bottom:9px;max-height:79%;display:flex;flex-direction:column;gap:4px;padding:10px 13px 9px;border:1px solid #f4d4b3a8;border-radius:12px;background:linear-gradient(150deg,#1d2946f6,#202945f9);box-shadow:0 12px 27px #0a1325b9;backdrop-filter:blur(12px);color:#f8ece5}
+.cabin-story-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;color:#e8c7a6;letter-spacing:.035em}
+.cabin-story-top button{width:27px;height:25px;border:0;background:#ffffff10;border-radius:8px;color:#f5e6e5;font-size:20px;line-height:1}
+.cabin-story-speaker{font-size:11px;color:#e6cbb4;font-weight:700}
+.cabin-story-line{margin:0;font-size:13px;line-height:1.48;min-height:36px;word-break:keep-all;overflow:auto}
+.cabin-story-controls{display:flex;align-items:center;justify-content:space-between;color:#b9c5d5;font-size:11px;gap:7px;margin-top:2px}
+.cabin-story-controls>div{display:flex;gap:5px}
+.cabin-story-controls button{min-height:29px;padding:3px 10px;color:#f1e8e6;border:1px solid #ddc6bc76;background:#ffffff14;border-radius:8px;font-size:11px}
+.cabin-story-controls button.cabin-story-next{background:#dbbf99;color:#292c3e;border-color:#e6d8b9;font-weight:700}
+.cabin-story-controls button:disabled{opacity:.28}
+.ambient-story{position:absolute;z-index:7;left:10px;right:10px;bottom:9px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 9px;padding:8px 12px;text-align:left;border:1px solid #e8c9b37d;border-radius:11px;background:#1c2744dc;backdrop-filter:blur(8px);box-shadow:0 8px 22px #09132885;color:#f1e6e8}
+.ambient-story>span{grid-column:1 / -1;font-size:10px;color:#f2cfa8;letter-spacing:.05em}
+.ambient-story strong{font-size:11px;font-weight:500;line-height:1.5;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ambient-story small{font-size:10px;color:#ecd2ad;white-space:nowrap}
+.special-cg{width:100%;height:100%;object-fit:cover;display:block;background:#1a2442}
+.conductor-visit{margin:10px 0 20px;padding:13px;border:1px solid #edcfad83;border-radius:13px;background:linear-gradient(120deg,#5a4c6b77,#313e5a);font-size:12px}
+.conductor-visit b{color:#ffe6bb}.conductor-visit p{margin:4px 0 9px;color:#d4cad5;font-size:11px;line-height:1.6}
+.conductor-visit>div:last-child{display:flex;gap:7px;flex-wrap:wrap}
+.conductor-visit button{border-radius:9px;border:1px solid #e0cab080;background:#82708c;color:#fff0e4;padding:8px 12px;font-size:11px}
+.shop-page{padding:20px 13px 30px;flex:1}
+.train-shop{max-width:510px;margin:0 auto}
+.shop-heading{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.shop-heading small{color:#d8c09e;font-size:10px;letter-spacing:.1em}
+.shop-heading h1{margin:5px 0;font-family:Georgia,'Nanum Myeongjo',serif;font-size:23px;font-weight:600;color:#ffedd9}
+.shop-heading>strong{white-space:nowrap;color:#f6dba8;font-size:14px;padding:9px 11px;border:1px solid #e7ccae78;border-radius:21px;background:#75688a50}
+.shop-help{font-size:12px;line-height:1.8;color:#ced2df;word-break:keep-all;margin:12px 0 16px}
+.daily-card{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#32405a;border:1px solid #e8d4c078;border-radius:13px;padding:13px;margin-bottom:17px}
+.daily-card b,.daily-card small{display:block}.daily-card b{color:#ffedd0;font-size:12px}.daily-card small{color:#c7c4d1;font-size:11px;margin-top:3px}
+.daily-card button,.shop-item button,.conductor-talk{border:1px solid #e1cbad8c;border-radius:9px;padding:8px 10px;color:#fff2e9;background:#756b8a;font-size:11px;min-height:35px;white-space:nowrap}
+.train-shop button:disabled{opacity:.45;cursor:default}
+.shop-fold{margin:13px 0;padding:12px;border:1px solid #c9b8c169;border-radius:13px;background:#2b3752}
+.shop-fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:7px;color:#ffebdf;font-size:15px;font-weight:650}
+.shop-fold>summary::-webkit-details-marker{display:none}
+.shop-fold>summary span{font-size:10px;color:#c8c6d3;font-weight:400;text-align:right}
+.shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px}
+.shop-item{min-width:0;display:flex;flex-direction:column;gap:5px;padding:12px 10px;background:linear-gradient(155deg,#3b4565,#303955);border:1px solid #c8b4c351;border-radius:13px}
+.shop-icon{font-size:28px;height:39px;line-height:39px;color:#f8d7b5;text-align:center;text-shadow:0 0 12px #faf1bd8c}
+.shop-item>strong{font-size:12px;color:#fff0e2;word-break:keep-all}.shop-item>small{font-size:10px;color:#c8cddd;line-height:1.55;min-height:31px;word-break:keep-all}
+.memory-flag{font-size:10px;color:#ffdca5}.shop-item-foot,.shop-owned{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:auto}
+.shop-item-foot>span{color:#f9d69d;font-size:12px;font-weight:700}.shop-item-foot>span small{display:block;font-weight:400;font-size:9px;color:#aebad2}
+.shop-owned{margin-top:4px;padding-top:7px;border-top:1px solid #f1e2e526}.shop-owned small{font-size:10px;color:#c0bbd0}.shop-owned button{padding:6px 8px;background:#55627b}
+.shop-item.locked em{font-size:10px;font-style:normal;color:#c8b4c1;margin:5px 0}
+.conductor-cart{margin:16px 0;padding:14px 12px;border:1px solid #efd0a8ba;border-radius:15px;background:#7f617744}
+.conductor-head{display:flex;gap:10px;align-items:center}.conductor-head>span{font-size:30px}.conductor-head b,.conductor-head small{display:block}.conductor-head b{font-size:14px;color:#ffe7c0}.conductor-head small{font-size:10px;color:#d5cfde;margin-top:4px;line-height:1.45}
+.conductor-talk{margin:13px 0 2px;width:100%}
+.shop-memories{margin:21px 0;padding:13px;border:1px solid #c7b5c35a;border-radius:14px;background:#293650}
+.shop-memories h2{margin:2px 0 12px;font:600 17px Georgia,'Nanum Myeongjo',serif;color:#ffe9d5}
+.shop-memories h2 small{font-size:11px;color:#c1c4d7}
+.memory-list{display:grid;gap:7px}.memory-list button{min-height:44px;display:flex;align-items:center;gap:8px;background:#4c5574;border:1px solid #c5bdd36e;border-radius:9px;color:#faebdf;text-align:left;padding:8px 11px;font-size:12px}
+.memory-list button span{font-size:16px;color:#f8d7b1}.memory-list button small{margin-left:auto;font-size:10px;color:#e4ccbb}
+.earn-guide{margin-top:17px;padding:12px;border-top:1px solid #d1c0bd47;color:#c4c8d6;font-size:11px;line-height:1.65}.earn-guide strong{color:#eaddca}.earn-guide p{margin:5px 0}
+.shop-feedback{position:fixed;z-index:80;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(89vw,460px);border:1px solid #ead7bc9c;border-radius:10px;text-align:center;background:#24344bf2;padding:9px;color:#ffe6ce;font-size:11px;pointer-events:none}
+@media(max-width:380px){.shop-page{padding:16px 9px 30px}.shop-heading h1{font-size:20px}.shop-heading>strong{font-size:12px;padding:8px}.shop-fold{padding:10px 8px}.shop-grid{gap:7px}.shop-item{padding:10px 7px}.cabin-story{left:6px;right:6px;bottom:6px;padding:8px 10px 7px}.cabin-story-line{font-size:12px;line-height:1.42}.cabin-story-controls button{min-height:27px}.ambient-story{left:7px;right:7px;bottom:7px}.app .bottom-nav button{font-size:10px;padding:3px}}
+
+.hero:has(.ambient-story) .caption{display:none}
+
+/* v2.6 선실 그림 보호: 대화창은 그림 위에 겹치지 않고 그림 바로 아래에 놓는다. */
+.hero .caption{display:none}
+.cabin-talk{padding:10px 12px 0}
+.cabin-talk .cabin-story,.cabin-talk .ambient-story{position:relative;left:auto;right:auto;bottom:auto;z-index:auto;max-height:none;width:100%;box-sizing:border-box}
+.cabin-talk .cabin-story{box-shadow:none}
+.cabin-talk .ambient-story strong{white-space:normal;font-size:13px;line-height:1.5}
+
+/* v2.6 선실 돌보기 */
+.cabin-care{margin:18px 0 6px;padding:14px 14px 12px;border:1px solid #e2c99c55;border-radius:14px;background:linear-gradient(150deg,#2a3652,#222d46)}
+.care-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.care-head h3{margin:0;font-size:15px;color:#f6e7cf}
+.care-level{font-size:12px;color:#f1d3a1;letter-spacing:.03em}
+.care-meter{height:8px;margin:9px 0 7px;border-radius:8px;background:#ffffff17;overflow:hidden}
+.care-meter i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#e7b4c6,#f3d6a6);transition:width .5s ease}
+.care-next{margin:0 0 11px;font-size:12px;line-height:1.55;color:#cfd2dc}
+.care-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.care-actions button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:76px;padding:9px 4px 8px;border:1px solid #e1c99b66;border-radius:11px;background:#33405c;color:#f5ead9;font:inherit;cursor:pointer}
+.care-actions button span{font-size:20px;line-height:1.2}
+.care-actions button b{font-size:12px;font-weight:600;text-align:center;word-break:keep-all}
+.care-actions button small{font-size:11px;color:#e8c88f}
+.care-actions button:disabled{opacity:.5;cursor:default}
+.care-actions button:disabled small{color:#c4c8d4}
+.care-note{margin:10px 0 0;padding:9px 11px;border-radius:9px;background:#ffffff12;font-size:13px;line-height:1.55;color:#fbeedd}
+.care-unheard{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:10px;padding:9px 11px;border:1px solid #f0cda078;border-radius:10px;background:#3b3550}
+.care-unheard b{flex:1 0 100%;font-size:12px;color:#f6d9ae}
+.care-unheard button,.care-log button{padding:6px 11px;border:1px solid #e1c99b8a;border-radius:8px;background:#e1c99b;color:#2e3040;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.care-log{margin-top:10px;font-size:12px;color:#c9ccd8}
+.care-log summary{cursor:pointer;padding:4px 0}
+.care-log>div{display:grid;gap:6px;margin-top:6px}
+.care-log button{text-align:left;font-weight:500;background:#3a4663;color:#f3e9d8;border-color:#e1c99b4d}
+.care-log span{padding:2px 2px;color:#9aa0b3}
+.heart-pop{position:absolute;z-index:6;font-size:24px;line-height:1;color:#ffb8cb;pointer-events:none;text-shadow:0 2px 9px #0009;animation:heart-pop 1.3s ease-out forwards}
+@keyframes heart-pop{0%{opacity:0;transform:translateY(0) scale(.6)}18%{opacity:1}100%{opacity:0;transform:translateY(-52px) scale(1.2)}}
+@media (prefers-reduced-motion:reduce){.heart-pop{animation:none;opacity:0}.care-meter i{transition:none}}
+
+/* v2.9: 항해 중 특별 이벤트 / 화면 위 알림 */
+.voyage-sky-alert{position:absolute;z-index:6;left:50%;transform:translateX(-50%);bottom:12px;max-width:92%;display:flex;align-items:center;gap:6px;border:1px solid #d7c2ecb3;border-radius:24px;background:#16213be8;color:#f9e6ff;padding:7px 13px;font-size:11px;font-weight:600;box-shadow:0 3px 14px #0b0a2099;cursor:pointer;white-space:nowrap;animation:sky-event-glow 2.5s ease-in-out infinite}
+.voyage-sky-alert>span{font-size:17px;color:#ffe0b5}
+@keyframes sky-event-glow{50%{box-shadow:0 3px 21px #bd9add85}}
+.voyage-events{margin:12px 0 18px;padding:13px 14px;border:1px solid #a69cd160;border-radius:15px;background:linear-gradient(140deg,#25314eeb,#22243dba 60%,#38304c99);color:#f5ecfc}
+.voyage-events-heading{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.voyage-events-heading>div{display:flex;align-items:center;gap:7px}.voyage-events-heading>div>span{color:#eed1a2;font-size:17px}.voyage-events-heading strong{font-family:Georgia,'Nanum Myeongjo',serif;font-size:14px;font-weight:600}.voyage-events-heading>small{color:#d7cae8;font-size:10px}.voyage-events-hint{font-size:11px;line-height:1.65;color:#c7c5d9;margin:7px 0}.voyage-event-list{display:grid;gap:8px;margin:11px 0}.voyage-event-button{display:flex;align-items:center;text-align:left;gap:10px;width:100%;padding:10px 11px;border-radius:11px;border:1px solid #bdb3d078;background:#3c4465a8;color:#fff4ea;cursor:pointer;transition:background .2s,border-color .2s}.voyage-event-button:hover,.voyage-event-button:focus-visible{background:#54527f;border-color:#e5c9f6}.voyage-event-symbol{display:grid;place-items:center;flex:0 0 37px;height:37px;border-radius:11px;background:#7886b54a;color:#ffddba;font-size:24px}.voyage-event-copy{display:grid;gap:3px;min-width:0;flex:1}.voyage-event-copy strong{font-size:12px}.voyage-event-copy small{font-size:10px;line-height:1.45;color:#d4cedf}.voyage-event-copy em{font-size:10px;color:#e7c89e;font-style:normal}.voyage-event-cta{font-size:10px;color:#ffddb4;white-space:nowrap}.voyage-event-dots{display:flex;align-items:center;gap:7px;margin-top:10px}.voyage-event-dots span{height:19px;min-width:22px;display:grid;place-items:center;font-size:14px;color:#68728f;border-radius:5px;background:#0c163348}.voyage-event-dots .done{color:#f6d5a8;background:#70698560}.voyage-event-dots .ready{color:#e5caf5;background:#64517c6b}
+@media(max-width:380px){.voyage-events{padding:11px 9px}.voyage-event-button{padding:9px 7px;gap:7px}.voyage-event-symbol{flex-basis:29px;height:31px;font-size:19px}.voyage-event-cta{font-size:9px}.voyage-events-heading strong{font-size:12px}.voyage-sky-alert{font-size:10px;padding:6px 10px;bottom:8px}}
+@media(prefers-reduced-motion:reduce){.voyage-sky-alert{animation:none}.voyage-event-button{transition:none}}
+
+.voyage-event-feedback{margin:9px 0;padding:8px 10px;border-radius:9px;background:#81749c5e;color:#ffe4b4;font-size:11px;line-height:1.55}

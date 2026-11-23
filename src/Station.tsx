@@ -8,6 +8,10 @@ export const stationInfo = {
  snowfield:{name:'혜성 설원역',subtitle:'혜성이 스쳐 지나가는 고요한 설산',caption:'새하얀 능선 위로 차가운 별빛이 내려앉아요.',accent:'#cbebfb'},
  auroraforest:{name:'오로라 숲역',subtitle:'초록빛 오로라가 잠든 숲',caption:'별과 빛의 장막 아래 오래된 나무들이 서 있어요.',accent:'#95e4c8'},
  canyon:{name:'황금 유성협곡역',subtitle:'빛나는 유성들이 머무는 암석 계곡',caption:'황금빛으로 물든 협곡 위에 별의 꼬리가 길게 그려져요.',accent:'#f3c59c'},
+ dunes:{name:'은모래 사막역',subtitle:'달이 두 개 뜨는 고요한 사구',caption:'은빛 모래 위로 쌍둥이 달빛이 천천히 번져요.',accent:'#f3d9b0'},
+ garden:{name:'꽃별 정원역',subtitle:'별빛을 먹고 피는 꽃밭',caption:'꽃잎마다 작은 별빛이 맺혀 바람에 흔들려요.',accent:'#f6c4dc'},
+ ruins:{name:'멈춘 시계탑역',subtitle:'시간이 쉬어 가는 오래된 유적',caption:'하늘에 걸린 시계탑 아래에서 돌 글자가 조용히 숨 쉬어요.',accent:'#e8d29a'},
+ volcano:{name:'불씨 화산역',subtitle:'붉은 숨결이 오르는 따뜻한 산',caption:'화산의 불씨가 별처럼 올라가는 모습을 바라봐요.',accent:'#ffb88a'},
  city:{name:'유리도시 중앙역',subtitle:'멀리서 반짝이는 작은 도시',caption:'먼 지평선의 불빛을 지나 다시 넓은 우주를 바라봐요.',accent:'#ffe0a8'}
 } satisfies Record<Scenery, {name:string; subtitle:string; caption:string; accent:string}>
 
