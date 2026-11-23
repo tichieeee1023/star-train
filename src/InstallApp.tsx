@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import {useEffect,useRef,useState} from 'react'
 
 type InstallEvent = Event & {prompt:()=>Promise<void>;userChoice:Promise<{outcome:string}>}
