@@ -3,7 +3,10 @@
  * 자세를 코드로 보간하기 때문에 '간식 먹기', '고양이가 깨서 소녀를 바라보기' 같은 동작을
  * 장면별 그림 없이 만들 수 있습니다. 좌표계는 galaxy-cabin.svg 의 viewBox(960x600)와 같습니다.
  */
-import {TAU,clamp,lerp,smooth,sparkle} from './PaintKit'
+import {TAU,clamp,lerp,smooth,sparkle,mix,rgba,softEllipse} from './PaintKit'
+import {palettes,type Light,type Palette} from './Palette'
+import type {Scenery} from './routeData'
+import type {Weather} from './CanvasPaint'
 import type {SnackId} from './TrainLife'
 type Ctx=CanvasRenderingContext2D
 export type Script='snack'|'glance'|'twitch'|'pet'
@@ -11,8 +14,9 @@ export type Script='snack'|'glance'|'twitch'|'pet'
 /* ───────── 바깥(게임)에서 부르는 신호 ───────── */
 let pending:{kind:Script;id?:SnackId;stamp:number}|null=null
 /** 간식을 먹이면 호출: 객실 화면이 열려 있지 않아도 90초 안에 열리면 재생됩니다. */
-export function triggerSnack(id:SnackId){pending={kind:'snack',id,stamp:Date.now()}}
-export function triggerPet(){pending={kind:'pet',stamp:Date.now()}}
+export const companionWakeEvent='star-train-companion-cue'
+export function triggerSnack(id:SnackId){pending={kind:'snack',id,stamp:Date.now()};window.dispatchEvent(new Event(companionWakeEvent))}
+export function triggerPet(){pending={kind:'pet',stamp:Date.now()};window.dispatchEvent(new Event(companionWakeEvent))}
 export function takePending(){
   if(!pending)return null
   const p=pending;pending=null
@@ -273,7 +277,7 @@ const VCATBODY=P('M280 453Q279 443 284 437Q289 430 298 431Q309 430 313 440Q318 4
 const VCATHEAD=P('M283 432L280 417Q280 414 285 417L291 423Q299 421 305 423L315 415Q319 413 318 419L317 433Q317 445 303 447Q285 449 283 435Z')
 function vistaGirl(c:Ctx,p:Pose,t:number,calm:boolean){
   const breath=calm?0:Math.sin(t*1.25)*.004,wind=calm?0:Math.sin(t*.6)*.007+Math.sin(t*1.7)*.003
-  c.save();c.globalAlpha=.18;c.fillStyle='#22273f';c.beginPath();c.ellipse(229,462,48,7,0,0,TAU);c.fill();c.restore()
+  // 발밑 그림자는 행성의 지면색으로 drawVistaPeople에서 그립니다.
   c.save();c.translate(220,452)
   fill(c,'M-14-20L-14 3Q-23 5-25 9Q-25 13-17 13H-1Q2 11-1 6L-3-17Z','#2b2c47');fill(c,'M8-19L10 3Q15 5 21 9Q25 13 18 13H3Q0 11 3 5L1-18Z','#252b46')
   stroke(c,'M-21 9Q-12 8-2 9M6 9Q13 8 21 10','#7d7693',1.3,.34)
@@ -316,7 +320,7 @@ function vistaGirl(c:Ctx,p:Pose,t:number,calm:boolean){
 }
 function vistaCat(c:Ctx,p:Pose,t:number,calm:boolean){
   const wag=p.catTail,sway=calm?0:Math.sin(t*.8)*.05+Math.sin(t*2.1)*.015
-  c.save();c.globalAlpha=.19;c.fillStyle='#20283f';c.beginPath();c.ellipse(296,461,27,5.5,0,0,TAU);c.fill();c.restore()
+  // 고양이도 같은 지면광과 접지 그림자를 공유합니다.
   // 접시: 간식을 줄 때만 오른쪽 바닥에 놓인다
   if(p.catFood>.02){
     c.save();c.globalAlpha=p.catFood;c.fillStyle='#d8c6c8';c.strokeStyle='#fff3e8';c.lineWidth=1;c.beginPath();c.ellipse(337,462,13,3.6,0,0,TAU);c.fill();c.stroke()
@@ -329,7 +333,7 @@ function vistaCat(c:Ctx,p:Pose,t:number,calm:boolean){
   c.restore()
   const br=calm?0:Math.sin(t*1.31)*.012
   c.save();c.translate(298,460);c.scale(1+br*.4,1+br);c.translate(-298,-460)
-  fill(c,VCATBODY,lin(c,280,430,318,464,[[0,'#fffdf9'],[.48,'#f3f1f3'],[1,'#c9cfdd']]));stroke(c,VCATBODY,'#ffffff',1.4,.5)
+  fill(c,VCATBODY,lin(c,280,430,318,464,[[0,'#fffdf9'],[.48,'#f3f1f3'],[1,'#c9cfdd']]));stroke(c,VCATBODY,'#a2aec2',1.65,.68)
   fill(c,'M282 456a7 4.5 0 1 0 14 0a7 4.5 0 1 0 -14 0','#e6e7ed');fill(c,'M300.5 456a7.5 4.5 0 1 0 15 0a7.5 4.5 0 1 0 -15 0','#dce1e9')
   c.save();c.clip(VCATBODY)
   fill(c,'M276 428H322V466H276Z',lin(c,0,428,0,466,[[.4,'rgba(142,134,168,0)'],[1,'rgba(142,134,168,.42)']]))
@@ -340,7 +344,7 @@ function vistaCat(c:Ctx,p:Pose,t:number,calm:boolean){
   const look=p.catLook,down=p.catDown,chew=p.catChew
   const rot=-look*.09+down*.16+p.catEar*.05,hx=down*7,hy=down*5+chew*Math.abs(Math.sin(t*13))*1.2+(calm?0:Math.sin(t*1.31)*.35)
   c.save();c.translate(300+hx,444+hy);c.rotate(rot);c.translate(-300,-444)
-  fill(c,VCATHEAD,'#f8f6f5');stroke(c,VCATHEAD,'#e0e4ed',1.4,.65)
+  fill(c,VCATHEAD,'#f8f6f5');stroke(c,VCATHEAD,'#a1adc3',1.7,.78)
   fill(c,'M284 419L286 428L292 425Z','#d2aebd',.55);fill(c,'M315 419L309 426L315 429Z','#d2aebd',.55)
   stroke(c,'M297 426Q295 436 299 443','#ffffff',2,.54)
   if(down>.3){ // 접시 쪽으로 숙일 때 드러나는 볼과 코끝
@@ -353,7 +357,101 @@ function vistaCat(c:Ctx,p:Pose,t:number,calm:boolean){
   c.restore()
   if(down>.6&&chew>0)for(let i=0;i<3;i++){const ph=((p.e*1.3+i*.33)%1);sparkle(c,330+i*5-ph*3,455-ph*14,1.5,'#fff0c8',(1-ph)*.6)}
 }
-export function drawVistaPeople(c:Ctx,p:Pose,t:number,calm=false){vistaGirl(c,p,t,calm);vistaCat(c,p,t,calm)}
+/**
+ * v2.9.1: 인물과 지형을 하나의 장면으로 보이게 하는 광원 합성.
+ * 기존 소녀·고양이 Path2D, 움직임, 캐릭터 비율은 그대로 둡니다.
+ * 배경과 별도 Canvas여도 같은 행성/시각/날씨 팔레트로 빛과 그림자를 공유합니다.
+ */
+function groundContact(c:Ctx,x:number,y:number,rx:number,ry:number,palette:Palette,light:Light){
+  const ink=mix(palette.platformSide,palette.foreground,.45)
+  const a=light==='dawn'?.21:light==='dusk'?.27:.32
+  // 윤곽이 단단한 검은 타원 대신, 발 아래로 부드럽게 사라지는 그림자.
+  c.save();c.translate(x,y);c.scale(1,ry/rx)
+  const shadow=c.createRadialGradient(0,0,0,0,0,rx)
+  shadow.addColorStop(0,rgba(ink,a));shadow.addColorStop(.32,rgba(ink,a*.56))
+  shadow.addColorStop(.7,rgba(ink,a*.11));shadow.addColorStop(1,rgba(ink,0))
+  c.fillStyle=shadow;c.fillRect(-rx,-rx,rx*2,rx*2);c.restore()
+}
+
+function foregroundWeather(c:Ctx,palette:Palette,weather:Weather,t:number,calm:boolean){
+  // 눈·비는 풍경 뒤에만 내리지 않고 인물 앞도 드물게 지나갑니다.
+  // 960px 전체에 도트를 덮지 않고 두 주인공 가까운 곳으로 제한합니다.
+  const seconds=calm?0:t
+  if(weather==='snow'){
+    for(let i=0;i<17;i++){
+      const x=125+(i*89)%280+Math.sin(seconds*.55+i*2.1)*10
+      const y=300+(i*67+seconds*(11+i%4*4))%188
+      const r=.7+(i%3)*.4
+      c.save();c.globalAlpha=.28+(i%4)*.1;c.fillStyle=palette.moon
+      c.beginPath();c.arc(x,y,r,0,TAU);c.fill();c.restore()
+    }
+  }else if(weather==='rain'){
+    for(let i=0;i<15;i++){
+      const x=130+(i*73)%295-seconds*3%25
+      const y=300+(i*61+seconds*(95+i%3*19))%200
+      stroke(c,`M${x} ${y}l-5 13`,mix(palette.moon,'#e1edff',.5),.85,.17+(i%3)*.055)
+    }
+  }else if(weather==='aurora'){
+    softEllipse(c,280,345,125,125,'#9debd4',.045)
+  }
+}
+
+export function drawVistaPeople(
+  c:Ctx,p:Pose,t:number,calm=false,scenery:Scenery='nebula',light:Light='dusk',weather:Weather='clear'
+){
+  const palette=palettes[scenery][light]
+  const cold=weather==='snow'||weather==='rain'||scenery==='snowfield'
+  const glowColor=weather==='aurora'?'#89e8cd':cold?mix(palette.moon,'#c6ddf7',.5):palette.horizon
+
+  // v2.9.3 — 둘의 발아래에만 각각 접지 그림자를 놓습니다.
+  // CanvasPaint의 공통 타원 그림자는 제거했으므로 이중 그림자가 생기지 않습니다.
+  softEllipse(c,247,457,111,24,glowColor,light==='night'?.055:.085)
+  groundContact(c,218,464,36,7,palette,light)
+  groundContact(c,301,461,29,6,palette,light)
+
+  // 인물 뒤에서 돌아오는 은은한 환경광. 배경 전체를 덮지 않습니다.
+  softEllipse(c,238,352,99,125,glowColor,light==='night'?.024:.039)
+  // 머리핀/원피스는 그대로 두고, 고양이만 상대적으로 조금 키워 존재감을 높입니다.
+  // 발의 좌표는 고정해서 기존 행성의 바닥에 자연스럽게 닿도록 합니다.
+  c.save();c.translate(220,464);c.scale(.96,.96);c.translate(-220,-464)
+  vistaGirl(c,p,t,calm);c.restore()
+  c.save();c.translate(299,461);c.scale(1.10,1.10);c.translate(-299,-461)
+  vistaCat(c,p,t,calm);c.restore()
+
+  // v2.9.3 — 캐릭터 색은 남기되, 지면·하늘의 색을 적당히만 받습니다.
+  // 소녀는 천/머리카락의 계조를 보존하고, 하얀 고양이는 채도를 더 낮게 유지합니다.
+  c.save()
+  c.globalCompositeOperation='source-atop'
+  const top=weather==='aurora'?mix(palette.sky[1],'#9debd4',.47):mix(palette.sky[1],palette.moon,.33)
+  const bottom=cold?mix(palette.platformTop,'#c7e0f8',.36):mix(palette.platformTop,palette.horizon,.28)
+  const grade=c.createLinearGradient(175,290,312,469)
+  const strength=light==='night'?.22:light==='dusk'?.17:.13
+  grade.addColorStop(0,rgba(top,strength))
+  grade.addColorStop(.58,rgba(palette.cloudB,strength*.54))
+  grade.addColorStop(1,rgba(bottom,strength*.60))
+  c.fillStyle=grade;c.fillRect(164,286,99,194) // 소녀
+  const catTop=mix(palette.moon,'#eef4ff',.66)
+  const catGrade=c.createLinearGradient(0,412,0,472)
+  const catStrength=light==='night'?.105:light==='dusk'?.095:.075
+  catGrade.addColorStop(0,rgba(catTop,catStrength))
+  catGrade.addColorStop(1,rgba(bottom,catStrength*.72))
+  c.fillStyle=catGrade;c.fillRect(250,407,100,68) // 고양이: 밝은 털색 유지
+  // 바닥 반사광은 매우 약하게, 특히 눈밭에서도 흰 털과 신발의 경계를 흐리지 않도록.
+  const bounce=c.createLinearGradient(0,406,0,471)
+  bounce.addColorStop(0,rgba(bottom,0))
+  bounce.addColorStop(1,rgba(mix(bottom,'#ffffff',.3),cold?.085:.052))
+  c.fillStyle=bounce;c.fillRect(163,406,181,65)
+  c.restore()
+
+  // 금빛 별 머리핀의 광택은 밤에도 흐리지 않되, 크기가 과하지 않게 유지합니다.
+  // 실제 머리핀 도형은 vistaGirl() 안에서 그리며 여기서는 추가 발광만 얹습니다.
+  softEllipse(c,243,325,9,9,'#ffdeb3',light==='night'?.075:.045)
+
+  // 바닥의 약한 반사광, 부유 입자, 인물 앞을 지나가는 날씨.
+  softEllipse(c,253,466,111,13,glowColor,light==='night'?.055:.075)
+  foregroundWeather(c,palette,weather,t,calm)
+}
+
 
 /* ───────── 시간에 따라 자세를 이끄는 진행기 ───────── */
 export class Director{

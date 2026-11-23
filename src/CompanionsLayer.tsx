@@ -1,37 +1,55 @@
 import {useEffect,useRef} from 'react'
-import {Director,drawCompanions,drawVistaPeople} from './Companions'
+import {Director,drawCompanions,drawVistaPeople,companionWakeEvent} from './Companions'
+import {startCanvasPlayback} from './CanvasPlayback'
+import type {Scenery} from './routeData'
+import type {Light} from './Palette'
+import type {Weather} from './CanvasPaint'
 
-/** 선실 SVG 위에 겹치는 소녀·고양이 캔버스. 960x600 좌표계이며 선실 그림과 같은 방식(cover)으로 맞춰집니다. */
-function useLayer(w:number,h:number,draw:(c:CanvasRenderingContext2D,d:Director,t:number,calm:boolean)=>void){
+/**
+ * 소녀·고양이는 별도의 투명 Canvas. 정지 시 8fps, 몸짓·간식 연출 중에는 24fps.
+ * 실제 표시 크기를 기준으로 캔버스 해상도를 맞춰 작은 모바일 화면에서 메모리를 절약합니다.
+ */
+function useLayer(w:number,h:number,draw:(c:CanvasRenderingContext2D,d:Director,t:number,calm:boolean)=>boolean,sceneKey:string){
   const ref=useRef<HTMLCanvasElement>(null)
   useEffect(()=>{
     const cv=ref.current;if(!cv)return
-    const dpr=Math.min(2,window.devicePixelRatio||1)
-    cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)
     const c=cv.getContext('2d');if(!c)return
-    const calm=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false
-    const director=new Director(calm)
-    let raf=0,last=0
-    const t0=performance.now()
-    const frame=(now:number)=>{
-      raf=requestAnimationFrame(frame)
-      if(document.hidden||now-last<1000/30)return
-      last=now
-      c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h)
-      draw(c,director,(now-t0)/1000,calm)
+    let scale=1
+    let sceneTime=0
+    let animating=false
+    let wasReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let director=new Director(wasReduced)
+
+    const paint=(delta:number,reduced:boolean)=>{
+      if(wasReduced!==reduced){wasReduced=reduced;director=new Director(reduced)}
+      if(!reduced)sceneTime+=delta
+      c.setTransform(scale,0,0,scale,0,0)
+      c.clearRect(0,0,w,h)
+      animating=draw(c,director,sceneTime,reduced)
     }
-    raf=requestAnimationFrame(frame)
-    return ()=>cancelAnimationFrame(raf)
-  },[])
+    const resize=()=>{
+      const width=cv.getBoundingClientRect().width||w
+      // 원본 960px 좌표계를 보존하며 실제 화면을 넘는 해상도 할당을 피합니다.
+      const nextScale=Math.min(1.6,Math.max(.7,(width*(window.devicePixelRatio||1))/w))
+      const pw=Math.max(1,Math.round(w*nextScale)),ph=Math.max(1,Math.round(h*nextScale))
+      if(cv.width!==pw||cv.height!==ph){cv.width=pw;cv.height=ph;scale=nextScale;paint(0,wasReduced)}
+    }
+    resize()
+    const ro=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null
+    ro?.observe(cv)
+    window.addEventListener('resize',resize)
+    const cleanup=startCanvasPlayback(cv,paint,()=>animating?24:8,sceneKey==='cabin'?companionWakeEvent:undefined)
+    return ()=>{cleanup();ro?.disconnect();window.removeEventListener('resize',resize)}
+  },[w,h,sceneKey])
   return ref
 }
-/** 풍경 보기 화면의 서 있는 소녀와 고양이 (960x540). */
-export function VistaPeople(){
-  const ref=useLayer(960,540,(c,d,t,calm)=>drawVistaPeople(c,d.pose(t),t,calm))
+/** 서 있는 소녀와 고양이 (960×540). */
+export function VistaPeople({scenery,light,weather}: {scenery:Scenery;light:Light;weather:Weather}){
+  const ref=useLayer(960,540,(c,d,t,calm)=>{const p=d.pose(t);drawVistaPeople(c,p,t,calm,scenery,light,weather);return p.kind!=='idle'},`${scenery}:${light}:${weather}`)
   return <canvas ref={ref} className="vista-people" aria-hidden="true"/>
 }
-/** 선실 SVG 위에 겹치는 소녀·고양이 캔버스 (960x600, 선실 그림과 같은 cover 맞춤). */
+/** 객실에 앉아 있는 소녀와 고양이 (960×600). */
 export function Companions(){
-  const ref=useLayer(960,600,(c,d,t,calm)=>drawCompanions(c,d.pose(t),t,calm))
+  const ref=useLayer(960,600,(c,d,t,calm)=>{const p=d.pose(t);drawCompanions(c,p,t,calm);return p.kind!=='idle'},'cabin')
   return <canvas ref={ref} className="cabin-companions" aria-hidden="true"/>
 }

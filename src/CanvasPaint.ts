@@ -467,21 +467,207 @@ function rayAurora(c:Ctx,time:number,strong:boolean){
 }
 function paintAurora(c:CanvasRenderingContext2D,_p:Palette,time:number,strong=false){rayAurora(c,time,strong)}
 
-function drawLookout(c:Ctx,p:Palette){
-  const top=[[-29,430],[402,420],[566,473],[433,505],[-30,481]],side=[[-36,435],[403,424],[575,477],[452,541],[-25,541]]
-  const sg=c.createLinearGradient(0,470,0,541);sg.addColorStop(0,mix(p.platformSide,'#000000',.1));sg.addColorStop(1,mix(p.platformSide,'#000000',.55))
-  polygon(c,side,sg)
-  const tg=c.createLinearGradient(-30,420,520,505);tg.addColorStop(0,mix(p.platformTop,'#ffffff',.18));tg.addColorStop(.6,p.platformTop);tg.addColorStop(1,mix(p.platformTop,p.platformSide,.45))
-  polygon(c,top,tg)
-  // 타일 이음선(원근에 맞춰 한 점으로 모임)
-  c.save();c.beginPath();top.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.clip()
-  for(let i=0;i<7;i++){const x=-30+i*85;line(c,[[x,426],[x-20+i*8,505]],p.platformSide,1,.18)}
-  for(let i=1;i<4;i++)line(c,[[-30,430+i*16],[566,473+i*8]],p.platformSide,1,.12)
-  const wg=c.createRadialGradient(240,456,10,240,456,230);wg.addColorStop(0,rgba(p.horizon,.2));wg.addColorStop(1,rgba(p.horizon,0));c.fillStyle=wg;c.fillRect(-40,410,620,100)
+/** v2.9.2: 행성의 자연 지형을 그대로 이어 놓은 관찰 지면.
+ * 캐릭터의 접지점(y=461~464)과 16:9 프레이밍을 유지하며,
+ * 타일식 공통 무늬 대신 10개 지역마다 재질·균열·식생을 그립니다.
+ * 지면의 작은 장식은 캐릭터가 서는 중앙(x=165~340)을 피합니다. */
+function drawLookout(c:Ctx,p:Palette,kind:Scenery){
+  // 인물이 서 있는 중앙 지면은 동일하게 유지하고 전면의 바위/눈/흙 단면만 지역에 맞춰 달리합니다.
+  const natural=kind!=='city'
+  const lip:Record<Scenery,number[][]>={
+    nebula:[[553,478],[533,483],[512,487],[477,493],[451,503],[433,505],[365,499],[279,492],[193,488],[95,486]],
+    ringsea:[[558,475],[542,481],[521,482],[502,490],[467,498],[433,505],[332,499],[245,492],[168,489],[79,483]],
+    snowfield:[[557,477],[535,479],[516,485],[491,487],[472,497],[433,505],[353,498],[275,493],[190,487],[92,487]],
+    auroraforest:[[558,476],[540,484],[520,486],[494,496],[466,497],[433,505],[357,498],[275,494],[172,488],[79,486]],
+    canyon:[[558,475],[543,486],[520,482],[501,495],[475,491],[433,505],[362,499],[281,497],[178,488],[79,486]],
+    city:[],
+    dunes:[[558,477],[539,477],[515,488],[487,490],[459,500],[433,505],[362,497],[278,493],[197,490],[95,485]],
+    garden:[[559,475],[541,481],[522,485],[491,490],[465,496],[433,505],[350,499],[255,492],[164,490],[73,485]],
+    ruins:[[558,480],[535,478],[517,491],[489,490],[471,503],[433,505],[365,496],[286,492],[187,486],[91,487]],
+    volcano:[[555,478],[536,486],[515,482],[491,496],[471,493],[433,505],[355,500],[275,494],[188,491],[80,486]]
+  }
+  const top=natural?[[-29,430],[402,420],[566,473],...lip[kind],[-30,481]]:[[-29,430],[402,420],[566,473],[433,505],[-30,481]]
+  const side=natural?[[-36,435],[403,424],[575,477],[560,487],[538,496],[515,510],[481,531],[452,541],[-25,541]]:[[-36,435],[403,424],[575,477],[452,541],[-25,541]]
+  const materials:Record<Scenery,[string,string,string]>={
+    nebula:['#b7a7d0','#575779','#ebd4ff'],
+    ringsea:['#93c9d2','#356b83','#d9fff1'],
+    snowfield:['#ebf5fc','#6d9ab9','#ffffff'],
+    auroraforest:['#547f70','#234b4c','#aae8ba'],
+    canyon:['#d8a17b','#795067','#ffe2ac'],
+    city:['#b7c7d2','#576f8b','#f9e8de'],
+    dunes:['#dfbea5','#8b6686','#fff0cf'],
+    garden:['#84b391','#436d68','#f8d9e6'],
+    ruins:['#aaa2ab','#55536e','#efdece'],
+    volcano:['#4b4053','#251e34','#ff9568']
+  }
+  const [base,depth,highlight]=materials[kind]
+  // 시간대별 팔레트의 주변광을 재질에 입혀 dawn/dusk/night 일관성을 유지합니다.
+  const tint=mix(base,p.platformTop,kind==='snowfield'?.20:.33)
+  const shadow=mix(depth,p.platformSide,.42)
+  const edge=mix(highlight,p.horizon,.28)
+  const sideG=c.createLinearGradient(0,430,130,545)
+  sideG.addColorStop(0,mix(shadow,tint,.27));sideG.addColorStop(.3,shadow)
+  sideG.addColorStop(1,mix(shadow,'#0a1022',.62))
+  polygon(c,side,sideG)
+  // 측면은 바위층·얼음·뿌리·화산암의 각기 다른 결로 처리합니다.
+  c.save();c.beginPath();side.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.clip()
+  const sr=rng(seedOf[kind]+191)
+  if(kind==='snowfield'||kind==='ringsea'){
+    for(let i=0;i<17;i++){
+      const y=468+i*4.4
+      stroke(c,[[-35,y+sr()*2],[200,y+sr()*2],[452,y+sr()*3]],edge,1.2,kind==='snowfield'?.21:.12)
+    }
+  }else if(kind==='canyon'||kind==='dunes'||kind==='ruins'){
+    for(let i=0;i<18;i++){
+      const y=460+i*5
+      stroke(c,[[-30,y+sr()*4],[145,y-1+sr()*4],[455,y+sr()*3]],edge,.9,.11+sr()*.1)
+    }
+  }else if(kind==='volcano'){
+    for(let i=0;i<13;i++){
+      const x=-35+sr()*510,y=480+sr()*58
+      stroke(c,[[x-25,y+5],[x,y-3],[x+22,y]],i%4===0?'#ff9868':mix(shadow,'#e6a2af',.35),i%4===0?2:.9,i%4===0?.30:.22)
+    }
+  }else{
+    for(let i=0;i<18;i++){
+      const x=-40+sr()*530,y=478+sr()*66
+      stroke(c,[[x-13,y],[x,y-2],[x+12,y+1]],edge,1,.09+sr()*.13)
+    }
+  }
   c.restore()
-  stroke(c,[[-29,430],[402,420],[566,473]],'#fff0dc',2,.5)
-  stroke(c,[[-20,484],[434,507],[566,473]],'#24283b',2,.4)
-  ellipse(c,317,461,133,16,'#2d334c',.1)
+  // 경계가 지나치게 인공적으로 보이지 않도록 세로가 아닌 은은한 경사 그라데이션.
+  const tg=c.createLinearGradient(25,420,345,501)
+  tg.addColorStop(0,mix(tint,highlight,.20));tg.addColorStop(.53,tint)
+  tg.addColorStop(1,mix(tint,shadow,.29))
+  polygon(c,top,tg)
+  c.save();c.beginPath();top.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.clip()
+  const r=rng(seedOf[kind]+271)
+  if(kind==='nebula'){
+    // 별먼지가 스민 매끈한 보랏빛 광물층, 바깥 가장자리의 미세한 수정.
+    for(let i=0;i<49;i++){
+      const x=-20+r()*530,y=422+r()*84
+      disc(c,x,y,.4+r()*.8,i%3===0?'#fff3e6':edge,.24+r()*.34)
+    }
+    for(const [x,y,h] of [[23,449,11],[87,467,8],[413,438,13],[490,473,9]]){
+      poly(c,[[x-4,y],[x,y-h],[x+5,y],[x+1,y+2]],mix('#a6b6ee',tint,.4),.6)
+      stroke(c,[[x,y-h],[x-1,y]],'#fff0ff',.75,.65)
+    }
+    stroke(c,[[12,459],[80,453],[119,456]],'#e7d8ff',1.2,.23)
+  }else if(kind==='ringsea'){
+    // 물에 닳은 둥근 자갈과 젖은 표면의 가느다란 물결.
+    for(let i=0;i<45;i++){
+      const x=-15+r()*545,y=422+r()*88,rx=1.4+r()*5,ry=1+r()*1.8
+      ellipse(c,x,y,rx,ry,i%4===0?'#c8e6dc':mix('#5b93a6',tint,.45),.16+r()*.21,r()*.3)
+    }
+    for(let i=0;i<7;i++){
+      const x=386+i*20,y=454+i*5
+      stroke(c,[[x-12,y],[x+4,y-2],[x+19,y]],edge,1.1,.3)
+    }
+    for(let i=0;i<6;i++){const x=10+i*24,y=466+(i%2)*6;disc(c,x,y,.8,'#e2fff8',.5)}
+  }else if(kind==='snowfield'){
+    // 눈층이 살짝 쌓인 얼음 단면. 인물이 서 있는 자리 아래는 평탄하게 유지.
+    for(let i=0;i<6;i++){
+      const y=440+i*10
+      stroke(c,[[-30,y+6],[50,y+Math.sin(i)*5],[115,y+3],[389,y-5],[550,y+16]],'#ffffff',2,.17+i*.025)
+    }
+    for(let i=0;i<21;i++){
+      const x=-20+r()*535,y=431+r()*73
+      ellipse(c,x,y,4+r()*10,.8+r()*.9,'#ffffff',.10+r()*.24)
+    }
+    stroke(c,[[363,466],[384,455],[415,454]],'#84b4d8',1.5,.35)
+    for(const [x,y] of [[26,446],[65,470],[417,439],[491,471]])sparkle(c,x,y,2.4,'#ffffff',.6)
+  }else if(kind==='auroraforest'){
+    // 이끼 카펫·잔뿌리·침엽수 낙엽, 작은 생물 발광.
+    for(let i=0;i<38;i++){
+      const x=-20+r()*535,y=428+r()*84
+      ellipse(c,x,y,3+r()*15,1.2+r()*3.4,i%3===0?'#8fba82':'#376b62',.13+r()*.24,r()*.18)
+    }
+    for(let i=0;i<16;i++){
+      const x=-25+r()*535,y=431+r()*79
+      stroke(c,[[x-8,y],[x,y+2],[x+6,y-1]],'#a2d0a4',.7,.23)
+    }
+    for(const [x,y] of [[20,465],[79,450],[411,445],[466,477]]){
+      stroke(c,[[x,y+4],[x,y-3],[x+3,y-8]],'#bbd6a2',1,.65)
+      disc(c,x+3,y-8,2.1,'#d5f6bf',.48)
+    }
+  }else if(kind==='canyon'){
+    // 풍화된 사암, 비스듬한 퇴적층과 미세하게 갈라진 절벽의 표면.
+    for(let i=0;i<16;i++){
+      const y=430+i*5
+      stroke(c,[[-28,y+10],[80,y+5],[230,y-2],[370,y+5],[558,y+31]],i%3===0?'#ffe6bd':'#835672',.8,i%3===0?.19:.17)
+    }
+    for(let i=0;i<10;i++){
+      const x=380+r()*140,y=433+r()*54
+      stroke(c,[[x,y],[x+4,y+4],[x+1,y+7]],'#704b60',1,.27)
+    }
+    for(let i=0;i<25;i++)disc(c,-20+r()*540,430+r()*74,.7+r()*.7,'#ffdcad',.18)
+  }else if(kind==='city'){
+    // 유일한 도심 역: 물결에 닳은 석판과 은은한 유리 조각.
+    for(let i=0;i<9;i++){
+      const x=-10+i*64
+      stroke(c,[[x,431],[x-8,461],[x+7,496]],'#485f83',1.1,.20)
+    }
+    for(let i=0;i<3;i++)stroke(c,[[-30,440+i*14],[235,440+i*11],[540,470+i*10]],edge,1,.14)
+    for(let i=0;i<10;i++){
+      const x=-15+r()*535,y=432+r()*74
+      poly(c,[[x-2,y],[x+2,y-2],[x+4,y+2],[x,y+4]],i%2?'#b9e6ea':'#fff6e8',.18)
+    }
+  }else if(kind==='dunes'){
+    // 바람이 그은 사구 물결. 직선 타일이 아니라 유선형 모래 결.
+    for(let i=0;i<12;i++){
+      const y=435+i*6
+      stroke(c,[[-35,y+Math.sin(i*.6)*2],[74,y-5],[210,y+3],[365,y-6],[550,y+13]],i%3===0?'#ffe1c4':'#7c607b',i%3===0?1.5:1,.15+i%3*.04)
+    }
+    for(let i=0;i<46;i++){
+      const x=-25+r()*545,y=425+r()*85
+      disc(c,x,y,.3+r()*.75,i%3===0?'#ffebd0':'#9f7f90',.17+r()*.25)
+    }
+  }else if(kind==='garden'){
+    // 부드러운 잔디 흙길. 작은 꽃은 중앙의 두 인물을 가리지 않는 가장자리 위주.
+    for(let i=0;i<36;i++){
+      const x=-25+r()*535,y=421+r()*88
+      ellipse(c,x,y,3+r()*9,1+r()*3,i%2?'#4e9876':'#c3d69f',.15+r()*.25)
+    }
+    for(let i=0;i<35;i++){
+      const x=-28+r()*550,y=427+r()*82
+      stroke(c,[[x,y+2],[x-1,y-2],[x+2,y-5]],'#b3e0b1',.75,.13+r()*.24)
+    }
+    for(const [x,y] of [[16,457],[75,460],[407,439],[486,474]]){
+      flower(c,x,y,9,x%2===0?'#f6b7d6':'#e2d9fc','#fff0be','#6eab80',5,.76)
+    }
+  }else if(kind==='ruins'){
+    // 풍화된 고대 석판. 틀에 맞춘 타일 대신 끊기고 갈라진 불규칙한 판석.
+    for(let i=0;i<15;i++){
+      const x=-10+i*40+r()*12,y=433+(i%4)*13
+      stroke(c,[[x-19,y],[x-4,y-3],[x+13,y-1],[x+20,y+4]],i%3===0?'#e5d4b6':'#554f70',1,.17)
+      if(i%3===0)stroke(c,[[x,y],[x-3,y+6],[x+1,y+10]],'#544665',1,.22)
+    }
+    for(const [x,y] of [[17,461],[417,449],[462,479]]){
+      c.save();c.globalAlpha=.28;c.strokeStyle='#cfc6e9';c.lineWidth=.75
+      c.beginPath();c.arc(x,y,7,0,TAU);c.stroke();c.restore()
+      stroke(c,[[x,y-7],[x,y+7],[x-5,y-1],[x+5,y-1]],'#dcd4f4',.8,.31)
+    }
+  }else if(kind==='volcano'){
+    // 거친 흑요석 단층과 균열 속 용암의 희미한 잔광.
+    for(let i=0;i<22;i++){
+      const x=-25+r()*550,y=423+r()*89,sz=2+r()*14
+      poly(c,[[x-sz,y],[x-2,y-sz*.28],[x+sz*.7,y+2],[x+1,y+sz*.35]],i%2?'#5e4e68':'#2d243c',.22+r()*.2)
+    }
+    for(const [x,y,w] of [[8,456,47],[393,447,67],[448,482,80]]){
+      const pts=[[x-14,y-8],[x,y],[x+w*.45,y+3],[x+w*.75,y-2],[x+w,y+3]]
+      stroke(c,pts,'#ffad70',3,.20)
+      stroke(c,pts,'#ffce83',.9,.39)
+    }
+    for(let i=0;i<12;i++)disc(c,380+r()*150,431+r()*63,.5+r()*.8,'#ff9b72',.37)
+  }
+  // 광원에 의해 땅 표면에 얇은 반사가 맺히지만 캐릭터 발밑에 덮이지 않습니다.
+  const lightG=c.createRadialGradient(240,456,8,240,456,240)
+  lightG.addColorStop(0,rgba(p.horizon,.14));lightG.addColorStop(1,rgba(p.horizon,0))
+  c.fillStyle=lightG;c.fillRect(-40,410,620,105)
+  c.restore()
+  // 공통적인 뾰족한 타일 테두리는 없애고, 자연 지형의 상단 윤곽만 남깁니다.
+  stroke(c,[[-29,430],[402,420],[566,473]],edge,kind==='snowfield'?2:1.5,kind==='volcano'?.30:.42)
+  stroke(c,natural?[[566,473],...lip[kind],[ -30,481]]:[[-22,482],[434,507],[566,473]],shadow,1.1,.24)
+  // 공통 타원 그림자 제거: 이제 소녀와 고양이가 각자 부드러운 접지 그림자를 가집니다.
 }
 
 /* ───────── 매 프레임 움직임 ───────── */
@@ -753,7 +939,7 @@ export function paintWorld(c:CanvasRenderingContext2D,kind:Scenery,light:Light,w
   comet(c,time)
   c.drawImage(L.ground,0,0)
   animate(c,kind,p,light,time)
-  if(mode==='vista')drawLookout(c,p)
+  if(mode==='vista')drawLookout(c,p,kind)
   // Event lights sit above the terrain so snow drawings or ripples stay visible.
   if(mode==='vista'&&moment>0)drawMoment(c,kind,time,momentAction,momentAge)
   drawWeather(c,weather,time,p)

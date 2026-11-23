@@ -14,6 +14,6 @@ const sceneNames:Record<Scenery,string>={nebula:'라일락 성운',ringsea:'청�
 export function Vista({scenery,light='dusk',weather='clear',moment=0,momentAction=null}: {scenery:Scenery;light?:Light;weather?:Weather;moment?:number;momentAction?:MomentAction|null}){
  return <div className="vista" role="img" aria-label={`${sceneNames[scenery]}의 ${lights[light]} 풍경, ${weathers[weather]}. 소녀와 하얀 고양이는 풍경을 바라봅니다.`}>
   <CanvasScene scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>
-  <VistaPeople/>
+  <VistaPeople scenery={scenery} light={light} weather={weather}/>
  </div>
 }
