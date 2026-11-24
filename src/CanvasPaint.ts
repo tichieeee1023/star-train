@@ -609,7 +609,7 @@ function groundCrystalcave(c:Ctx,p:Palette){
   c.fillStyle=vgrad(c,base-2,base+8,[[0,'rgba(220,245,255,0)'],[.4,'rgba(220,245,255,.4)'],[1,'rgba(220,245,255,0)']]);c.fillRect(0,base-2,W,10)
   for(let i=0;i<46;i++){const x=(i*79)%960,y=428+(i*37)%100;line(c,[[x,y],[x+10+i%4*6,y]],i%2?'#bfeaff':'#d8c8ff',1,.1+(i%3)*.05)}
   // 불규칙한 암석 윤곽: 채움과 클리핑에 동일한 경계를 사용한다.
-  const rim=Array.from({length:72},(_,i)=>{const a=i/72*TAU,k=1+.035*Math.sin(a*9)+.018*Math.cos(a*17)+.026*Math.sin(a*5);return [cx+Math.cos(a)*rx*k,cy+Math.sin(a)*ry*k]})
+  const rim=Array.from({length:72},(_,i)=>{const a=i/72*TAU,k=1+.035*Math.sin(a*9)+.018*Math.cos(a*17)+.026*Math.sin(a*5);const dy=Math.sin(a);return [cx+Math.cos(a)*rx*k,cy+dy*(ry+130*Math.max(0,dy))*k]})
   const aperture=()=>{rim.forEach(([x,y],i)=>i===0?c.moveTo(x,y):c.lineTo(x,y));c.closePath()}
   c.save();c.beginPath();c.rect(-20,-20,W+40,H+40);aperture();
   const rg=c.createLinearGradient(0,0,0,H);rg.addColorStop(0,mix(p.foreground,'#000000',.62));rg.addColorStop(.5,mix(p.foreground,'#000000',.45));rg.addColorStop(1,mix(p.foreground,'#000000',.3))
