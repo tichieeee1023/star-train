@@ -7,6 +7,7 @@ const D=(...l:[Speaker,string][]):Conversation=>l.map(([speaker,text])=>({speake
 
 /** 정차 후 두 친구의 대화: 역마다 3종, '더 이야기하기'로 순환합니다. */
 export const arrivalConversations:Record<Scenery,readonly Conversation[]> = {
+ galaxyend:[D(['girl','정말 은하의 끝에 온 걸까?'],['cat','끝이라면 여기서 쉬었다 가자.']),D(['girl','별들이 이렇게 가까이 있어.'],['cat','우리도 작은 별 같아.']),D(['girl','이 풍경을 기억하고 싶어.'],['cat','그럼 셋이 함께 기억하자.'])],
   "nebula": [
     [
       {
@@ -391,6 +392,7 @@ export const arrivalConversations:Record<Scenery,readonly Conversation[]> = {
 
 /** 하차 후 각 행동별 대화: 10곳 × 2행동 × 3회차. */
 export const interactionConversations:Record<Scenery,readonly (readonly Conversation[])[]> = {
+ galaxyend:[[D(['girl','빛이 둥글게 이어져!'],['cat','끝이 없는 길이네.']),D(['girl','별이 하나 더 피었어.'],['cat','우리도 봤어.']),D(['girl','천천히 따라가 보자.'],['cat','응, 서두르지 말자.'])],[D(['girl','소원을 빌었어.'],['cat','나는 함께 돌아오는 것.']),D(['girl','아가씨도 소원을 빌었어?'],['cat','우리 셋의 소원이겠지.']),D(['girl','다음에도 같이 오자.'],['cat','약속이야.'])]],
   "nebula": [
     [
       [

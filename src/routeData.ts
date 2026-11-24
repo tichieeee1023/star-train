@@ -3,10 +3,11 @@
  * 하늘·별·혜성·도시 스카이라인은 객실 일러스트와 독립된 SVG 레이어입니다.
  * 시차 애니메이션은 CSS만 사용하므로 타이머나 React 재렌더링이 없습니다.
  */
-export const sceneryOrder = ['nebula','ringsea','snowfield','auroraforest','canyon','city','dunes','garden','ruins','volcano','lanternsea','cloudwhale','crystalcave','starcherry'] as const
+export const sceneryOrder = ['nebula','ringsea','snowfield','auroraforest','canyon','city','dunes','garden','ruins','volcano','lanternsea','cloudwhale','crystalcave','starcherry','galaxyend'] as const
 export type Scenery = typeof sceneryOrder[number]
 
 export const routeInfo:Record<Scenery,{name:string;label:string;title:string;description:string;icon:string}> = {
+  galaxyend:{name:'은하의 끝 정거장',label:'은하의 끝',title:'별들이 태어나고 잠드는 곳',description:'보랏빛 구름바다 너머 거대한 은하가 천천히 소용돌이칩니다.',icon:'✧'},
   nebula:{name:'라일락 성운역',label:'라일락 성운',title:'별 사이를 달리는 밤',description:'연보라 성운과 별가루가 아주 천천히 흘러갑니다.',icon:'✦'},
   ringsea:{name:'청람 고리해안역',label:'청람 고리해안',title:'거대한 고리 아래에서',description:'유리처럼 투명한 바다 위로 고리행성이 지나갑니다.',icon:'◌'},
   snowfield:{name:'혜성 설원역',label:'혜성 설원',title:'푸른 별의 설원을 건너',description:'은빛 설산과 얼음벌판을 따라 혜성이 미끄러집니다.',icon:'❄'},

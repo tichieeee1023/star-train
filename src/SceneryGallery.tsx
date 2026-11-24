@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from 'react'
+import {TravelCGGallery} from './TravelCG'
 import {createPortal} from 'react-dom'
 import {paintWorld} from './CanvasPaint'
 import {ScenicViewer} from './ScenicViewer'
@@ -15,8 +16,8 @@ const moods:Light[]=['dusk','dawn','night']
 const atmosphereTypes:Weather[]=['rain','snow','meteor','aurora']
 /** Original Gallery's collapsible night-sky map, adapted to the ten railway stations. */
 function StarMap({found}:{found:Set<Scenery>}){
- const points:Record<Scenery,[number,number]>={nebula:[60, 68],ringsea:[190, 39],snowfield:[312, 88],auroraforest:[440, 53],canyon:[156, 145],city:[377, 155],dunes:[270, 176],garden:[474, 112],ruins:[38, 142],volcano:[250, 118],lanternsea:[110, 108],cloudwhale:[360, 28],crystalcave:[330, 128],starcherry:[455, 175]}
- const lines:[Scenery,Scenery][]=[['nebula','ringsea'],['ringsea','snowfield'],['snowfield','auroraforest'],['ringsea','canyon'],['canyon','city'],['city','auroraforest'],['city','dunes'],['auroraforest','garden'],['canyon','ruins'],['canyon','volcano'],['volcano','snowfield'],['nebula','lanternsea'],['lanternsea','ruins'],['lanternsea','canyon'],['cloudwhale','auroraforest'],['cloudwhale','snowfield'],['crystalcave','city'],['crystalcave','volcano'],['starcherry','city'],['starcherry','garden']]
+ const points:Record<Scenery,[number,number]>={galaxyend:[235,55],nebula:[60, 68],ringsea:[190, 39],snowfield:[312, 88],auroraforest:[440, 53],canyon:[156, 145],city:[377, 155],dunes:[270, 176],garden:[474, 112],ruins:[38, 142],volcano:[250, 118],lanternsea:[110, 108],cloudwhale:[360, 28],crystalcave:[330, 128],starcherry:[455, 175]}
+ const lines:[Scenery,Scenery][]=[['galaxyend','ringsea'],['galaxyend','cloudwhale'],['nebula','ringsea'],['ringsea','snowfield'],['snowfield','auroraforest'],['ringsea','canyon'],['canyon','city'],['city','auroraforest'],['city','dunes'],['auroraforest','garden'],['canyon','ruins'],['canyon','volcano'],['volcano','snowfield'],['nebula','lanternsea'],['lanternsea','ruins'],['lanternsea','canyon'],['cloudwhale','auroraforest'],['cloudwhale','snowfield'],['crystalcave','city'],['crystalcave','volcano'],['starcherry','city'],['starcherry','garden']]
  return <svg className="album-sky-map" viewBox="0 0 500 200" role="img" aria-label={`이어진 별자리 ${found.size} / ${sceneryOrder.length}`}>
   {lines.map(([a,b],index)=>{
    const on=found.has(a)&&found.has(b);return <line key={index} x1={points[a][0]} y1={points[a][1]} x2={points[b][0]} y2={points[b][1]} stroke={on?'#f6dcb5':'#8c93a9'} strokeOpacity={on?.83:.15} strokeWidth={on?1.5:.8}/>
@@ -37,7 +38,7 @@ function Photograph({place,light,weather}:{place:Scenery;light:Light;weather:Wea
  return <canvas className="gallery-photograph" ref={ref} width={346} height={195} aria-hidden="true"/>
 }
 export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void}){
- const [part,setPart]=useState<'scenes'|'crystals'|'discoveries'>('scenes')
+ const [part,setPart]=useState<'scenes'|'crystals'|'discoveries'|'travelcg'>('scenes')
  const [selected,setSelected]=useState<Scenery|null>(null)
  const [light,setLight]=useState<Light>('dusk')
  const [weather,setWeather]=useState<Weather>('clear')
@@ -65,7 +66,8 @@ export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void})
   <div className="album-overline">우리의 여행 기록 ✧</div>
   <div className="album-header"><h1>별 도감</h1><span>{found.length} / {sceneryOrder.length}개의 행성</span></div>
   <p className="album-help">항해를 마치면 그때 만난 풍경이 저절로 사진처럼 찍혀요. 같은 행성의 노을·새벽·한밤과 특별한 기후를 각각 모을 수 있습니다.</p>
-  <nav className="album-sections" aria-label="도감 분류"><button type="button" aria-pressed={part==='scenes'} onClick={()=>setPart('scenes')}>풍경</button><button type="button" aria-pressed={part==='crystals'} onClick={()=>setPart('crystals')}>수정</button><button type="button" aria-pressed={part==='discoveries'} onClick={()=>setPart('discoveries')}>작은 발견</button></nav>
+  <nav className="album-sections" aria-label="도감 분류"><button type="button" aria-pressed={part==='scenes'} onClick={()=>setPart('scenes')}>풍경</button><button type="button" aria-pressed={part==='travelcg'} onClick={()=>setPart('travelcg')}>여행의 기억</button><button type="button" aria-pressed={part==='crystals'} onClick={()=>setPart('crystals')}>수정</button><button type="button" aria-pressed={part==='discoveries'} onClick={()=>setPart('discoveries')}>작은 발견</button></nav>
+  {part==='travelcg'&&<TravelCGGallery game={game}/>}
   {part==='scenes'&&<>
    {found.length>0&&<details className="album-star-map"><summary>우리의 별자리 <span>{found.length} / {sceneryOrder.length}</span></summary><StarMap found={new Set(found)}/><p>만나 본 행성이 하나씩 빛나고, 서로 이어져요.</p></details>}
    <div className="album-count">{total}개의 시간대 · {specialCount}개의 특별한 하늘</div>

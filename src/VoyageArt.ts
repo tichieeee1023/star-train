@@ -58,6 +58,7 @@ const stars:Star[]=(()=>{
 const starColor=(h:number)=>h<.14?'#ffd9b8':h<.6?'#e6f0ff':h<.85?'#fdeefa':'#bfe3ff'
 
 const destPlanet:Record<Scenery,PlanetOpts>={
+ galaxyend:{base:'#9c77d9',lit:'#f2d4ff',shade:'#24174f',atmos:'#c4a3ff',bands:[{c:'#e3caff',a:.22}]},
  nebula:{base:'#a995dd',lit:'#f2dcff',shade:'#2d2a62',atmos:'#d9b8ff',ring:{color:'#efdcf7',tilt:-.32,inner:1.55,outer:2.1,alpha:.5},bands:[{c:'#ffffff',a:.16},{c:'#6f6bc4',a:.22},{c:'#ffd6f0',a:.12}]},
  ringsea:{base:'#62b6c9',lit:'#c9f5ee',shade:'#133a62',atmos:'#9fe9e3',ring:{color:'#e6fbf5',tilt:-.32,inner:1.5,outer:2.05,alpha:.5},bands:[{c:'#ffffff',a:.18},{c:'#2b7ea8',a:.25}]},
  snowfield:{base:'#a9cbe6',lit:'#f3fbff',shade:'#33507c',atmos:'#d3f2ff',craters:true,bands:[{c:'#ffffff',a:.14}]},

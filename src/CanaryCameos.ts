@@ -32,6 +32,7 @@ export function withCameo(lines:Conversation,extra?:Conversation):Conversation{
 
 /* ───────── 도착 대화: 10곳 × 3편 ───────── */
 export const arrivalCameos:Record<Scenery,readonly Conversation[]>={
+ galaxyend:[beats(K('끝이라 부르지만, 별이 태어나는 곳이기도 하단다.')),beats(K('우리 셋의 빛도 저기 어딘가에 있겠구나.')),beats(K('기억이 흐려지면 다시 함께 오렴.'))],
   nebula:[
     beats(K('잉크라니, 제법 시적인 표현이구나. ……솜사탕보다는 훨씬 낫고.'),M('냐. 둘 다 달콤한 건 맞잖아.')),
     beats(K('같은 하늘 아래서도 별빛은 저마다 다른 색을 품지. 하나하나 눈여겨보렴.'),G('역시 아가씨는 아는 게 많아!'),K('……그렇게 솔직하게 감탄하면 설명할 맛이 나는구나.')),
@@ -109,6 +110,7 @@ export const arrivalCameos:Record<Scenery,readonly Conversation[]>={
  * 결과를 공통 대사로 뭉치지 않아, 빛이 사라진 뒤에도 '지금 피고 있다'는 등의 모순을 막는다.
  */
 export const momentCameos:Record<Scenery,readonly [readonly [Conversation,Conversation,Conversation],readonly [Conversation,Conversation,Conversation]]>={
+ galaxyend:[[beats(K('은하의 박자는 아주 느리구나.')),beats(K('빛이 둥글게 이어지는구나.')),beats(K('천천히 따라가 보렴.'))],[beats(K('소원은 조용히 간직하는 것도 좋단다.')),beats(K('작은 별 하나가 빛나는구나.')),beats(K('다음에도 함께 오자꾸나.'))]],
   nebula:[
     [
       beats(K('수정들이 차례로 답하는구나. 첫 음을 잡으니 나머지가 따라오는 합창 같아. ♪'),G('아가씨도 같이 불러 줘!')),

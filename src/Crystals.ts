@@ -29,7 +29,7 @@ export const species:Record<CrystalId,{name:string;rarity:Rarity;color:string;de
  songfeather:{name:'노래깃 수정',rarity:'mystic',color:'#ffd75e',description:'황금빛 깃털이 노래를 머금고 굳은 수정.',shape:'feather'}
 }
 export const speciesIds=Object.keys(species) as CrystalId[]
-export const rareLocations:Readonly<Scenery[]> = ['auroraforest','canyon','lanternsea','cloudwhale','crystalcave','starcherry'] // 희귀 방문지; 희귀 항로 제안으로만 진입 가능
+export const rareLocations:Readonly<Scenery[]> = ['auroraforest','canyon','lanternsea','cloudwhale','crystalcave','starcherry','galaxyend'] // 희귀 방문지; 희귀 항로 제안으로만 진입 가능
 export const tripHours=[1,3,8] as const
 export type TripHours=typeof tripHours[number]
 export const CARE_WINDOW=4*60*60*1000
@@ -44,7 +44,7 @@ export type Seed={key:string;id:CrystalId;origin:Scenery;obtainedAt:number;sourc
 export type CrystalGrowing={seed:Seed;plantedAt:number;points:number;accountedSlots:number;lastCareSlot:number;lastCareAt:number;playerVisits:number;catVisits:number;influence:Record<Variant,number>;colorRoll:number;nutritionCount:number}
 export type CrystalRecord={count:number;variants:Variant[];firstAt:number;origin:Scenery}
 export type Journey={id:string;destination:Scenery;start:number;end:number;hours:TripHours;settled:boolean}
-export type Landing={journeyId:string;destination:Scenery;seed:Seed|null;at:number;hours:TripHours;rare:boolean;bonuses:Fertilizer[];weather?:Weather;action?:0|1;dialogue?:number;experienced?:boolean;newScenery?:boolean}
+export type Landing={journeyId:string;destination:Scenery;seed:Seed|null;at:number;hours:TripHours;rare:boolean;bonuses:Fertilizer[];weather?:Weather;action?:0|1;dialogue?:number;experienced?:boolean;newScenery?:boolean;firstPlace?:boolean}
 export type CrystalGame={version:1;life?:LifeState;seeds:Seed[];current:CrystalGrowing|null;album:Partial<Record<CrystalId,CrystalRecord>>;stock:Record<Fertilizer,number>;journey:Journey|null;landing:Landing|null;settledJourneyIds:string[];rareOffer:Scenery|null;lastRare:Scenery|null;routeOffers?:Scenery[];lastVisited?:Scenery|null;sceneRecords?:string[];sceneCards?:Scenery[];sceneShots?:string[];atmosphereShots?:string[];sceneDiscoveries?:string[];sceneVisits?:Partial<Record<Scenery,number>>;seedMisses?:number}
 export const freshGame=():CrystalGame=>({version:1,life:newLife(),seeds:[],current:null,album:{},stock:{tiny:0,bright:0,galaxy:0,mystic:0},journey:null,landing:null,settledJourneyIds:[],rareOffer:null,lastRare:null,routeOffers:pickRouteOffers(),lastVisited:null,sceneRecords:[],sceneCards:[],sceneShots:[],atmosphereShots:[],sceneDiscoveries:[],sceneVisits:{}})
 /** 두 곳의 일반 항로만 제시합니다. 희귀 항로는 도착 보상으로만 열립니다. */
@@ -64,6 +64,7 @@ export function voyageLight(hours:TripHours):Light{return hours===1?'dusk':hours
 /** 기후는 도착 정산에서 한번 결정하며, 그 여정에 귀속됩니다. */
 export function rollWeather(destination:Scenery,hours:TripHours,random:()=>number=Math.random):Weather{
  const climate:Record<Scenery,readonly (readonly [Weather,number])[]>={
+  galaxyend:[['clear',55],['meteor',30],['aurora',15]],
   nebula:[['clear',35],['meteor',26],['aurora',18],['snow',10]],
   ringsea:[['clear',31],['rain',30],['meteor',18],['aurora',12]],
   snowfield:[['clear',23],['snow',48],['meteor',15],['aurora',9]],
@@ -86,6 +87,7 @@ export function rollWeather(destination:Scenery,hours:TripHours,random:()=>numbe
 }
 const clamp=(v:number,min:number,max:number)=>Math.min(max,Math.max(min,v))
 const pools:Record<Scenery,readonly (readonly [CrystalId,number])[]>={
+ galaxyend:[['orbit',4],['meteor',4],['lilac',3],['songfeather',3],['moonhalo',2]],
  nebula:[['stardrop',6],['lilac',5],['bloom',2],['orbit',1]],
  ringsea:[['stardrop',5],['aqua',5],['moonhalo',2],['orbit',2]],
  snowfield:[['stardrop',5],['frost',6],['orbit',1]],
@@ -151,15 +153,16 @@ export function settleJourney(game:CrystalGame,now:number,random:()=>number=Math
  for(const bonus of bonuses)stock[bonus]+=1
  let rareOffer=game.rareOffer,lastRare=game.lastRare
  if(!rareOffer&&random()<.2){
-   const unvisited=rareLocations.filter(id=>!nextCards.includes(id))
-   const pool=unvisited.length?unvisited:rareLocations.filter(id=>id!==game.lastRare)
+   const eligible=rareLocations.filter(id=>id!=='galaxyend'||nextCards.length>=8)
+   const unvisited=eligible.filter(id=>!nextCards.includes(id))
+   const pool=unvisited.length?unvisited:eligible.filter(id=>id!==game.lastRare)
    rareOffer=pool[Math.floor(random()*pool.length)]??rareLocations[0]
    lastRare=rareOffer
  }
  const life=addCoins(normalizeLife(game.life),`journey:${journey.id}`,journeyCoinReward(journey.hours,rare,firstPlace,firstSky))
  return {...game,life,seedMisses:seed?0:(game.seedMisses??0)+1,seeds:seed?[...game.seeds,seed]:game.seeds,stock,sceneRecords:newScenery?[...sceneRecords,sceneKey]:sceneRecords,sceneCards:nextCards,sceneShots:nextShots,atmosphereShots:nextAtmosphere,sceneVisits,
    journey:{...journey,settled:true},settledJourneyIds:[...game.settledJourneyIds,journey.id].slice(-120),
-   landing:{journeyId:journey.id,destination:journey.destination,seed,at:journey.end,hours:journey.hours,rare,bonuses,weather, newScenery,action:random()<.5?0:1,dialogue:Math.floor(random()*3),experienced:false},rareOffer,lastRare}
+   landing:{journeyId:journey.id,destination:journey.destination,seed,at:journey.end,hours:journey.hours,rare,bonuses,weather, newScenery,firstPlace,action:random()<.5?0:1,dialogue:Math.floor(random()*3),experienced:false},rareOffer,lastRare}
 }
 export function completeLanding(game:CrystalGame):CrystalGame{return game.journey&&!game.journey.settled?game:{...game,journey:null,landing:null}}
 /** 같은 여행의 행동은 한 번만 발견 처리합니다. */

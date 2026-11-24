@@ -3,6 +3,7 @@ import type {Scenery} from './Sky'
 import {Vista, type Light, type Weather} from './Vista'
 
 export const stationInfo = {
+ galaxyend:{name:'은하의 끝 정거장',subtitle:'별들이 태어나고 잠드는 곳',caption:'구름바다 너머, 우리를 기다리는 빛이 있어요.',accent:'#d9b8ff'},
  nebula:{name:'라일락 성운역',subtitle:'보랏빛 별들이 머무는 정거장',caption:'은하의 물결을 바라보며 별빛 사이에 머물러요.',accent:'#ceb8f5'},
  ringsea:{name:'청람 고리해안역',subtitle:'행성 고리 아래 푸르게 물드는 바다',caption:'거대한 고리행성이 비치는 바다에 은빛 물결이 일어요.',accent:'#9ce7df'},
  snowfield:{name:'혜성 설원역',subtitle:'혜성이 스쳐 지나가는 고요한 설산',caption:'새하얀 능선 위로 차가운 별빛이 내려앉아요.',accent:'#cbebfb'},

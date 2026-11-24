@@ -6,6 +6,7 @@ export type PlaceExperience = {before:string; actions:readonly [Discovery,Discov
 
 /** 각 역에서 선택할 수 있는 두 가지 발견. 모든 기록은 현재 플레이 중에만 유지됩니다. */
 export const placeMoments:Record<Scenery,PlaceExperience>={
+ galaxyend:{before:'구름바다 너머 은하가 조용히 회전하고 있어요.',actions:[{label:'은하의 빛 따라가기',hint:'별빛이 나선을 그려요',lines:['별빛이 천천히 나선을 그렸어요.','먼 별들이 작은 파도처럼 이어졌어요.','빛의 끝에서 새로운 별이 반짝였어요.']},{label:'세 친구의 소원 빌기',hint:'작은 별들이 모여요',lines:['세 친구의 소원이 별빛이 되었어요.','고요한 구름 너머로 작은 빛이 피어났어요.','소원이 은하의 한 조각처럼 반짝였어요.']}]},
   nebula:{
     before:'저 멀리 투명한 수정 기둥과 별무리가 보입니다. 어디에 먼저 인사할까요?',
     actions:[

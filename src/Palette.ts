@@ -57,6 +57,11 @@ export const palettes: Record<Scenery,Record<Light,Palette>> = {
     dusk:{sky:['#1c1a48','#5a3a78','#c8607a','#ffa868'],cloudA:'#ff9a90',cloudB:'#a878c8',horizon:'#f08c78',deep:'#4c3a72',ridge:'#5c3c70',foreground:'#2e2050',moon:'#ffd8a0',moonOpacity:0.8,starOpacity:0.8,platformTop:'#b88098',platformSide:'#4c3468'},
     night:{sky:['#050a22','#10204a','#2a2f66','#4e3f76'],cloudA:'#4a6aa8',cloudB:'#8a68b8',horizon:'#6a5a90',deep:'#1a2a56',ridge:'#202a58',foreground:'#141e42',moon:'#ffd9a0',moonOpacity:0.9,starOpacity:1,platformTop:'#5e5c88',platformSide:'#262c58'}
   },
+  galaxyend: {
+    dawn:{sky:['#6a86c8','#a8b8e8','#f0c8e0','#ffe8c8'],cloudA:'#fff0f4',cloudB:'#c8d8ff',horizon:'#ffe0d0',deep:'#8aa0d0',ridge:'#a8b4e0',foreground:'#7a88b8',moon:'#fffaf0',moonOpacity:0.5,starOpacity:0.4,platformTop:'#e4d0e0',platformSide:'#7a78a8'},
+    dusk:{sky:['#33226d','#8a78c8','#f0a0c0','#ffd0a0'],cloudA:'#ffd0e0',cloudB:'#a8b0f0',horizon:'#ffc8b8',deep:'#6a68b0',ridge:'#8a78c0',foreground:'#5a5898',moon:'#fff0e0',moonOpacity:0.75,starOpacity:0.7,platformTop:'#d8b8d8',platformSide:'#625a98'},
+    night:{sky:['#130d42','#392268','#7654ae','#9a88c8'],cloudA:'#7a98e0',cloudB:'#c0a0e8',horizon:'#a898d0',deep:'#3a4a8c',ridge:'#4a5a9c',foreground:'#2c3a78',moon:'#f0f4ff',moonOpacity:0.9,starOpacity:1,platformTop:'#8a88c0',platformSide:'#363c78'}
+  },
   cloudwhale: {
     dawn:{sky:['#6a86c8','#a8b8e8','#f0c8e0','#ffe8c8'],cloudA:'#fff0f4',cloudB:'#c8d8ff',horizon:'#ffe0d0',deep:'#8aa0d0',ridge:'#a8b4e0',foreground:'#7a88b8',moon:'#fffaf0',moonOpacity:0.5,starOpacity:0.4,platformTop:'#e4d0e0',platformSide:'#7a78a8'},
     dusk:{sky:['#3a4a98','#8a78c8','#f0a0c0','#ffd0a0'],cloudA:'#ffd0e0',cloudB:'#a8b0f0',horizon:'#ffc8b8',deep:'#6a68b0',ridge:'#8a78c0',foreground:'#5a5898',moon:'#fff0e0',moonOpacity:0.75,starOpacity:0.7,platformTop:'#d8b8d8',platformSide:'#625a98'},

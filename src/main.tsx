@@ -21,6 +21,7 @@ import {petCat,talkGirl,talkCanary,grantBondRewards,levelOf,bondStories} from '.
 import {canaryConversation,canaryChapters,canaryArrivalStories} from './CanaryStories'
 import {CrystalGarden} from './CrystalGarden'
 import {SceneryGallery} from './SceneryGallery'
+import {TravelCGViewer,TravelCGImage,type TravelCGId} from './TravelCG'
 import {voyageStage,stageNames} from './VoyageSky'
 import {planVoyageEvents,pendingEvents,voyageLog,eventKinds,isClaimed,isLive,claimVoyageEvent,voyageEventStory,type VoyageEvent} from './VoyageEvents'
 import {InstallApp,registerAppWorker} from './InstallApp'
@@ -38,6 +39,9 @@ function App(){
  const [phase,setPhase]=useState<JourneyPhase>(()=>crystal.journey?.settled?'stopped':'moving')
  const [light,setLight]=useState<Light>('dusk')
  const [viewer,setViewer]=useState(false)
+ const [cg,setCg]=useState<{id:TravelCGId;first?:boolean}|null>(null)
+ const [cgMode,setCgMode]=useState(false)
+ const seenCG=useRef(new Set<string>())
  const [moment,setMoment]=useState(0)
  const [momentAction,setMomentAction]=useState<MomentAction|null>(null)
  const [travelHours,setTravelHours]=useState<TripHours>(readHours)
@@ -175,14 +179,15 @@ function handlePet(){
  useEffect(()=>{if(phase!=='arriving')return;const t=window.setTimeout(()=>{setPhase('stopped')},3300);return ()=>window.clearTimeout(t)},[phase])
  useEffect(()=>{
   const journeyId=crystal.journey?.id
-  if(page==='train'&&phase==='stopped'&&journeyId&&lastArrivalStory.current!==journeyId&&!story&&!viewer&&!routeDialogOpen){
+  if(page==='train'&&phase==='stopped'&&journeyId&&lastArrivalStory.current!==journeyId&&!story&&!viewer&&!routeDialogOpen&&!cg){
    lastArrivalStory.current=journeyId;openStory({title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])},false)
   }
  },[phase,page,crystal.journey?.id,story,viewer,routeDialogOpen])
  useEffect(()=>{
-  if(page==='train'&&phase==='moving'&&visiting&&!crystal.life!.conductor?.greeted&&!story&&journeyPending.length===0&&!viewer&&!routeDialogOpen)visitConductor(false)
+  if(page==='train'&&phase==='moving'&&visiting&&!crystal.life!.conductor?.greeted&&!story&&journeyPending.length===0&&!viewer&&!routeDialogOpen&&!cg)visitConductor(false)
  },[page,phase,visiting,crystal.life?.conductor?.greeted,journeyPending.length,story,viewer,routeDialogOpen])
  function depart(){
+  setCgMode(false)
   setEventNotice('')
   setCrystal(previous=>completeLanding(previous));setStory(null)
   setScenery(crystal.routeOffers?.[0]??'nebula');setPhase('moving');setMoment(0);setMomentAction(null)
@@ -205,14 +210,21 @@ function handlePet(){
    setCrystal(previous=>experienceLanding(previous))
    openStory({title:'이곳에서의 작은 발견',lines:withCameo(interactionConversations[scenery][action][landed.dialogue??0],momentCameos[scenery][action][landed.dialogue??0])})
  }
+ function stepOutside(){
+  setStory(null);setPhase('platform');setCgMode(false);window.scrollTo({top:0,behavior:'auto'})
+  if(!landed?.firstPlace||seenCG.current.has(landed.journeyId))return
+  seenCG.current.add(landed.journeyId);setCg({id:scenery,first:true})
+ }
  const sceneTalk=atPlatform||phase==='stopped'?{title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])}:ambient
  const title=atPlatform||phase==='stopped'?station.name:phase==='arriving'?'곧 역에 도착합니다':crystal.journey?'별 사이를 건너는 중':'별빛이 머무는 선실'
  return <main className="app">
+  {cg&&<TravelCGViewer id={cg.id} first={cg.first} onClose={()=>setCg(null)}/>}
   <header className="app-header"><div className="brand"><span className="brand-spark" aria-hidden="true">✧</span><span>은하 열차 일지</span></div><div className="header-tools"><span className="top-label">{page==='crystal'?'재배실':page==='album'?'별 도감':page==='shop'?'상점':atPlatform?'하차':'선실'}</span></div></header>
   {page==='train'&&<>
   <section ref={heroRef} tabIndex={-1} className={`hero train-hero${story?' train-hero-speaking':''}`} aria-label={atPlatform?'하차 후 풍경':'열차 객실'}>
    <div className={`scene-container${atPlatform?' scene-container-vista':''}`} key={atPlatform?'vista':phase==='moving'?'space':'station'}>
-    {story?.memory?<SpecialCG scene={story.memory}/>:atPlatform?<StationView scenery={scenery} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction}/>:<Cabin scenery={scenery} state={phase} light={skyLight} weather={skyWeather} journey={skyJourney}/>}
+    {story?.memory?<SpecialCG scene={story.memory}/>:cgMode?<TravelCGImage id={atPlatform?scenery:'cabin'}/>:atPlatform?<StationView scenery={scenery} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction}/>:<Cabin scenery={scenery} state={phase} light={skyLight} weather={skyWeather} journey={skyJourney}/>}
+    {!story?.memory&&<div className="travel-cg-toggle"><button type="button" onClick={()=>setCgMode(v=>!v)}>{cgMode?'움직이는 풍경':'일러스트'}</button><button type="button" onClick={()=>setCg({id:atPlatform?scenery:'cabin'})}>CG 감상</button></div>}
    </div>
    <span className="location">✦ &nbsp; {atPlatform||phase==='stopped'?station.name:phase==='arriving'?'역에 접근 중':travelStage?stageNames[travelStage]:'별의 바다'}</span>
    {heart>0&&<span key={heart} className="heart-pop" aria-hidden="true" style={{right:'22%',bottom:'27%'}}>♥</span>}
@@ -223,7 +235,7 @@ function handlePet(){
   </section>
   {phase==='stopped'&&<div className="arrival-cta" aria-label="도착 후 하차">
    <div className="arrival-cta-copy"><strong>✦ {station.name}</strong><small>도착했어요 · 이제 풍경 속으로</small></div>
-   <button type="button" className="arrival-cta-button" onClick={()=>{setStory(null);setPhase('platform');window.scrollTo({top:0,behavior:'auto'})}}>✧ 내려서 풍경 보기 <span aria-hidden="true">›</span></button>
+   <button type="button" className="arrival-cta-button" onClick={stepOutside}>✧ 내려서 풍경 보기 <span aria-hidden="true">›</span></button>
   </div>}
   {!story&&phase!=='stopped'&&<AutoDialogue key={phase+":"+scenery+":"+(crystal.journey?.id??"idle")} lines={sceneTalk.lines} active={!viewer&&!routeDialogOpen} repeat={phase==='moving'}/>}
   <div className="train-quick-panel">
@@ -307,7 +319,7 @@ function handlePet(){
    <button className="route-depart" type="button" onClick={sail}>✦ &nbsp; 이 행성으로 출발하기</button>
   </dialog>
   <details className="train-app-options"><summary>앱 및 설치 안내</summary><InstallApp/></details>
-  <nav className="bottom-nav" aria-label="주 메뉴"><button className={page==='train'?'active-tab':''} aria-current={page==='train'?'page':undefined} onClick={()=>changePage('train')}><span aria-hidden="true">✧</span> 열차</button><button className={page==='crystal'?'active-tab':''} aria-current={page==='crystal'?'page':undefined} onClick={()=>changePage('crystal')}><span aria-hidden="true">◇</span> 수정 재배 <small>{crystal.seeds.length?`씨앗 ${crystal.seeds.length}`:''}</small></button><button className={page==='album'?'active-tab':''} aria-current={page==='album'?'page':undefined} onClick={()=>changePage('album')}><span aria-hidden="true">▤</span> 별 도감 <small>{crystal.sceneCards?.length??0}/10</small></button><button className={page==='shop'?'active-tab':''} aria-current={page==='shop'?'page':undefined} onClick={()=>changePage('shop')}><span aria-hidden="true">▣</span> 별빛 상점 <small>✧ {crystal.life?.coins??0}</small></button></nav>
+  <nav className="bottom-nav" aria-label="주 메뉴"><button className={page==='train'?'active-tab':''} aria-current={page==='train'?'page':undefined} onClick={()=>changePage('train')}><span aria-hidden="true">✧</span> 열차</button><button className={page==='crystal'?'active-tab':''} aria-current={page==='crystal'?'page':undefined} onClick={()=>changePage('crystal')}><span aria-hidden="true">◇</span> 수정 재배 <small>{crystal.seeds.length?`씨앗 ${crystal.seeds.length}`:''}</small></button><button className={page==='album'?'active-tab':''} aria-current={page==='album'?'page':undefined} onClick={()=>changePage('album')}><span aria-hidden="true">▤</span> 별 도감 <small>{crystal.sceneCards?.length??0}/15</small></button><button className={page==='shop'?'active-tab':''} aria-current={page==='shop'?'page':undefined} onClick={()=>changePage('shop')}><span aria-hidden="true">▣</span> 별빛 상점 <small>✧ {crystal.life?.coins??0}</small></button></nav>
   {viewer&&<ScenicViewer scenery={scenery} phase={phase} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction} journey={skyJourney} conversation={story?.lines??(atPlatform||phase==='stopped'?withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0]):ambient.lines)} onClose={hideViewer}/>}
  </main>
 }

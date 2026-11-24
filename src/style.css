@@ -711,3 +711,12 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .landing-seed-text{min-width:0}
 .landing-seed-text p{margin:3px 0}
 .landing-seed-text .crystal-rarity{margin-top:5px}
+
+/* Travel CG collection */
+.travel-cg-image,.travel-cg-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:contain}.travel-cg-thumb{object-fit:cover;border-radius:8px}.travel-cg-toggle{position:absolute;z-index:5;right:12px;bottom:12px;display:flex;gap:6px}.travel-cg-toggle button,.travel-cg-buttons button,.travel-cg-buttons a,.travel-cg-reveal{background:#202642df;color:#fff4e7;border:1px solid #b5a9d177;border-radius:8px;padding:8px 11px;font:inherit;text-decoration:none;cursor:pointer}.travel-cg-viewer{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#090c18;color:#fff;overflow:hidden;animation:travel-cg-fade .65s ease}.travel-cg-viewer::backdrop{background:#090c18}.travel-cg-stage{display:flex;width:100%;height:100%;align-items:center;justify-content:center;background:none;border:0;padding:0}.travel-cg-stage img{width:100%;height:100%;object-fit:contain}.travel-cg-controls{position:absolute;bottom:0;left:0;right:0;padding:20px max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#101323e8);display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}.travel-cg-controls strong,.travel-cg-controls small,.travel-cg-controls span{display:block;margin:4px 0}.travel-cg-buttons{display:flex;gap:6px;flex-wrap:wrap}.travel-cg-reveal{position:absolute;right:12px;bottom:12px}.album-sections{flex-wrap:wrap}.album-sections button{min-width:0}@keyframes travel-cg-fade{from{opacity:0}to{opacity:1}}@media(prefers-reduced-motion:reduce){.travel-cg-viewer{animation:none}}
+
+.scene-container>.travel-cg-image{height:100%;object-fit:contain;background:#090c18}
+
+@media(max-width:480px){.album-sections button{flex:1 1 42%}.travel-cg-toggle button{font-size:11px;padding:5px 8px}.travel-cg-toggle{bottom:8px;right:8px}}
+
+.travel-cg-viewport{position:relative;width:100%;height:100%;background:#090c18}
