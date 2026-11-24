@@ -1,0 +1,25 @@
+/* v2.9.15: 풍경 아래 고정 대화 공간, 대사만 서서히 나타났다 사라진다. */
+.auto-dialogue{padding:12px 15px 8px;background:linear-gradient(125deg,#263550,#1c293f);color:#f6ebe4;border-top:1px solid #e4d5c254}
+.auto-dialogue-content{min-height:94px;display:grid;align-items:center}
+.auto-dialogue-line{animation:dialogue-appear .85s ease both;transition:opacity .85s ease;opacity:1;min-width:0}
+.auto-dialogue-line.dialogue-fading{animation:none;opacity:0}
+@keyframes dialogue-appear{from{opacity:0}to{opacity:1}}
+.auto-dialogue-speaker{display:block;font-size:11px;color:#e8c9a5;margin-bottom:5px}
+.auto-dialogue-line p{margin:0;font-size:14px;line-height:1.68;word-break:keep-all;overflow-wrap:anywhere}
+.auto-dialogue-controls{display:flex;justify-content:space-between;align-items:center;gap:6px;color:#b7c3d4;font-size:10px}
+.auto-dialogue-controls>div{display:flex;gap:5px;align-items:center}
+.auto-dialogue-controls button{min-height:33px;min-width:33px;padding:5px 9px;border-radius:7px;border:1px solid #d8c9ba55;background:#ffffff0b;color:#e7dbcd;font-size:11px;white-space:nowrap}
+.auto-dialogue-controls button:disabled{opacity:.32}
+.auto-dialogue-compact{border:1px solid #f1dbb477;border-radius:12px;background:#19253bea;backdrop-filter:blur(10px);box-shadow:0 8px 30px #050b1960;padding:8px 12px}
+.auto-dialogue-compact .auto-dialogue-content{min-height:64px}
+.auto-dialogue-compact .auto-dialogue-line p{font-size:13px}
+.auto-dialogue-compact .auto-dialogue-controls button{min-height:28px}
+.train-stage-dialogue .cabin-story-line-wrap{min-height:94px}
+.cabin-story-line-wrap.dialogue-fading{animation:none;opacity:0}
+.train-stage-dialogue .cabin-story-controls>div{flex-wrap:wrap;justify-content:flex-end}
+.train-app-options{margin:12px 16px 16px;padding:9px 12px;border-top:1px solid #e5d1b72b;color:#b9c3d0;font-size:12px}
+.train-app-options summary{cursor:pointer;padding:6px 0}
+.train-app-options .install-open{margin-top:8px}
+@media(max-width:380px){.auto-dialogue{padding:10px 12px 7px}.auto-dialogue-content{min-height:105px}.auto-dialogue-line p{font-size:13px}.auto-dialogue-controls button{padding:5px 6px}.train-stage-dialogue .cabin-story-line-wrap{min-height:105px}}
+@media(max-height:470px) and (orientation:landscape){.auto-dialogue-compact{padding:5px 10px}.auto-dialogue-compact .auto-dialogue-content{min-height:45px}.auto-dialogue-compact .auto-dialogue-line p{font-size:11px;line-height:1.4}.auto-dialogue-compact .auto-dialogue-speaker{margin-bottom:2px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){.auto-dialogue-line,.cabin-story-line-wrap{animation:none!important;transition:none!important}}
