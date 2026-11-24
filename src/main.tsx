@@ -1,8 +1,7 @@
-import {useCallback,useEffect,useRef,useState} from 'react'
+import {lazy,Suspense,useCallback,useEffect,useRef,useState} from 'react'
 import {createRoot} from 'react-dom/client'
 import {Cabin} from './Cabin'
 import {StationView,stationInfo} from './Station'
-import {ScenicViewer} from './ScenicViewer'
 import {lights,weathers,type Light,type Weather} from './Vista'
 import {routeInfo,type Scenery} from './Sky'
 import {placeMoments,type MomentAction} from './PlaceMoment'
@@ -11,7 +10,6 @@ import {arrivalCameos,momentCameos,bondCameos,withCameo} from './CanaryCameos'
 import {CabinDialogue} from './CabinDialogue'
 import {CrystalArt} from './CrystalArt'
 import {AutoDialogue} from './AutoDialogue'
-import {TrainShop} from './TrainShop'
 import {buyCrystalSeed,buyNutrient,crystalSeedPrice,nutrientPrices} from './CrystalShop'
 import {SpecialCG} from './SpecialCG'
 import {triggerSnack,triggerPet} from './Companions'
@@ -19,14 +17,18 @@ import {snacks,conductorReady,greetConductor,claimDaily,buySnack,eatSnack,snackS
 import {CabinCare} from './CabinCare'
 import {petCat,talkGirl,talkCanary,grantBondRewards,levelOf,bondStories} from './CabinBond'
 import {canaryConversation,canaryChapters,canaryArrivalStories} from './CanaryStories'
-import {CrystalGarden} from './CrystalGarden'
-import {SceneryGallery} from './SceneryGallery'
 import {TravelCGViewer,TravelCGImage,type TravelCGId} from './TravelCG'
 import {voyageStage,stageNames} from './VoyageSky'
 import {planVoyageEvents,pendingEvents,voyageLog,eventKinds,isClaimed,isLive,claimVoyageEvent,voyageEventStory,type VoyageEvent} from './VoyageEvents'
 import {InstallApp,registerAppWorker} from './InstallApp'
 import {species,rarityNames,loadGame,saveGame,startJourney,settleJourney,advanceGrowth,completeLanding,experienceLanding,voyageLight,plantSeed,careCrystal,nourishCrystal,harvestCrystal,type TripHours,type CrystalId,type Fertilizer} from './Crystals'
 import './style.css'
+
+const TrainShop=lazy(()=>import('./TrainShop').then(module=>({default:module.TrainShop})))
+const CrystalGarden=lazy(()=>import('./CrystalGarden').then(module=>({default:module.CrystalGarden})))
+const SceneryGallery=lazy(()=>import('./SceneryGallery').then(module=>({default:module.SceneryGallery})))
+const ScenicViewer=lazy(()=>import('./ScenicViewer').then(module=>({default:module.ScenicViewer})))
+const loadingScreen=<p className="feature-loading" role="status">화면을 준비하고 있어요.</p>
 
 type JourneyPhase='moving'|'arriving'|'stopped'|'platform'
 type Page='train'|'crystal'|'album'|'shop'
@@ -301,13 +303,13 @@ function handlePet(){
    <p className="stage-footnote">다음 목적지 두 곳과 도착 기후는 항해마다 달라집니다. 같은 행성에서도 새로운 풍경을 만날 수 있어요. 씨앗 보상과 발견 기록은 기기에 저장됩니다.</p>
   </section>
   </>}
-  {page==='shop'&&<div className="shop-page"><TrainShop key={shopStart} initialSection={shopStart} game={crystal} now={now} onDaily={()=>{setCrystal(prev=>({...prev,life:claimDaily(prev.life!,Date.now())}));setFeedback('오늘의 승차 기념 5코인을 받았어요.')}} onBuy={handleBuy} onEat={handleEat} onReplay={replayMemory} onConductor={visitConductor} onSeedBuy={handleSeedBuy} onNutrientBuy={handleNutrientBuy} onGarden={()=>changePage('crystal')}/>{feedback&&<p className="shop-feedback" role="status">{feedback}</p>}</div>}
-  {page==='crystal'&&<div className="crystal-page"><CrystalGarden game={crystal} now={now} light={light} onLight={setLight}
+  {page==='shop'&&<div className="shop-page"><Suspense fallback={loadingScreen}><TrainShop key={shopStart} initialSection={shopStart} game={crystal} now={now} onDaily={()=>{setCrystal(prev=>({...prev,life:claimDaily(prev.life!,Date.now())}));setFeedback('오늘의 승차 기념 5코인을 받았어요.')}} onBuy={handleBuy} onEat={handleEat} onReplay={replayMemory} onConductor={visitConductor} onSeedBuy={handleSeedBuy} onNutrientBuy={handleNutrientBuy} onGarden={()=>changePage('crystal')}/></Suspense>{feedback&&<p className="shop-feedback" role="status">{feedback}</p>}</div>}
+  {page==='crystal'&&<div className="crystal-page"><Suspense fallback={loadingScreen}><CrystalGarden game={crystal} now={now} light={light} onLight={setLight}
    onPlant={key=>setCrystal(previous=>plantSeed(previous,key,Date.now(),light))}
    onCare={kind=>setCrystal(previous=>careCrystal(previous,kind,light,Date.now()))}
    onNourish={id=>setCrystal(previous=>nourishCrystal(previous,id,light,Date.now()))}
-   onHarvest={harvest} onTravel={()=>changePage('train')} onShop={section=>changePage('shop',section)}/></div>}
-  {page==='album'&&<div className="scene-gallery-page"><SceneryGallery game={crystal} onSail={()=>changePage('train')}/></div>}
+   onHarvest={harvest} onTravel={()=>changePage('train')} onShop={section=>changePage('shop',section)}/></Suspense></div>}
+  {page==='album'&&<div className="scene-gallery-page"><Suspense fallback={loadingScreen}><SceneryGallery game={crystal} onSail={()=>changePage('train')}/></Suspense></div>}
   <dialog ref={routeDialog} className="route-dialog" onClose={()=>setRouteDialogOpen(false)} aria-labelledby="route-dialog-title">
    <div className="route-dialog-top"><span>✧ &nbsp;다음 항해</span><button type="button" onClick={()=>routeDialog.current?.close()} aria-label="닫기">×</button></div>
    <div className="route-dialog-preview"><span className="route-orb">{routeInfo[scenery].icon}</span><div><h2 id="route-dialog-title">{routeInfo[scenery].name}</h2><p>{routeInfo[scenery].description}</p></div></div>
@@ -320,7 +322,7 @@ function handlePet(){
   </dialog>
   <details className="train-app-options"><summary>앱 및 설치 안내</summary><InstallApp/></details>
   <nav className="bottom-nav" aria-label="주 메뉴"><button className={page==='train'?'active-tab':''} aria-current={page==='train'?'page':undefined} onClick={()=>changePage('train')}><span aria-hidden="true">✧</span> 열차</button><button className={page==='crystal'?'active-tab':''} aria-current={page==='crystal'?'page':undefined} onClick={()=>changePage('crystal')}><span aria-hidden="true">◇</span> 수정 재배 <small>{crystal.seeds.length?`씨앗 ${crystal.seeds.length}`:''}</small></button><button className={page==='album'?'active-tab':''} aria-current={page==='album'?'page':undefined} onClick={()=>changePage('album')}><span aria-hidden="true">▤</span> 별 도감 <small>{crystal.sceneCards?.length??0}/15</small></button><button className={page==='shop'?'active-tab':''} aria-current={page==='shop'?'page':undefined} onClick={()=>changePage('shop')}><span aria-hidden="true">▣</span> 별빛 상점 <small>✧ {crystal.life?.coins??0}</small></button></nav>
-  {viewer&&<ScenicViewer scenery={scenery} phase={phase} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction} journey={skyJourney} conversation={story?.lines??(atPlatform||phase==='stopped'?withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0]):ambient.lines)} onClose={hideViewer}/>}
+  {viewer&&<Suspense fallback={loadingScreen}><ScenicViewer scenery={scenery} phase={phase} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction} journey={skyJourney} conversation={story?.lines??(atPlatform||phase==='stopped'?withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0]):ambient.lines)} onClose={hideViewer}/></Suspense>}
  </main>
 }
 createRoot(document.getElementById('root')!).render(<App/>)

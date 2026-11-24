@@ -1,9 +1,11 @@
 import type {MomentAction} from './PlaceMoment'
-import {CanvasScene} from './CanvasScene'
+import {lazy,Suspense} from 'react'
 import type {Scenery} from './routeData'
 import type {Light} from './Palette'
 import type {Weather} from './CanvasPaint'
 import {VistaPeople} from './CompanionsLayer'
+
+const CanvasScene=lazy(()=>import('./CanvasScene').then(module=>({default:module.CanvasScene})))
 
 export type {Light} from './Palette'
 export type {Weather} from './CanvasPaint'
@@ -13,7 +15,7 @@ const sceneNames:Record<Scenery,string>={galaxyend:'은하의 끝',nebula:'라�
 /** Landscape is painted by Canvas. The girl and cat are drawn by Companions.ts (canvas) so they can breathe, sway and react to snacks. */
 export function Vista({scenery,light='dusk',weather='clear',moment=0,momentAction=null}: {scenery:Scenery;light?:Light;weather?:Weather;moment?:number;momentAction?:MomentAction|null}){
  return <div className="vista" role="img" aria-label={`${sceneNames[scenery]}의 ${lights[light]} 풍경, ${weathers[weather]}. 소녀와 하얀 고양이, 작은 황금빛 카나리아가 풍경을 바라봅니다.`}>
-  <CanvasScene scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>
+  <Suspense fallback={<canvas className="vista-canvas" width={960} height={540} aria-hidden="true"/>}><CanvasScene scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/></Suspense>
   <VistaPeople scenery={scenery} light={light} weather={weather}/>
  </div>
 }
