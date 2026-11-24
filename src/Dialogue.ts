@@ -736,7 +736,7 @@ export const interactionConversations:Record<Scenery,readonly (readonly Conversa
         },
         {
           "speaker": "cat",
-          "text": "우린 둘뿐이야. 그리고 나는 안 움직여."
+          "text": "나는 구경만 할래. 너희 둘이서 춤춰 봐."
         }
       ],
       [

@@ -5,6 +5,7 @@ import type {TripHours} from './Crystals'
 import {extraBanters,extraStageBanters} from './CabinExtras'
 import {snackExtras} from './SnackExtras'
 import {canaryBanters,canaryStageBanters,canarySnackStories} from './CanaryStories'
+import {withCameo,stageCameos,conductorStageCameos,conductorGeneralCameos,generalCameos,snackCameos} from './CanaryCameos'
 
 export type SnackId='stardust'|'cocoa'|'moonmilk'|'cometcorn'|'nebula'|'icecream'|'moontart'|'galaxybox'|'cloudbread'|'starchai'|'planetpie'|'nightfish'|'cherrymoon'|'nebularice'
 export type MemoryId='cocoa-night'|'moon-picnic'|'star-banquet'|'fish-starlight'|'cherry-moon'|'nebula-supper'
@@ -17,7 +18,7 @@ export const snacks:Record<SnackId,Snack>={
  nebula:{name:'성운 젤리',symbol:'◈',price:8,description:'흔들면 은은히 빛나는 세 가지 젤리'},
  icecream:{name:'은하수 아이스크림',symbol:'❄',price:10,description:'파란 별빛 시럽을 곁들인 디저트'},
  moontart:{name:'달빛 생선 타르트',symbol:'☽',price:16,description:'차장의 간식 카트에서만 만나는 한정 타르트',exclusive:true,memory:'moon-picnic'},
- galaxybox:{name:'은하 도시락',symbol:'✺',price:23,description:'별 모양 반찬이 담긴 특별한 두 사람분 도시락',exclusive:true,memory:'star-banquet'},
+ galaxybox:{name:'은하 도시락',symbol:'✺',price:23,description:'별 모양 반찬을 셋이 나누기 좋은 특별 도시락',exclusive:true,memory:'star-banquet'},
  cloudbread:{name:'별구름 빵',symbol:'☁',price:6,description:'누르면 다시 부푸는 부드러운 구름빵'},
  starchai:{name:'자스민 별차',symbol:'❀',price:8,description:'꽃향기가 은은한 따뜻한 우주 차'},
  planetpie:{name:'고리행성 파이',symbol:'◎',price:11,description:'층층이 쌓인 과일과 설탕 고리'},
@@ -141,7 +142,10 @@ export function trainBanter(stage:Stage|undefined,elapsedMs:number,seed:number):
  const offset=Math.floor(Math.abs(seed)/1000)%choose.length
  const step=stageSelected?Math.floor(slot/3):slot-Math.floor(slot/3)
  const index=(offset+step)%choose.length
- return {title:stage?'선실에서 · '+({departure:'출항',nebula:'성운',sea:'별의 바다',aurora:'오로라',islands:'떠다니는 섬',approach:'도착 전'} as Record<Stage,string>)[stage]:'선실에서 나눈 대화',lines:choose[index]}
+ const picked=choose[index]
+ // 구간 대화에는 그 구간에 맞는 한마디를, 일상 대화에는 두 번에 한 번쯤 아가씨가 끼어든다.
+ const extra=stageSelected&&stage?stageCameos[stage]:index%2===0?generalCameos[(index>>1)%generalCameos.length]:undefined
+ return {title:stage?'선실에서 · '+({departure:'출항',nebula:'성운',sea:'별의 바다',aurora:'오로라',islands:'떠다니는 섬',approach:'도착 전'} as Record<Stage,string>)[stage]:'선실에서 나눈 대화',lines:withCameo(picked,extra)}
 }
 export const conductorStory:Story={title:'차장님의 방문',lines:[
  {speaker:'conductor',text:'좋은 항해입니다, 승객 여러분. 이번 열차의 간식 카트도 도착했습니다.'},
@@ -169,7 +173,9 @@ export function snackStory(id:SnackId,used:number):Story{
  const pool=[...(snackStories[id]??[]),...(snackFollowups[id]?[snackFollowups[id]!]:[]),...(snackExtras[id]??[]),canarySnackStories[id]]
  if(!pool.length)throw new Error(`Missing snack story: ${id}`)
  const pick=pool[Math.max(0,Math.floor(used))%pool.length]
- return used===0&&snacks[id].memory?{...pick,memory:snacks[id].memory}:pick
+ const picked=used===0&&snacks[id].memory?{...pick,memory:snacks[id].memory}:pick
+ // 추억 CG가 걸린 장면은 그대로 두고, 그 밖의 간식 이야기에만 아가씨가 끼어든다.
+ return picked.memory?picked:{...picked,lines:withCameo(picked.lines,snackCameos[id])}
 }
 export function snackStoryCount(id:SnackId):number{return (snackStories[id]?.length??0)+(snackFollowups[id]?1:0)+(snackExtras[id]?.length??0)+1}
 export const conductorStories:readonly Story[]=[
@@ -201,6 +207,7 @@ export const conductorStageStories:Record<Stage,Story>={
 /** 구간이 정해져 있으면 3번 중 2번은 그 구간에 어울리는 이야기를 들려준다. */
 export function conductorStoryFor(journeyId:string,stage?:Stage):Story{
  const hash=[...journeyId].reduce((acc,c)=>acc+c.charCodeAt(0),0)
- if(stage&&hash%3!==0)return conductorStageStories[stage]
- return conductorStories[hash%conductorStories.length]
+ if(stage&&hash%3!==0){const s=conductorStageStories[stage];return {...s,lines:withCameo(s.lines,conductorStageCameos[stage])}}
+ const i=hash%conductorStories.length,s=conductorStories[i]
+ return {...s,lines:withCameo(s.lines,conductorGeneralCameos[i])}
 }

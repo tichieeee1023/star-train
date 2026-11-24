@@ -546,3 +546,16 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .canary-resonance .cabin-story{position:relative;inset:auto;left:auto;right:auto;bottom:auto;z-index:auto;max-height:none;box-shadow:none;margin:12px 0 9px;padding:10px;width:100%}
 .canary-another{display:block;width:100%;margin-top:7px;background:#ffffff12}
 @media(max-width:370px){.canary-resonance{padding:12px 10px}.canary-resonance-actions button{flex:1}.care-actions{gap:7px}}
+
+
+/* v2.9.12 — 도착 직후 하차 CTA. 보상/이벤트/대화 목록보다 먼저 보인다. */
+.arrival-cta{display:flex;align-items:center;gap:12px;padding:12px 17px;background:linear-gradient(105deg,#3a405b,#34344f);border-top:1px solid #eddbc328;border-bottom:1px solid #e4cfb65b}
+.arrival-cta-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px;color:#eedfcd}
+.arrival-cta-copy strong{font-size:12px;line-height:1.35;font-weight:600;word-break:keep-all}
+.arrival-cta-copy small{font-size:10px;line-height:1.4;color:#c8cadb;word-break:keep-all}
+.arrival-cta-button{display:flex;flex:0 0 auto;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:11px 18px;border:1px solid #f5dfb4b3;border-radius:14px;background:#93809e;color:#fff6e8;font-size:13px;font-weight:700;box-shadow:0 3px 12px #13162b4f;white-space:nowrap}
+.arrival-cta-button:hover{background:#a58db0}
+.arrival-cta-button:active{transform:scale(.985)}
+.arrival-cta-button span{font-size:21px;line-height:1;font-weight:400}
+@media(max-width:375px){.arrival-cta{padding:10px 11px;gap:8px}.arrival-cta-copy strong{font-size:11px}.arrival-cta-copy small{font-size:9px}.arrival-cta-button{padding:10px 12px;font-size:12px;min-height:46px;gap:7px}}
+@media(prefers-reduced-motion:reduce){.arrival-cta-button:active{transform:none}}

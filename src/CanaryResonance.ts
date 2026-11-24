@@ -38,7 +38,11 @@ export function canaryResonanceStory(game:CrystalGame,now:number,light:Light,var
    '네가 처음 돌볼 아이에게 어떤 이름으로 인사할지 생각해 두렴.'
   ]
   const thought=lines[(day+variation)%lines.length]
-  return scene('아가씨의 오늘의 한마디',['canary',thought],['girl','그럼 다음 여행에서는 수정 씨앗도 잘 살펴볼게!'],['cat','냐아. 그때까지 나는 수정병 옆에서 잘게.'],['canary','좋아. 단, 잠결에 넘어뜨리지만 말렴.'])
+  // 이미 씨앗이 있는데도 '다음 여행에서 씨앗을 찾아보겠다'고 말하지 않도록 한다.
+  const hasSeed=game.seeds.length>0
+  const girl=hasSeed?'그럼 가지고 있는 씨앗을 하나 심어 볼까?':'그럼 다음 여행에서는 수정 씨앗도 잘 살펴볼게!'
+  const cat=hasSeed?'냐아. 심고 나면 내가 옆에서 지켜볼게.':'냐아. 그때까지 나는 수정병 옆에서 잘게.'
+  return scene('아가씨의 오늘의 한마디',['canary',thought],['girl',girl],['cat',cat],['canary','좋아. 단, 잠결에 넘어뜨리지만 말렴.'])
  }
  const stage=growthStage(growthPercent(growing)),name=species[growing.seed.id].name
  const words=reflection[growing.seed.id]
