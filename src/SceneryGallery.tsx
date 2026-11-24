@@ -15,13 +15,13 @@ const moods:Light[]=['dusk','dawn','night']
 const atmosphereTypes:Weather[]=['rain','snow','meteor','aurora']
 /** Original Gallery's collapsible night-sky map, adapted to the ten railway stations. */
 function StarMap({found}:{found:Set<Scenery>}){
- const points:[number,number][]=[[60,68],[190,39],[312,88],[440,53],[156,145],[377,155],[270,176],[474,112],[38,142],[250,118]]
- const lines:[number,number][]=[[0,1],[1,2],[2,3],[1,4],[4,5],[5,3],[5,6],[3,7],[4,8],[4,9],[9,2]]
+ const points:Record<Scenery,[number,number]>={nebula:[60, 68],ringsea:[190, 39],snowfield:[312, 88],auroraforest:[440, 53],canyon:[156, 145],city:[377, 155],dunes:[270, 176],garden:[474, 112],ruins:[38, 142],volcano:[250, 118],lanternsea:[110, 108],cloudwhale:[360, 28],crystalcave:[330, 128],starcherry:[455, 175]}
+ const lines:[Scenery,Scenery][]=[['nebula','ringsea'],['ringsea','snowfield'],['snowfield','auroraforest'],['ringsea','canyon'],['canyon','city'],['city','auroraforest'],['city','dunes'],['auroraforest','garden'],['canyon','ruins'],['canyon','volcano'],['volcano','snowfield'],['nebula','lanternsea'],['lanternsea','ruins'],['lanternsea','canyon'],['cloudwhale','auroraforest'],['cloudwhale','snowfield'],['crystalcave','city'],['crystalcave','volcano'],['starcherry','city'],['starcherry','garden']]
  return <svg className="album-sky-map" viewBox="0 0 500 200" role="img" aria-label={`이어진 별자리 ${found.size} / ${sceneryOrder.length}`}>
   {lines.map(([a,b],index)=>{
-   const on=found.has(sceneryOrder[a])&&found.has(sceneryOrder[b]);return <line key={index} x1={points[a][0]} y1={points[a][1]} x2={points[b][0]} y2={points[b][1]} stroke={on?'#f6dcb5':'#8c93a9'} strokeOpacity={on?.83:.15} strokeWidth={on?1.5:.8}/>
+   const on=found.has(a)&&found.has(b);return <line key={index} x1={points[a][0]} y1={points[a][1]} x2={points[b][0]} y2={points[b][1]} stroke={on?'#f6dcb5':'#8c93a9'} strokeOpacity={on?.83:.15} strokeWidth={on?1.5:.8}/>
   })}
-  {sceneryOrder.map((p,i)=>{const [x,y]=points[i],on=found.has(p);return <g key={p}><circle cx={x} cy={y} r={on?4.8:2.7} fill={on?'#ffefce':'#7984a2'} opacity={on?1:.55}/>{on&&<><circle cx={x} cy={y} r={11} fill="none" stroke="#ecd6b0" strokeOpacity=".25"/><text x={x} y={y+20} textAnchor="middle" fill="#e9d5cc" fontSize="10">{routeInfo[p].label}</text></>}</g>})}
+  {sceneryOrder.map(p=>{const [x,y]=points[p],on=found.has(p);return <g key={p}><circle cx={x} cy={y} r={on?4.8:2.7} fill={on?'#ffefce':'#7984a2'} opacity={on?1:.55}/>{on&&<><circle cx={x} cy={y} r={11} fill="none" stroke="#ecd6b0" strokeOpacity=".25"/><text x={x} y={y+20} textAnchor="middle" fill="#e9d5cc" fontSize="10">{routeInfo[p].label}</text></>}</g>})}
  </svg>
 }
 function shotKey(place:Scenery,light:Light){return `${place}:${light}`}

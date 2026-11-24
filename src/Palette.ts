@@ -52,6 +52,26 @@ export const palettes: Record<Scenery,Record<Light,Palette>> = {
     dusk:{sky:['#1e2450','#5a5a8c','#b88a8c','#f0c088'],cloudA:'#e8b090',cloudB:'#9a98d0',horizon:'#e6b890',deep:'#7a6888',ridge:'#a8847e',foreground:'#44406a',moon:'#fff0cc',moonOpacity:0.8,starOpacity:0.78,platformTop:'#b8a0a0',platformSide:'#585478'},
     night:{sky:['#060e26','#152850','#2e4c78','#58688c'],cloudA:'#5a9ab8',cloudB:'#8a88c8',horizon:'#6a7a98',deep:'#2a4468',ridge:'#3a5478',foreground:'#1a2842',moon:'#e4ecff',moonOpacity:0.9,starOpacity:1,platformTop:'#68789a',platformSide:'#2c4066'}
   },
+  lanternsea: {
+    dawn:{sky:['#2a3358','#6b6a98','#d99a96','#ffd2a0'],cloudA:'#ffc0a8',cloudB:'#b8a8e0',horizon:'#f4b894',deep:'#5a5a86',ridge:'#6c6288',foreground:'#3a3458',moon:'#fff0cc',moonOpacity:0.55,starOpacity:0.55,platformTop:'#b8909a',platformSide:'#524470'},
+    dusk:{sky:['#1c1a48','#5a3a78','#c8607a','#ffa868'],cloudA:'#ff9a90',cloudB:'#a878c8',horizon:'#f08c78',deep:'#4c3a72',ridge:'#5c3c70',foreground:'#2e2050',moon:'#ffd8a0',moonOpacity:0.8,starOpacity:0.8,platformTop:'#b88098',platformSide:'#4c3468'},
+    night:{sky:['#050a22','#10204a','#2a2f66','#4e3f76'],cloudA:'#4a6aa8',cloudB:'#8a68b8',horizon:'#6a5a90',deep:'#1a2a56',ridge:'#202a58',foreground:'#141e42',moon:'#ffd9a0',moonOpacity:0.9,starOpacity:1,platformTop:'#5e5c88',platformSide:'#262c58'}
+  },
+  cloudwhale: {
+    dawn:{sky:['#6a86c8','#a8b8e8','#f0c8e0','#ffe8c8'],cloudA:'#fff0f4',cloudB:'#c8d8ff',horizon:'#ffe0d0',deep:'#8aa0d0',ridge:'#a8b4e0',foreground:'#7a88b8',moon:'#fffaf0',moonOpacity:0.5,starOpacity:0.4,platformTop:'#e4d0e0',platformSide:'#7a78a8'},
+    dusk:{sky:['#3a4a98','#8a78c8','#f0a0c0','#ffd0a0'],cloudA:'#ffd0e0',cloudB:'#a8b0f0',horizon:'#ffc8b8',deep:'#6a68b0',ridge:'#8a78c0',foreground:'#5a5898',moon:'#fff0e0',moonOpacity:0.75,starOpacity:0.7,platformTop:'#d8b8d8',platformSide:'#625a98'},
+    night:{sky:['#0e1a50','#2a3a88','#5a58b0','#9a88c8'],cloudA:'#7a98e0',cloudB:'#c0a0e8',horizon:'#a898d0',deep:'#3a4a8c',ridge:'#4a5a9c',foreground:'#2c3a78',moon:'#f0f4ff',moonOpacity:0.9,starOpacity:1,platformTop:'#8a88c0',platformSide:'#363c78'}
+  },
+  crystalcave: {
+    dawn:{sky:['#1c2c58','#3c5088','#7a88b8','#c8c0d8'],cloudA:'#88c8e0',cloudB:'#b8a0e0',horizon:'#b8b8d8',deep:'#3a4a78',ridge:'#44507c',foreground:'#2a3458',moon:'#e8f0ff',moonOpacity:0.6,starOpacity:0.6,platformTop:'#8898b8',platformSide:'#3c4470'},
+    dusk:{sky:['#1a1848','#443880','#8a62a8','#d898b0'],cloudA:'#88a8e0',cloudB:'#d098d8',horizon:'#c8a0c8',deep:'#3c3478',ridge:'#4a3c80',foreground:'#2a2258',moon:'#f4e4ff',moonOpacity:0.8,starOpacity:0.8,platformTop:'#9882b0',platformSide:'#403066'},
+    night:{sky:['#040818','#0c1838','#1a2a5a','#2a3a78'],cloudA:'#3a88a8',cloudB:'#7a68c0',horizon:'#3a4a88',deep:'#10204a',ridge:'#142450',foreground:'#0c1634',moon:'#d8e8ff',moonOpacity:0.9,starOpacity:1,platformTop:'#4a5a88',platformSide:'#1c2450'}
+  },
+  starcherry: {
+    dawn:{sky:['#4a4a8c','#b088b8','#f8b8c8','#ffe0c8'],cloudA:'#ffc8d8',cloudB:'#d8b8f0',horizon:'#ffd8d0',deep:'#9a78a8',ridge:'#b888a8',foreground:'#7a5a88',moon:'#fff4e8',moonOpacity:0.55,starOpacity:0.45,platformTop:'#e8b8c8',platformSide:'#785088'},
+    dusk:{sky:['#2e2a68','#8a5a98','#f090a8','#ffc090'],cloudA:'#ffa8c0',cloudB:'#c898e0',horizon:'#f8a8a0',deep:'#7a4a88',ridge:'#9a5a8c',foreground:'#5a3a78',moon:'#ffe8d0',moonOpacity:0.8,starOpacity:0.75,platformTop:'#d890a8',platformSide:'#68407a'},
+    night:{sky:['#0a0c30','#201c5a','#503a84','#8a5a98'],cloudA:'#c878b0',cloudB:'#7a68c8',horizon:'#9a6a98',deep:'#3a2a68',ridge:'#4a2a68',foreground:'#241a4a',moon:'#ffeaf4',moonOpacity:0.9,starOpacity:1,platformTop:'#8a6a98',platformSide:'#34285e'}
+  },
   volcano: {
     dawn:{sky:['#3a2a58','#a06080','#f0a088','#ffd29a'],cloudA:'#ffb0a0',cloudB:'#c898d0',horizon:'#f4b890',deep:'#8a4a68',ridge:'#b86470',foreground:'#4a2c4c',moon:'#ffe6c0',moonOpacity:0.55,starOpacity:0.5,platformTop:'#d8a08c',platformSide:'#6e4060'},
     dusk:{sky:['#2a1448','#7a3068','#d8606c','#ffb070'],cloudA:'#ff9a8a',cloudB:'#b878c0',horizon:'#f09a7c',deep:'#7a3460',ridge:'#a8506a',foreground:'#3c1c48',moon:'#ffdcb0',moonOpacity:0.8,starOpacity:0.75,platformTop:'#c88890',platformSide:'#5e3062'},

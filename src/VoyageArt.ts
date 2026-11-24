@@ -67,6 +67,10 @@ const destPlanet:Record<Scenery,PlanetOpts>={
  dunes:{base:'#d9b49a',lit:'#fff0d4',shade:'#5a3a5a',atmos:'#ffd9b0',craters:true,bands:[{c:'#fff3dc',a:.14},{c:'#a87b82',a:.2}]},
  garden:{base:'#8ccaa0',lit:'#f6ffe6',shade:'#1c4c58',atmos:'#f8c8e0',bands:[{c:'#ffd6ec',a:.16},{c:'#3a8a7c',a:.22}]},
  ruins:{base:'#98a6c8',lit:'#f4ecd8',shade:'#242c58',atmos:'#e8d8a8',ring:{color:'#e8d8a8',tilt:.4,inner:1.4,outer:1.75,alpha:.4},bands:[{c:'#ffffff',a:.1},{c:'#5a6aa8',a:.2}]},
+ lanternsea:{base:'#e8a070',lit:'#ffe8b8',shade:'#3a2058',atmos:'#ffc08a',bands:[{c:'#ffd8a0',a:.16},{c:'#8a4a7a',a:.22}]},
+ cloudwhale:{base:'#b8c8f0',lit:'#fff4f8',shade:'#4a4a98',atmos:'#e8d8ff',bands:[{c:'#ffffff',a:.2},{c:'#8a98d8',a:.2}]},
+ crystalcave:{base:'#78b8d8',lit:'#d8f4ff',shade:'#18285a',atmos:'#a8e8f4',craters:true,bands:[{c:'#c8f0ff',a:.14},{c:'#5868c0',a:.22}]},
+ starcherry:{base:'#e8a0c0',lit:'#fff0f4',shade:'#5a2a6a',atmos:'#ffc8e0',bands:[{c:'#ffd8e8',a:.18},{c:'#a860a8',a:.2}]},
  volcano:{base:'#c0586a',lit:'#ffd8a8',shade:'#3a1038',atmos:'#ff9a8a',craters:true,bands:[{c:'#ffb88a',a:.16},{c:'#6a2050',a:.24}]}
 }
 

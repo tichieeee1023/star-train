@@ -680,3 +680,34 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .train-hero .train-scene-caption small{flex:0 1 auto;font-size:10px;color:#ddccb8;line-height:1.4;letter-spacing:.01em}
 .train-hero .train-scene-caption strong{flex:0 1 auto;font-size:14px;line-height:1.4;text-align:right;word-break:keep-all}
 @media(max-width:350px){.train-hero .train-scene-caption{padding:8px 10px}.train-hero .train-scene-caption strong{font-size:12px}.train-hero .train-scene-caption small{font-size:9px}}
+
+/* v2.9.10 — 수정 입체 그림(12종) 부가 애니메이션. 모두 transform/opacity만 사용하고 모션 줄이기에서는 멈춥니다. */
+.crystal-svg .crystal-float{animation:crystal-bob 6s ease-in-out infinite}
+.crystal-svg .crystal-orbit-spin{transform-box:view-box;transform-origin:120px 130px;animation:crystal-spin 9s linear infinite}
+.crystal-svg .crystal-ribbon{animation:crystal-ribbon 6s ease-in-out infinite}
+.crystal-svg .crystal-ribbon.r2{animation-delay:-2s;animation-duration:7s}
+.crystal-svg .crystal-ribbon.r3{animation-delay:-4s;animation-duration:8s}
+.crystal-svg .crystal-ember{animation:crystal-rise 4.6s ease-in infinite;opacity:0}
+.crystal-svg .crystal-ember.e2{animation-delay:-1.6s;animation-duration:5.4s}
+.crystal-svg .crystal-ember.e3{animation-delay:-3.1s;animation-duration:6.2s}
+.crystal-svg .crystal-lava{animation:crystal-heartbeat-soft 3.6s ease-in-out infinite}
+.crystal-svg .crystal-note{animation:crystal-note 5s ease-in-out infinite;opacity:0}
+.crystal-svg .crystal-note.n2{animation-delay:-1.7s}
+.crystal-svg .crystal-note.n3{animation-delay:-3.3s}
+.crystal-svg .crystal-halo-ring{animation:crystal-ring 6s ease-in-out infinite;transform-box:view-box;transform-origin:121px 128px}
+.crystal-svg .crystal-halo-ring.r2{animation-delay:-3s}
+.crystal-svg .crystal-tail{animation:crystal-halo 3.4s ease-in-out infinite}
+@keyframes crystal-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3.5px)}}
+@keyframes crystal-spin{to{transform:rotate(360deg)}}
+@keyframes crystal-ribbon{0%,100%{transform:translateX(-3px)}50%{transform:translateX(4px)}}
+@keyframes crystal-rise{0%{opacity:0;transform:translateY(0)}15%{opacity:.95}100%{opacity:0;transform:translateY(-34px)}}
+@keyframes crystal-heartbeat-soft{0%,100%{opacity:.78}50%{opacity:1}}
+@keyframes crystal-note{0%{opacity:0;transform:translateY(8px)}30%{opacity:.95}70%{opacity:.8}100%{opacity:0;transform:translateY(-14px)}}
+@keyframes crystal-ring{0%,100%{opacity:.55;transform:scale(.98)}50%{opacity:1;transform:scale(1.03)}}
+@media(prefers-reduced-motion:reduce){.crystal-svg .crystal-float,.crystal-svg .crystal-orbit-spin,.crystal-svg .crystal-ribbon,.crystal-svg .crystal-lava,.crystal-svg .crystal-halo-ring,.crystal-svg .crystal-tail{animation:none}.crystal-svg .crystal-ember{animation:none;opacity:.7}.crystal-svg .crystal-note{animation:none;opacity:.8}}
+/* 항해 보상 카드의 수정 씨앗 */
+.landing-seed{display:flex;align-items:center;gap:12px;margin:8px 0 4px}
+.landing-seed .crystal-svg{width:96px;height:96px;flex-shrink:0;filter:drop-shadow(0 4px 12px #0007)}
+.landing-seed-text{min-width:0}
+.landing-seed-text p{margin:3px 0}
+.landing-seed-text .crystal-rarity{margin-top:5px}

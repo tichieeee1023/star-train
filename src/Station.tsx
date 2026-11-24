@@ -12,6 +12,10 @@ export const stationInfo = {
  garden:{name:'꽃별 정원역',subtitle:'별빛을 먹고 피는 꽃밭',caption:'꽃잎마다 작은 별빛이 맺혀 바람에 흔들려요.',accent:'#f6c4dc'},
  ruins:{name:'멈춘 시계탑역',subtitle:'시간이 쉬어 가는 오래된 유적',caption:'하늘에 걸린 시계탑 아래에서 돌 글자가 조용히 숨 쉬어요.',accent:'#e8d29a'},
  volcano:{name:'불씨 화산역',subtitle:'붉은 숨결이 오르는 따뜻한 산',caption:'화산의 불씨가 별처럼 올라가는 모습을 바라봐요.',accent:'#ffb88a'},
+ lanternsea:{name:'초롱 등불바다역',subtitle:'소원 등불이 떠다니는 고요한 바다',caption:'수면 위 등불 하나하나가 누군가의 소원처럼 흔들려요.',accent:'#ffc58a'},
+ cloudwhale:{name:'구름고래 해역 정거장',subtitle:'하늘고래가 헤엄치는 구름바다',caption:'구름 너머로 고래의 노랫소리가 아득하게 번져요.',accent:'#d8d0ff'},
+ crystalcave:{name:'거울수정 동굴역',subtitle:'수정이 별을 비추는 깊은 동굴',caption:'물 거울 속에서 동굴 밖의 별이 한 번 더 반짝여요.',accent:'#9fe8f4'},
+ starcherry:{name:'별벚꽃 언덕역',subtitle:'꽃비가 내리는 연분홍 언덕',caption:'바람이 불 때마다 별빛 꽃잎이 길을 만들어요.',accent:'#ffc4dc'},
  city:{name:'유리도시 중앙역',subtitle:'멀리서 반짝이는 작은 도시',caption:'먼 지평선의 불빛을 지나 다시 넓은 우주를 바라봐요.',accent:'#ffe0a8'}
 } satisfies Record<Scenery, {name:string; subtitle:string; caption:string; accent:string}>
 

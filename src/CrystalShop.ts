@@ -4,11 +4,11 @@ import {dailyKey, normalizeLife} from './TrainLife'
 import type {Scenery} from './routeData'
 
 export const seedPrices: Partial<Record<CrystalId,number>> = {
- stardrop:12, lilac:14, aqua:22, frost:24, amber:36, orbit:39
+ stardrop:12, lilac:14, aqua:22, frost:24, amber:36, orbit:39, moonhalo:26, bloom:26
 }
 export const nutrientPrices:Record<Fertilizer,number>={tiny:5,bright:11,galaxy:21,mystic:37}
 export const seedOrigins:Record<CrystalId,Scenery>={
- stardrop:'nebula',lilac:'garden',aqua:'ringsea',frost:'snowfield',amber:'canyon',orbit:'ruins',aurora:'auroraforest',meteor:'volcano'
+ stardrop:'nebula',lilac:'garden',aqua:'ringsea',frost:'snowfield',amber:'canyon',orbit:'ruins',aurora:'auroraforest',meteor:'volcano',moonhalo:'lanternsea',bloom:'starcherry',ember:'volcano',songfeather:'cloudwhale'
 }
 export const shopSeedIds=speciesIds.filter((id):id is CrystalId=>seedPrices[id]!==undefined)
 /** 날짜가 같은 동안은 세일 품목을 유지하고, 재시작으로 재추첨하지 않습니다. */

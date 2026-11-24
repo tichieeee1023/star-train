@@ -10,22 +10,26 @@ import type {Light} from './Palette'
 
 export type Rarity='common'|'special'|'rare'|'mystic'
 export const rarityNames:Record<Rarity,string>={common:'보통',special:'특별',rare:'희귀',mystic:'신비'}
-export type CrystalId='stardrop'|'lilac'|'aqua'|'frost'|'amber'|'orbit'|'aurora'|'meteor'
+export type CrystalId='stardrop'|'lilac'|'aqua'|'frost'|'amber'|'orbit'|'aurora'|'meteor'|'moonhalo'|'bloom'|'ember'|'songfeather'
 export type Variant='normal'|'dawn'|'dusk'|'night'
 export const variants:Variant[]=['normal','dawn','dusk','night']
 export const variantNames:Record<Variant,string>={normal:'본래 빛깔',dawn:'새벽빛',dusk:'노을빛',night:'한밤빛'}
-export const species:Record<CrystalId,{name:string;rarity:Rarity;color:string;description:string;shape:'spire'|'cluster'|'star'}>={
+export const species:Record<CrystalId,{name:string;rarity:Rarity;color:string;description:string;shape:'spire'|'cluster'|'star'|'gem'|'flower'|'feather'}>={
  stardrop:{name:'별방울 수정',rarity:'common',color:'#c6d1f9',description:'별이 떨어진 자리에 남는 작은 수정.',shape:'spire'},
  lilac:{name:'라일락 수정',rarity:'common',color:'#c1a1ed',description:'연보라빛 성운을 닮은 수정.',shape:'cluster'},
  aqua:{name:'청람 수정',rarity:'special',color:'#7ed7dd',description:'바다와 행성 고리의 빛을 품은 수정.',shape:'spire'},
  frost:{name:'서리별 수정',rarity:'special',color:'#b2e0f7',description:'표면에 눈꽃처럼 빛이 번지는 수정.',shape:'star'},
- amber:{name:'황혼 수정',rarity:'rare',color:'#eabd78',description:'유성의 온기가 남은 황금빛 결정.',shape:'cluster'},
+ amber:{name:'황혼 수정',rarity:'rare',color:'#f2a93e',description:'유성의 온기가 남은 황금빛 결정.',shape:'cluster'},
  orbit:{name:'궤도 수정',rarity:'rare',color:'#b0b2f0',description:'빛이 미세한 고리로 감도는 수정.',shape:'star'},
  aurora:{name:'오로라 수정',rarity:'mystic',color:'#77eac2',description:'밤하늘의 빛 물결을 간직한 수정.',shape:'cluster'},
- meteor:{name:'유성 심장석',rarity:'mystic',color:'#f7b5be',description:'멀리서 온 빛이 천천히 숨 쉬는 결정.',shape:'star'}
+ meteor:{name:'유성 심장석',rarity:'mystic',color:'#f7b5be',description:'멀리서 온 빛이 천천히 숨 쉬는 결정.',shape:'star'},
+ moonhalo:{name:'달무리 수정',rarity:'special',color:'#ece4f8',description:'달 둘레의 흐린 빛이 둥글게 굳은 수정.',shape:'gem'},
+ bloom:{name:'꽃별 수정',rarity:'special',color:'#f5a8d0',description:'꽃잎이 한 장씩 별빛으로 피어난 수정.',shape:'flower'},
+ ember:{name:'불씨 수정',rarity:'rare',color:'#ff9a6b',description:'식은 용암 속에 작은 불씨를 간직한 수정.',shape:'cluster'},
+ songfeather:{name:'노래깃 수정',rarity:'mystic',color:'#ffd75e',description:'황금빛 깃털이 노래를 머금고 굳은 수정.',shape:'feather'}
 }
 export const speciesIds=Object.keys(species) as CrystalId[]
-export const rareLocations:Readonly<Scenery[]> = ['auroraforest','canyon'] // 임시 희귀 방문지; 희귀 항로 제안으로만 정상 진입 가능
+export const rareLocations:Readonly<Scenery[]> = ['auroraforest','canyon','lanternsea','cloudwhale','crystalcave','starcherry'] // 희귀 방문지; 희귀 항로 제안으로만 진입 가능
 export const tripHours=[1,3,8] as const
 export type TripHours=typeof tripHours[number]
 export const CARE_WINDOW=4*60*60*1000
@@ -69,7 +73,11 @@ export function rollWeather(destination:Scenery,hours:TripHours,random:()=>numbe
   dunes:[['clear',44],['meteor',34],['aurora',14],['rain',8]],
   garden:[['clear',36],['rain',30],['snow',14],['meteor',12],['aurora',8]],
   ruins:[['clear',36],['meteor',22],['aurora',22],['rain',20]],
-  volcano:[['clear',42],['meteor',34],['aurora',14],['rain',10]]
+  volcano:[['clear',42],['meteor',34],['aurora',14],['rain',10]],
+  lanternsea:[['clear',38],['meteor',32],['aurora',16],['rain',14]],
+  cloudwhale:[['clear',46],['meteor',24],['aurora',20],['rain',10]],
+  crystalcave:[['clear',52],['aurora',20],['meteor',18],['rain',10]],
+  starcherry:[['clear',40],['rain',20],['meteor',16],['snow',14],['aurora',10]]
  }
  const options=climate[destination].map(([kind,weight])=>[kind,weight*(hours===8&&kind!=='clear'?1.7:1)] as const)
  let draw=random()*options.reduce((sum,[,weight])=>sum+weight,0)
@@ -78,16 +86,20 @@ export function rollWeather(destination:Scenery,hours:TripHours,random:()=>numbe
 }
 const clamp=(v:number,min:number,max:number)=>Math.min(max,Math.max(min,v))
 const pools:Record<Scenery,readonly (readonly [CrystalId,number])[]>={
- nebula:[['stardrop',6],['lilac',5],['orbit',1]],
- ringsea:[['stardrop',5],['aqua',5],['orbit',2]],
+ nebula:[['stardrop',6],['lilac',5],['bloom',2],['orbit',1]],
+ ringsea:[['stardrop',5],['aqua',5],['moonhalo',2],['orbit',2]],
  snowfield:[['stardrop',5],['frost',6],['orbit',1]],
- auroraforest:[['aqua',3],['aurora',5],['orbit',2]],
- canyon:[['lilac',3],['amber',5],['meteor',2]],
- city:[['stardrop',7],['aqua',3],['amber',1]],
- dunes:[['stardrop',5],['amber',4],['orbit',2]],
- garden:[['lilac',5],['stardrop',4],['aqua',3]],
- ruins:[['stardrop',4],['orbit',4],['lilac',2],['meteor',1]],
- volcano:[['amber',5],['stardrop',3],['meteor',2],['orbit',1]]
+ auroraforest:[['aqua',3],['aurora',5],['orbit',2],['songfeather',2]],
+ canyon:[['lilac',3],['amber',5],['ember',3],['meteor',2],['songfeather',1]],
+ city:[['stardrop',7],['aqua',3],['moonhalo',2],['bloom',1],['amber',1],['songfeather',1]],
+ dunes:[['stardrop',5],['amber',4],['moonhalo',3],['ember',1],['orbit',2]],
+ garden:[['lilac',5],['stardrop',4],['bloom',5],['aqua',3]],
+ ruins:[['stardrop',4],['orbit',4],['moonhalo',3],['lilac',2],['meteor',1]],
+ volcano:[['amber',5],['ember',4],['stardrop',3],['meteor',2],['orbit',1],['songfeather',1]],
+ lanternsea:[['ember',3],['moonhalo',4],['songfeather',3],['amber',3],['stardrop',2]],
+ cloudwhale:[['aqua',4],['moonhalo',4],['aurora',3],['songfeather',3],['orbit',3]],
+ crystalcave:[['orbit',4],['aurora',3],['meteor',3],['moonhalo',3],['lilac',2],['songfeather',2]],
+ starcherry:[['bloom',6],['lilac',3],['moonhalo',2],['songfeather',3],['meteor',2]]
 }
 /** 8시간·희귀 지역·보장(guarantee)은 확정. 1시간 75%, 3시간 90%. */
 export function rollSeed(destination:Scenery,hours:TripHours,journeyId:string,now:number,random:()=>number=Math.random,guarantee=false):Seed|null{
@@ -139,7 +151,8 @@ export function settleJourney(game:CrystalGame,now:number,random:()=>number=Math
  for(const bonus of bonuses)stock[bonus]+=1
  let rareOffer=game.rareOffer,lastRare=game.lastRare
  if(!rareOffer&&random()<.2){
-   const pool=rareLocations.filter(id=>id!==game.lastRare)
+   const unvisited=rareLocations.filter(id=>!nextCards.includes(id))
+   const pool=unvisited.length?unvisited:rareLocations.filter(id=>id!==game.lastRare)
    rareOffer=pool[Math.floor(random()*pool.length)]??rareLocations[0]
    lastRare=rareOffer
  }
@@ -183,9 +196,9 @@ export function plantSeed(game:CrystalGame,key:string,now:number,light:Light,ran
  const influence:Record<Variant,number>={normal:3,dawn:1,dusk:1,night:1}
  influence[light==='night'?'night':light]+=2
  // 출신지의 빛은 조금 남지만, 돌보는 방식이 완성색에 더 크게 작용합니다.
- if(seed.origin==='snowfield'||seed.origin==='ringsea'||seed.origin==='garden')influence.dawn+=1
- if(seed.origin==='canyon'||seed.origin==='city'||seed.origin==='dunes'||seed.origin==='volcano')influence.dusk+=1
- if(seed.origin==='auroraforest'||seed.origin==='nebula'||seed.origin==='ruins')influence.night+=1
+ if(seed.origin==='snowfield'||seed.origin==='ringsea'||seed.origin==='garden'||seed.origin==='cloudwhale')influence.dawn+=1
+ if(seed.origin==='canyon'||seed.origin==='city'||seed.origin==='dunes'||seed.origin==='volcano'||seed.origin==='lanternsea'||seed.origin==='starcherry')influence.dusk+=1
+ if(seed.origin==='auroraforest'||seed.origin==='nebula'||seed.origin==='ruins'||seed.origin==='crystalcave')influence.night+=1
  return {...advanced,seeds:advanced.seeds.filter(x=>x.key!==key),current:{seed,plantedAt:now,points:0,accountedSlots:0,lastCareSlot:-1,lastCareAt:0,playerVisits:0,catVisits:0,influence,colorRoll:random(),nutritionCount:0}}
 }
 export function careCrystal(game:CrystalGame,kind:'light'|'polish',light:Light,now:number):CrystalGame{

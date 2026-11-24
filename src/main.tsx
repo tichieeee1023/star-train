@@ -9,6 +9,7 @@ import {placeMoments,type MomentAction} from './PlaceMoment'
 import {arrivalConversations,interactionConversations} from './Dialogue'
 import {arrivalCameos,momentCameos,bondCameos,withCameo} from './CanaryCameos'
 import {CabinDialogue} from './CabinDialogue'
+import {CrystalArt} from './CrystalArt'
 import {AutoDialogue} from './AutoDialogue'
 import {TrainShop} from './TrainShop'
 import {buyCrystalSeed,buyNutrient,crystalSeedPrice,nutrientPrices} from './CrystalShop'
@@ -258,7 +259,7 @@ function handlePet(){
     <p className="intro-copy">{station.subtitle}<br/>이번 여행에서 만난 하늘: <b>{lights[skyLight]} · {weathers[skyWeather]}</b>{landed?.newScenery&&<span> ✦ 처음 만난 풍경!</span>}</p>
     {crystal.landing?.destination===scenery&&<div className="landing-reward" role="status">
      <strong>✦ 항해 보상</strong>
-     {crystal.landing.seed?<p>수정 씨앗 발견! <b>{crystal.landing.seed.id&&species[crystal.landing.seed.id].name}</b> · {rarityNames[species[crystal.landing.seed.id].rarity]}</p>:<p>이번에는 수정 씨앗을 발견하지 못했어요. 다음 별에서 다시 찾아봐요.</p>}
+     {crystal.landing.seed?<div className="landing-seed"><CrystalArt id={crystal.landing.seed.id} growing={{seed:crystal.landing.seed,plantedAt:crystal.landing.seed.obtainedAt,points:0,accountedSlots:0,lastCareSlot:-1,lastCareAt:0,playerVisits:0,catVisits:0,influence:{normal:1,dawn:0,dusk:0,night:0},colorRoll:0,nutritionCount:0}}/><div className="landing-seed-text"><p>수정 씨앗 발견!</p><p><b>{species[crystal.landing.seed.id].name}</b></p><span className={'crystal-rarity '+species[crystal.landing.seed.id].rarity}>{rarityNames[species[crystal.landing.seed.id].rarity]}</span></div></div>:<p>이번에는 수정 씨앗을 발견하지 못했어요. 다음 별에서 다시 찾아봐요.</p>}
      <p>별빛 영양액 {crystal.landing.bonuses.length}개 획득 · {crystal.landing.hours}시간 항해 {crystal.landing.rare?'· 희귀 장소':''}</p>
      <button onClick={()=>changePage('crystal')}>◇ 수정 재배실 열기</button>
     </div>}
