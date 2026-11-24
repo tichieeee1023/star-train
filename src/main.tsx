@@ -174,10 +174,10 @@ function handlePet(){
  useEffect(()=>{if(phase!=='arriving')return;const t=window.setTimeout(()=>{setPhase('stopped')},3300);return ()=>window.clearTimeout(t)},[phase])
  useEffect(()=>{
   const journeyId=crystal.journey?.id
-  if(page==='train'&&phase==='stopped'&&journeyId&&lastArrivalStory.current!==journeyId&&!story){
+  if(page==='train'&&phase==='stopped'&&journeyId&&lastArrivalStory.current!==journeyId&&!story&&!viewer&&!routeDialogOpen){
    lastArrivalStory.current=journeyId;openStory({title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])},false)
   }
- },[phase,page,crystal.journey?.id,story])
+ },[phase,page,crystal.journey?.id,story,viewer,routeDialogOpen])
  useEffect(()=>{
   if(page==='train'&&phase==='moving'&&visiting&&!crystal.life!.conductor?.greeted&&!story&&journeyPending.length===0&&!viewer&&!routeDialogOpen)visitConductor(false)
  },[page,phase,visiting,crystal.life?.conductor?.greeted,journeyPending.length,story,viewer,routeDialogOpen])
@@ -224,7 +224,7 @@ function handlePet(){
    <div className="arrival-cta-copy"><strong>✦ {station.name}</strong><small>도착했어요 · 이제 풍경 속으로</small></div>
    <button type="button" className="arrival-cta-button" onClick={()=>{setStory(null);setPhase('platform');window.scrollTo({top:0,behavior:'auto'})}}>✧ 내려서 풍경 보기 <span aria-hidden="true">›</span></button>
   </div>}
-  {!story&&<AutoDialogue key={phase+":"+scenery+":"+(crystal.journey?.id??"idle")} lines={sceneTalk.lines} active={!viewer&&!routeDialogOpen} repeat={phase==='moving'}/>}
+  {!story&&phase!=='stopped'&&<AutoDialogue key={phase+":"+scenery+":"+(crystal.journey?.id??"idle")} lines={sceneTalk.lines} active={!viewer&&!routeDialogOpen} repeat={phase==='moving'}/>}
   <div className="train-quick-panel">
    {phase==='moving'&&crystal.journey&&!crystal.journey.settled&&<div className="train-journey-snapshot" aria-label="항해 진행 상황"><div><small>✦ 이번 항해</small><strong>{routeInfo[crystal.journey.destination].label}으로 가는 길</strong><span>{fmtWait(crystal.journey.end-now)} 남았어요</span></div><progress value={progress*100} max={100} aria-label="항해 진행률"/></div>}
    <div className="train-quick-actions"><button type="button" onClick={()=>openStory(sceneTalk)}>✧ 대화하기</button><button type="button" onClick={()=>{if(phase==='moving')careRef.current?.scrollIntoView({block:'start',behavior:'smooth'});else setViewer(true)}}>{phase==='moving'?'♡ 친구 돌보기':'⛶ 풍경 감상'}</button><button type="button" onClick={()=>changePage('shop')}>◇ 상점</button></div>
