@@ -3,7 +3,7 @@
  * User data stays in localStorage and is never written to service-worker caches.
  */
 const PREFIX = 'galaxy-railway-app-'
-const CACHE = `${PREFIX}v2.9.18-split`
+const CACHE = `${PREFIX}v2.9.19-moonbread`
 const SHELL = ['/', '/manifest.webmanifest', '/icons/star-train.svg', '/icons/star-train-192.png', '/icons/star-train-512.png', '/icons/star-train-maskable-512.png', '/icons/apple-touch-icon.png', '/art/galaxy-cabin.svg', '/art/standing-travelers.svg']
 
 self.addEventListener('install', event => {

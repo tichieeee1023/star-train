@@ -4,13 +4,15 @@ import type {Stage} from './VoyageSky'
 import type {TripHours} from './Crystals'
 import {extraBanters,extraStageBanters} from './CabinExtras'
 import {snackExtras} from './SnackExtras'
+import {firstMoonbread,moonbreadFollowup} from './WorldStories'
 import {canaryBanters,canaryStageBanters,canarySnackStories} from './CanaryStories'
 import {withCameo,stageCameos,conductorStageCameos,conductorGeneralCameos,generalCameos,snackCameos} from './CanaryCameos'
 
-export type SnackId='stardust'|'cocoa'|'moonmilk'|'cometcorn'|'nebula'|'icecream'|'moontart'|'galaxybox'|'cloudbread'|'starchai'|'planetpie'|'nightfish'|'cherrymoon'|'nebularice'
+export type SnackId='stardust'|'cocoa'|'moonmilk'|'cometcorn'|'nebula'|'icecream'|'moontart'|'galaxybox'|'cloudbread'|'starchai'|'planetpie'|'nightfish'|'cherrymoon'|'nebularice'|'moonbread'
 export type MemoryId='cocoa-night'|'moon-picnic'|'star-banquet'|'fish-starlight'|'cherry-moon'|'nebula-supper'
 export type Snack={name:string;symbol:string;price:number;description:string;exclusive?:boolean;memory?:MemoryId}
 export const snacks:Record<SnackId,Snack>={
+ moonbread:{name:'보름달 빵',symbol:'●',price:5,description:'하늘의 보름달을 닮은 부드럽고 달콤한 우유 크림 빵. 아주 오래전, 작은 고양이 한 마리의 소원을 이루어 준 간식이다.',exclusive:true},
  stardust:{name:'별가루 쿠키',symbol:'✧',price:4,description:'입에서 별빛처럼 사르르 부서지는 쿠키'},
  cocoa:{name:'밤하늘 코코아',symbol:'☕',price:7,description:'구름처럼 폭신한 우유 거품',memory:'cocoa-night'},
  moonmilk:{name:'초승달 우유',symbol:'☾',price:5,description:'잠들기 전에 마시는 따뜻한 우유'},
@@ -65,7 +67,8 @@ export function planConductor(life:LifeState,journeyId:string,start:number,end:n
  const limited=snackIds.filter(id=>snacks[id].exclusive)
  for(let i=limited.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[limited[i],limited[j]]=[limited[j],limited[i]]}
  const offers:SnackId[]=[...order.slice(0,4),...limited.slice(0,hours===8?3:2)]
- const special=offers[Math.floor(random()*offers.length)] // 오늘의 추천: 40% 할인
+ const discountable=offers.filter(id=>id!=='moonbread')
+ const special=discountable[Math.floor(random()*discountable.length)] // 오늘의 추천: 40% 할인
  return {...life,conductor:{journeyId,appearAt:start+(end-start)*(.16+random()*.48),greeted:false,offers,purchases:{},special}}
 }
 export function conductorReady(life:LifeState,journeyId:string|undefined,now:number):boolean{
@@ -82,7 +85,9 @@ export function dailyDealId(now:number):SnackId{
  const day=dailyKey(now),number=[...day].reduce((h,ch)=>Math.imul(h,31)+ch.charCodeAt(0)|0,0)
  return regular[(number>>>0)%regular.length]
 }
+export const snackPurchaseLimit=(id:SnackId)=>id==='moonbread'?5:3
 export function snackPrice(id:SnackId,from:'shop'|'conductor',special?:SnackId,now:number=Date.now()){
+ if(id==='moonbread')return 5
  if(from==='conductor')return Math.max(1,Math.floor(snacks[id].price*(special===id?.6:.8)))
  return Math.max(1,Math.floor(snacks[id].price*(id===dailyDealId(now)?.75:1)))
 }
@@ -92,12 +97,12 @@ export function buySnack(life:LifeState,id:SnackId,from:'shop'|'conductor',journ
  if(from==='shop'&&snack.exclusive)return life
  if(from==='conductor'){
   if(!conductorReady(life,journeyId,now)||!life.conductor!.offers.includes(id))return life
-  if((life.conductor!.purchases[id]??0)>=3)return life
+  if((life.conductor!.purchases[id]??0)>=snackPurchaseLimit(id))return life
  }
  return {...life,coins:life.coins-price,stock:{...life.stock,[id]:(life.stock[id]??0)+1},
   conductor:from==='conductor'&&life.conductor?{...life.conductor,purchases:{...life.conductor.purchases,[id]:(life.conductor.purchases[id]??0)+1}}:life.conductor}
 }
-export const snackBondGain=(id:SnackId)=>snacks[id].exclusive?5:snacks[id].price>=8?3:2
+export const snackBondGain=(id:SnackId)=>id==='moonbread'?2:snacks[id].exclusive?5:snacks[id].price>=8?3:2
 export function eatSnack(life:LifeState,id:SnackId):LifeState{
  if((life.stock[id]??0)<=0)return life
  const memory=snacks[id].memory,bond=normalizeBond(life.bond)
@@ -107,6 +112,7 @@ export function eatSnack(life:LifeState,id:SnackId):LifeState{
 export type Story={title:string;lines:Conversation;memory?:MemoryId}
 const talk=(...entries:[string,string][]):Conversation=>entries.map(([speaker,text])=>({speaker:speaker==='girl'?'girl':'cat',text}))
 export const snackStories:Partial<Record<SnackId,readonly Story[]>>={
+ moonbread:[firstMoonbread],
  stardust:[{title:'별가루 쿠키',lines:talk(['girl','과자가 정말 별 모양이네. 몇 개쯤 있을까?'],['cat','냐아. 난 하나, 둘…… 셋부터는 입으로 세고 싶어.'],['girl','그건 세는 게 아니라 먹는 거잖아!'],['cat','아는 만큼 먹어야 한다는 말도 있잖아.'])}],
  cocoa:[{title:'따뜻한 밤의 코코아',memory:'cocoa-night',lines:talk(['girl','우주가 이렇게 넓은데 우리 선실은 조그맣네.'],['cat','그래서 코코아 냄새가 금방 퍼지지.'],['girl','별빛이 거품 위에 내려앉았어. 정말 예쁘다.'],['cat','냐아아. 거품은 네가 봐. 나는 코코아를 마실게.'])}],
  moonmilk:[{title:'초승달 우유',lines:talk(['girl','잠이 안 와. 저 별은 얼마나 멀리 있을까?'],['cat','우유를 마시면 덜 궁금해질 거야.'],['girl','그런 과학적 근거는 없거든?'],['cat','냐아. 그럼 적어도 배는 따뜻해지겠지.'])}],
@@ -159,6 +165,7 @@ export const conductorStory:Story={title:'차장님의 방문',lines:[
 
 /** 같은 간식을 여러 번 먹을 때도 같은 대사만 반복하지 않도록 별도의 후속 대화 제공. */
 export const snackFollowups:Partial<Record<SnackId,Story>>={
+ moonbread:moonbreadFollowup,
  stardust:{title:'쿠키의 마지막 별',lines:talk(['cat','냐아. 별이 하나밖에 안 남았어.'],['girl','그러게 적당히 먹으랬잖아.'],['cat','아니, 네 거야.'],['girl','……응? 네가 양보도 해?'],['cat','아주 가끔. 오늘은 별이 예쁘니까.'])},
  cocoa:{title:'코코아가 식기 전에',memory:'cocoa-night',lines:talk(['girl','코코아 향이 나니까 여기가 정말 집 같아.'],['cat','우주를 달리는 집이라니, 꽤 좋네.'],['girl','네가 집이라고 부를 정도야?'],['cat','따뜻하고, 먹을 게 있고, 네가 있잖아. 냐아.'])},
  moonmilk:{title:'우유 수염',lines:talk(['girl','잠깐! 입에 하얀 우유 수염 났어.'],['cat','냐아아. 우주고양이의 위엄이야.'],['girl','지금 너무 귀여운걸.'],['cat','그런 말은 간식 하나 더 주면 듣겠어.'])},
@@ -172,7 +179,8 @@ export const snackFollowups:Partial<Record<SnackId,Story>>={
 export function snackStory(id:SnackId,used:number):Story{
  const pool=[...(snackStories[id]??[]),...(snackFollowups[id]?[snackFollowups[id]!]:[]),...(snackExtras[id]??[]),canarySnackStories[id]]
  if(!pool.length)throw new Error(`Missing snack story: ${id}`)
- const pick=pool[Math.max(0,Math.floor(used))%pool.length]
+ // 과거 이야기는 첫 시식에만 자동 재생하고 이후에는 일상 대화를 순환한다.
+ const pick=id==='moonbread'&&used>0?pool[1+(Math.floor(used)-1)%(pool.length-1)]:pool[Math.max(0,Math.floor(used))%pool.length]
  const picked=used===0&&snacks[id].memory?{...pick,memory:snacks[id].memory}:pick
  // 추억 CG가 걸린 장면은 그대로 두고, 그 밖의 간식 이야기에만 아가씨가 끼어든다.
  return picked.memory?picked:{...picked,lines:withCameo(picked.lines,snackCameos[id])}
