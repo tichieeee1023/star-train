@@ -559,3 +559,124 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 .arrival-cta-button span{font-size:21px;line-height:1;font-weight:400}
 @media(max-width:375px){.arrival-cta{padding:10px 11px;gap:8px}.arrival-cta-copy strong{font-size:11px}.arrival-cta-copy small{font-size:9px}.arrival-cta-button{padding:10px 12px;font-size:12px;min-height:46px;gap:7px}}
 @media(prefers-reduced-motion:reduce){.arrival-cta-button:active{transform:none}}
+
+/* v2.9.13 — 어린왕자식 도감/가로 감상: 브라우저 top layer에 별도의 대화형 <dialog>를 올린다. */
+.scenic-overlay{box-sizing:border-box;margin:0;padding:0;width:100vw;height:100dvh;max-width:none;max-height:none;border:0;overscroll-behavior:contain;isolation:isolate}
+.scenic-overlay:not([open]){display:none}
+.scenic-overlay::backdrop{background:#070e1f}
+.scenic-overlay:fullscreen{width:100vw;height:100dvh;max-width:none;max-height:none;background:#080f1e}
+.scenic-stage{width:min(100vw,177.7778dvh);height:auto;max-height:100dvh;box-shadow:0 0 65px #01081891}
+.scenic-topbar{padding:calc(12px + env(safe-area-inset-top,0px)) max(13px,env(safe-area-inset-right,0px)) 30px max(13px,env(safe-area-inset-left,0px));pointer-events:none}
+.scenic-toolbar{pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.scenic-toolbar button{min-height:40px;padding:8px 11px;border-radius:9px;background:#202a43d9;backdrop-filter:blur(9px)}
+.scenic-bottom{gap:5px 12px;flex-direction:row;flex-wrap:wrap;padding:24px 15px calc(13px + env(safe-area-inset-bottom,0px))}
+.scenic-dialogue-dock{position:absolute;z-index:4;left:50%;bottom:max(12px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(560px,calc(100% - 24px));pointer-events:auto}
+.scenic-dialogue-dock .scenic-conversation{background:#19253be8;border-color:#f1dbb477;box-shadow:0 8px 30px #050b1980;backdrop-filter:blur(14px)}
+.scenic-dialogue-dock .scenic-conversation p{font-size:13px;margin:5px 0}
+.scenic-notice{position:absolute;left:10px;right:10px;top:64px;z-index:4;padding:7px 12px;text-align:center;color:#ffdfaf;font-size:12px;text-shadow:0 1px 3px #000}
+@media(max-height:410px) and (orientation:landscape){
+ .scenic-topbar{padding:5px 9px 17px}
+ .scenic-toolbar button{min-height:32px;padding:5px 8px;font-size:11px}
+ .scenic-heading>span,.scenic-heading small{display:none}
+ .scenic-dialogue-dock{width:min(440px,calc(100% - 26px));bottom:4px}
+ .scenic-dialogue-dock .scenic-conversation{padding:6px 10px;gap:2px}
+ .scenic-dialogue-dock .scenic-conversation p{font-size:11px;line-height:1.35;margin:2px 0}
+ .scenic-dialogue-dock .scenic-conversation-actions button{min-height:29px;padding:3px 9px}
+}
+@media(orientation:portrait){.scenic-topbar{padding-top:calc(13px + env(safe-area-inset-top,0px))}}
+
+/* 도감 상세는 어린왕자 사진첩처럼 그림을 먼저 보여 주고, 주요 감상 버튼을 바로 아래에 둔다. */
+.album-dialog{box-sizing:border-box;width:min(94vw,540px);max-height:min(90dvh,790px);padding:14px;border-radius:15px;background:#222c42;box-shadow:0 23px 90px #030a2099;overscroll-behavior:contain}
+.album-dialog::backdrop{background:#081124df;backdrop-filter:blur(3px)}
+.album-dialog-top{align-items:center;margin:0 0 12px}
+.album-dialog-heading{display:flex;flex-direction:column;gap:3px;min-width:0}
+.album-dialog-heading small{font-size:10px;color:#e1cda8;letter-spacing:.08em}
+.album-dialog-heading strong{font:600 20px/1.35 Georgia,'Nanum Myeongjo',serif;color:#fff2dc}
+.album-dialog-close{flex:none;width:39px;height:39px;border:1px solid #e5d4c55e;border-radius:9px;background:#35415a;color:#f4e8e3;font-size:24px;line-height:1}
+.album-landscape{border-radius:10px;border:1px solid #dfd6e02e;box-shadow:0 5px 21px #0e172d5c}
+.album-scenic-launch{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin:11px 0 17px;border:1px solid #f0d4a5b3;background:linear-gradient(115deg,#7a6886,#555c83);border-radius:10px;color:#fff6df;font-size:14px;font-weight:650;letter-spacing:.02em}
+.album-scenic-launch span{margin-left:auto;padding:0 11px;color:#fff1d2;font-size:21px}
+.album-choices-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#f0d6b4;font-size:12px;margin-top:13px}
+.album-choices-heading small{font-size:10px;color:#aeb8cc}
+.album-selector{gap:6px;margin:7px 0 9px}
+.album-selector button{min-height:39px;padding:8px 12px;font-size:12px;background:#33415b;color:#ece6ee;border:1px solid #c4b7c344}
+.album-selector button[aria-pressed=true]{background:#77677f;border-color:#e7caa9;color:#fff0dc}
+.album-selector button:disabled{opacity:.36}
+.album-reminiscence{margin:17px 0 3px;padding-top:14px;border-top:1px solid #d2bedb3c}
+.album-reminiscence-label{color:#e5d0b4;font-size:12px;letter-spacing:.025em;margin:0 0 8px}
+.scenic-conversation{display:flex;flex-direction:column;gap:6px;padding:12px 13px 10px;border-radius:10px;border:1px solid #d3c5d759;background:#19273e;color:#fff4e4}
+.scenic-conversation-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#f5d69c;font-size:12px;font-weight:650}
+.scenic-conversation-heading small{color:#b6c0d3;font-size:11px;font-weight:400;font-variant-numeric:tabular-nums}
+.scenic-conversation p{margin:4px 0 5px;color:#f5edf0;font-size:14px;line-height:1.65;word-break:keep-all;min-height:2em}
+.scenic-conversation-actions{display:flex;justify-content:flex-end;gap:7px}
+.scenic-conversation-actions button{min-height:36px;padding:6px 15px;border:1px solid #e4d6b35b;border-radius:8px;background:#36425b;color:#f6e9dd;font-size:12px}
+.scenic-conversation-actions .next{background:#dfc79f;color:#282f42;font-weight:700;border-color:#e6d8c3}
+.scenic-conversation-actions button:disabled{opacity:.38;cursor:default}
+@media(max-width:380px){.album-dialog{padding:10px}.album-choices-heading small{font-size:9px}.album-scenic-launch{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.scenic-topbar,.scenic-bottom,.album-scenic-launch{transition:none}}
+/* dialog 자체는 Chromium에서 fullscreen 대상이 될 수 없다. 그 안의 일반 div를 전체화면으로 연다. */
+.scenic-viewport{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%;overflow:hidden;background:#080f1e}
+.scenic-viewport:fullscreen{width:100vw;height:100dvh;max-width:none;max-height:none;background:#080f1e}
+
+
+/* v2.9.14: 어린왕자식 풍경-대화-행동 순서. 풍경 위 인물은 가리지 않습니다. */
+.train-hero{overflow:visible;outline:none}
+.train-hero .train-scene-caption{position:absolute;z-index:3;left:0;right:0;top:auto;bottom:0;display:flex;flex-direction:column;gap:3px;padding:42px 15px 12px;background:linear-gradient(0deg,#111b34d8,#1c274b60 48%,transparent 100%);pointer-events:none}
+.train-hero .train-scene-caption small{color:#dfc6af;font-size:10px;letter-spacing:.11em}
+.train-hero .train-scene-caption strong{font-family:Georgia,'Nanum Myeongjo',serif;font-size:20px;font-weight:600;color:#fff3e6;line-height:1.35}
+.train-hero.train-hero-speaking .train-scene-caption{display:none}
+.train-stage-dialogue{position:relative;background:#1e2b43;border-top:1px solid #f6d8b577}
+.train-stage-dialogue .cabin-story{position:relative;inset:auto;left:auto;right:auto;bottom:auto;z-index:auto;width:100%;max-height:none;max-width:none;margin:0;padding:13px 17px 12px;border:none;border-radius:0;box-shadow:none;background:linear-gradient(120deg,#263450,#1c2a43);backdrop-filter:none}
+.train-stage-dialogue .cabin-story-top{font-size:11px}
+.train-stage-dialogue .cabin-story-speaker{font-size:12px}
+.train-stage-dialogue .cabin-story-line{font-size:15px;min-height:36px;line-height:1.62;max-height:none;overflow:visible}
+.train-stage-dialogue .cabin-story-controls button{min-height:37px;font-size:12px;padding:6px 12px}
+.train-conversation-peek{margin:0;display:flex;align-items:center;gap:10px;padding:12px 14px;background:#253550;border-top:1px solid #e4d5c25b;border-bottom:1px solid #d0c6c433}
+.train-peek-star{display:grid;place-items:center;align-self:flex-start;width:32px;height:32px;flex-shrink:0;border-radius:50%;background:#6a66884d;color:#f0cb9a;font-size:21px}
+.train-peek-text{flex:1;min-width:0}.train-peek-text small{font-size:10px;line-height:1.35;color:#dfc5ac}
+.train-peek-text p{font-size:12px;line-height:1.5;color:#f0e8e7;margin:3px 0 0;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.train-conversation-peek>button{border:1px solid #e6ceaa88;color:#ffedd8;background:#4c5470;white-space:nowrap;border-radius:9px;min-height:37px;font-size:11px;padding:7px 10px}
+.train-conversation-peek>button span{font-size:16px}
+.train-quick-panel{padding:12px 14px 13px;background:linear-gradient(155deg,#293650,#24314a);border-bottom:1px solid #d7bbaf54}
+.train-journey-snapshot{display:flex;align-items:center;gap:13px;padding:5px 4px 13px;margin-bottom:9px;border-bottom:1px solid #eed3b62b}
+.train-journey-snapshot>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.train-journey-snapshot small{color:#dec7b5;font-size:10px}.train-journey-snapshot strong{font-size:13px;color:#fff0de;word-break:keep-all}.train-journey-snapshot span{font-size:11px;color:#c4d4df}
+.train-journey-snapshot progress{width:30%;height:9px;accent-color:#e8bca5;border-radius:20px;overflow:hidden}
+.train-quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.train-quick-actions button{min-height:41px;min-width:0;padding:7px 4px;border:1px solid #d5c7d080;border-radius:10px;background:#54627f;color:#fff0e6;font-size:12px;white-space:nowrap}
+.train-quick-actions button:first-child{background:#836b8a;border-color:#e2c5be9c}
+.train-quick-actions button:active{transform:scale(.98)}
+.train-care-anchor{scroll-margin-top:14px}
+/* 두 상점은 버튼으로 전환해 간식 목록이 세로로 무한히 길어지지 않도록 합니다. */
+.shop-category-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:15px 0}
+.shop-category-tabs button{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:68px;border:1px solid #c7bbca84;border-radius:13px;color:#e7e1e8;background:#39455f;font-size:12px;font-weight:650;word-break:keep-all}
+.shop-category-tabs button span{color:#f3d7ae;font-size:17px}.shop-category-tabs button small{font-size:10px;color:#bfc8d9;font-weight:400}
+.shop-category-tabs button.selected{background:#725f81;border-color:#f1d6bb;color:#fff6e7;box-shadow:inset 0 0 0 1px #f4dbc02a}
+.supplies-intro{display:flex;align-items:center;gap:12px;padding:14px;background:linear-gradient(120deg,#45506a,#333e57);border:1px solid #ddc8b278;border-radius:14px}
+.supplies-intro>div{flex:1;min-width:0}.supplies-intro small{font-size:10px;color:#e3c29d;letter-spacing:.06em}
+.supplies-intro h2{font-family:Georgia,'Nanum Myeongjo',serif;font-size:17px;font-weight:600;margin:4px 0 6px;color:#ffecdf}
+.supplies-intro p{margin:0;color:#d6d6e1;line-height:1.55;font-size:11px;word-break:keep-all}
+.supplies-intro button{flex-shrink:0;border:1px solid #ead7c183;background:#796d8a;color:#ffefd9;border-radius:9px;padding:8px;font-size:11px;min-height:42px}
+.supplies-fold{margin:12px 0}.supplies-fold .shop-help{margin:10px 0;font-size:11px}.supplies-fold .shop-help b{color:#f4d7ab}
+.supply-card{min-height:191px}.supply-gem{display:grid;place-items:center;height:37px;font-size:35px;line-height:1;text-shadow:0 0 15px currentColor}
+.supply-elixir{color:#bed1fc;font-size:28px}
+.supply-rarity{font-size:10px;color:#f1d5ae;min-height:24px;word-break:keep-all}
+.supply-card .shop-owned{margin-top:auto}.supply-card .shop-owned strong{color:#f7d6a6;font-size:13px}
+.supply-card .supply-buy{width:100%;min-height:40px;margin-top:4px;background:#7d708e;border-color:#e6d0b68c;font-weight:600}
+.supplies-tip{padding:13px 14px;border:1px solid #d8c0a35b;border-radius:12px;background:#333e56;line-height:1.7;font-size:11px;color:#e9d9ca;word-break:keep-all}.supplies-tip b{color:#ffe2b7}
+.supplies-rare-note{font-size:10px;color:#c8c5d4}
+@media(max-width:370px){.train-stage-dialogue .cabin-story{padding:10px 12px}.train-stage-dialogue .cabin-story-line{font-size:13px}.train-conversation-peek{padding:9px 10px;gap:6px}.train-peek-star{width:25px;height:25px;font-size:18px}.train-conversation-peek>button{padding:6px;font-size:10px}.train-quick-panel{padding:10px}.train-quick-actions{gap:5px}.train-quick-actions button{font-size:11px}.supplies-intro{padding:11px;gap:6px}.supplies-intro h2{font-size:15px}.supplies-intro button{padding:6px;font-size:10px}.supplies-fold>summary{font-size:13px}.supplies-fold>summary span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.train-quick-actions button:active{transform:none}}
+
+/* v2.9.14: 씨앗 / 영양액 / 간식의 세 갈래 상점 탭 */
+.shop-category-tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.shop-category-tabs button{font-size:11px;padding:7px 2px;min-height:63px}
+@media(max-width:350px){.shop-category-tabs{gap:4px}.shop-category-tabs button{font-size:10px;padding:6px 1px}}
+
+.crystal-empty-actions{display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:12px}
+.crystal-shop-link{display:inline-flex;align-items:center;justify-content:center;gap:4px;margin:9px 0;padding:10px 13px;border:1px solid #e9ccbc8f;border-radius:10px;color:#f6e6d6;background:#756a88;font-size:12px;min-height:40px}
+/* 풍경의 소녀·고양이를 어둡게 덮지 않도록 제목도 장면 아래 붙입니다. */
+.train-hero .train-scene-caption{position:relative;left:auto;right:auto;top:auto;bottom:auto;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;padding:9px 14px;border-top:1px solid #e2c8bb5a;background:#2e3b55;min-height:43px}
+.train-hero .train-scene-caption small{flex:0 1 auto;font-size:10px;color:#ddccb8;line-height:1.4;letter-spacing:.01em}
+.train-hero .train-scene-caption strong{flex:0 1 auto;font-size:14px;line-height:1.4;text-align:right;word-break:keep-all}
+@media(max-width:350px){.train-hero .train-scene-caption{padding:8px 10px}.train-hero .train-scene-caption strong{font-size:12px}.train-hero .train-scene-caption small{font-size:9px}}

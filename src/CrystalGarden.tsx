@@ -7,11 +7,11 @@ import {species,speciesIds,rarityNames,variants,variantNames,fertilizers,fertili
 import type {Scenery} from './routeData'
 import {routeInfo} from './routeData'
 
-type Props={game:CrystalGame;now:number;light:Light;onLight:(light:Light)=>void;onPlant:(key:string)=>void;onCare:(kind:'light'|'polish')=>void;onNourish:(id:Fertilizer)=>void;onHarvest:()=>void;onTravel:()=>void}
+type Props={game:CrystalGame;now:number;light:Light;onLight:(light:Light)=>void;onPlant:(key:string)=>void;onCare:(kind:'light'|'polish')=>void;onNourish:(id:Fertilizer)=>void;onHarvest:()=>void;onTravel:()=>void;onShop:(section:'seed'|'nutrient')=>void}
 function countdown(ms:number){if(ms<=0)return '지금 가능';const hrs=Math.floor(ms/3600000),mins=Math.ceil(ms%3600000/60000);return hrs?`${hrs}시간 ${mins}분`:`${mins}분`}
 const rarityOrder=['common','special','rare','mystic'] as const
 
-export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,onHarvest,onTravel}:Props){
+export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,onHarvest,onTravel,onShop}:Props){
  const [resonanceVariation,setResonanceVariation]=useState(0)
  const [resonanceIndex,setResonanceIndex]=useState<number|null>(null)
  const [selected,setSelected]=useState<{id:typeof speciesIds[number];variant:typeof variants[number]}|null>(null)
@@ -41,7 +41,7 @@ export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,o
     {ready&&<p className="crystal-success">✦ 이번 수정의 빛깔: {variantNames[crystalVariant(growing)]}</p>}
     {ready?<button type="button" className="crystal-primary" onClick={onHarvest}>✦ 완성한 수정 도감에 넣기</button>:<div className="crystal-actions"><button type="button" disabled={careReadyIn(growing,now)>0} onClick={()=>onCare('light')}>✧ 별빛 쬐기</button><button type="button" disabled={careReadyIn(growing,now)>0} onClick={()=>onCare('polish')}>◇ 표면 닦기</button></div>}
    </div>
-  </div>:<div className="crystal-empty"><span aria-hidden="true">◇</span><p>수정 씨앗을 하나 심으면 조금씩 자라요.<br/>재배 중에 어떤 빛을 보여주느냐에 따라 완성된 색도 달라집니다.</p>{!owned&&<button className="crystal-primary" onClick={onTravel}>별 사이를 여행해 씨앗 찾기</button>}</div>}
+  </div>:<div className="crystal-empty"><span aria-hidden="true">◇</span><p>수정 씨앗을 하나 심으면 조금씩 자라요.<br/>재배 중에 어떤 빛을 보여주느냐에 따라 완성된 색도 달라집니다.</p>{!owned&&<div className="crystal-empty-actions"><button className="crystal-primary" onClick={onTravel}>별 사이를 여행해 씨앗 찾기</button><button type="button" className="crystal-shop-link" onClick={()=>onShop('seed')}>◇ 상점에서 씨앗 구매하기</button></div>}</div>}
   <section className="canary-resonance" aria-labelledby="canary-resonance-title">
    <div className="canary-resonance-head"><span aria-hidden="true">♪</span><div><strong id="canary-resonance-title">카나리아 아가씨의 수정 이야기</strong><small>수정의 종류와 성장, 오늘의 빛에 따라 달라지는 한마디</small></div></div>
    {resonanceIndex===null?<><p className="canary-resonance-quote">“{resonance.lines[0].text}”</p>
@@ -54,14 +54,14 @@ export function CrystalGarden({game,now,light,onLight,onPlant,onCare,onNourish,o
    <summary>✦ 수정 씨앗 주머니 <span>{owned}개</span></summary>
    {owned?<div className="seed-grid">{game.seeds.map(seed=><div className="seed-item" key={seed.key}>
      <CrystalArt id={seed.id} size="small" growing={{seed,plantedAt:seed.obtainedAt,points:0,accountedSlots:0,lastCareSlot:-1,lastCareAt:0,playerVisits:0,catVisits:0,influence:{normal:3,dawn:1,dusk:1,night:1},colorRoll:0,nutritionCount:0}}/>
-     <div><strong>{species[seed.id].name}</strong><small>{rarityNames[species[seed.id].rarity]} · {routeInfo[seed.origin as Scenery].label}</small></div>
+     <div><strong>{species[seed.id].name}</strong><small>{rarityNames[species[seed.id].rarity]} · {seed.source==='shop'?'별빛 상점':routeInfo[seed.origin as Scenery].label}</small></div>
      <button disabled={!!growing} onClick={()=>onPlant(seed.key)} type="button">재배</button>
    </div>)}</div>:<p className="crystal-help">아직 수정 씨앗이 없어요. 1시간 항해 75% · 3시간 항해 90% · 8시간과 희귀 장소는 확정! 한 번 못 찾으면 다음 항해에서 반드시 발견해요.</p>}
   </details>
   <details className="crystal-detail">
    <summary>✧ 별빛 영양액 <span>{fertilizerIds.reduce((sum,id)=>sum+game.stock[id],0)}개</span></summary>
-   <p className="crystal-help">영양액은 항해 보상이에요. 돌봄을 앞당기고, 사용한 시간대의 빛깔에도 영향을 줘요.</p>
-   <div className="nutrient-grid">{fertilizerIds.map(id=><div className="nutrient-item" key={id}><div><strong>{fertilizers[id].name}</strong><small>돌봄 {fertilizers[id].hours}시간 분량</small></div><span>×{game.stock[id]}</span><button type="button" disabled={!growing||ready||game.stock[id]===0} onClick={()=>onNourish(id)}>사용</button></div>)}</div>
+   <p className="crystal-help">영양액은 항해 보상이나 별빛 상점에서 구할 수 있어요. 돌봄을 앞당기고, 사용한 시간대의 빛깔에도 영향을 줘요.</p>
+   <button type="button" className="crystal-shop-link" onClick={()=>onShop('nutrient')}>✧ 영양액 상점 바로가기 ›</button><div className="nutrient-grid">{fertilizerIds.map(id=><div className="nutrient-item" key={id}><div><strong>{fertilizers[id].name}</strong><small>돌봄 {fertilizers[id].hours}시간 분량</small></div><span>×{game.stock[id]}</span><button type="button" disabled={!growing||ready||game.stock[id]===0} onClick={()=>onNourish(id)}>사용</button></div>)}</div>
   </details>
   <details className="crystal-detail" open={uniqueFound.length>0}>
    <summary>✦ 수정 도감 <span>{uniqueFound.length}/{speciesIds.length}종 · 빛깔 {captured}/{maxVariants}</span></summary>

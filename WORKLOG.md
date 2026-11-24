@@ -131,3 +131,20 @@ v2.9.8의 캐릭터 그림과 위치를 고정하고, 네 번째 화자 `canary`
 - 기존 대사는 그대로 두고 끝에 덧붙임(`withCameo`). 이미 아가씨가 있는 이야기와 추억 CG(memory) 장면에는 붙이지 않음.
 - 연결: `main.tsx`(도착·행동·마음 대화), `TrainLife.ts`(`snackStory`·`trainBanter`·`conductorStoryFor`), `VoyageEvents.ts`(`voyageEventStory`). 저장 구조·보상·쿨다운 변경 없음.
 - SW 캐시 `v2.9.10`.
+
+
+### v2.9.13 — 도감 사진 감상 / 대화 UX
+- 도감 모달 뒤에 가려지던 감상 화면을 별도 네이티브 dialog의 top layer로 전환.
+- Chromium에서 dialog 자체 fullscreen 거절 확인 후, 내부 scenic-viewport div에 requestFullscreen 적용.
+- 사진 아래 기본 감상 CTA와 어린왕자식 한 줄 대화 추가. 기존 도착/카나리아 대사 재사용.
+- 전체 화면 내 대화 버튼, 풍경 터치 UI 숨기기, 조용한 세 친구 문구 순환.
+- 320/390/844px CSS·모달·fullscreen 브라우저 테스트 + 모바일 터치 에뮬레이션 통과. 정식 Vite 빌드 미검증.
+- 기존 게임 데이터와 캐릭터 디자인 변경 없음, PWA 캐시 v2.9.13.
+
+
+## v2.9.14 — 항해 중심 UI + 수정 상점
+- 어린왕자 소스 `SceneDialogue`/메인 항해 화면과 비교해 풍경에 붙는 화자별 대화 UI/빠른 행동/항해 진행 카드 구성.
+- 상점 3분류(씨앗, 영양액, 간식) 및 순수 구매 함수(`src/CrystalShop.ts`) 추가. 코인 차감/보유량 추가/일일 할인 안정성 검증.
+- 재배실/간식 돌보기 바로 가기, 상점 구매 씨앗 출처 표기 추가.
+- 기존 저장 키/코인/항해 보상 확률 변경 없음. PWA 캐시 v2.9.14로 증가.
+- TypeScript 임시 타입 검사, 구매 규칙 테스트 10건, CSS 정적 브라우저 화면 검사 16건 통과. 정식 빌드는 패키지 다운로드 불가.

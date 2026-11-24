@@ -36,7 +36,7 @@ export const fertilizers:Record<Fertilizer,{name:string;hours:number}>={
  tiny:{name:'작은 별빛 영양액',hours:3},bright:{name:'반짝이는 영양액',hours:8},galaxy:{name:'은하수 영양액',hours:18},mystic:{name:'신비한 영양액',hours:36}
 }
 export const fertilizerIds=Object.keys(fertilizers) as Fertilizer[]
-export type Seed={key:string;id:CrystalId;origin:Scenery;obtainedAt:number}
+export type Seed={key:string;id:CrystalId;origin:Scenery;obtainedAt:number;source?:'shop'}
 export type CrystalGrowing={seed:Seed;plantedAt:number;points:number;accountedSlots:number;lastCareSlot:number;lastCareAt:number;playerVisits:number;catVisits:number;influence:Record<Variant,number>;colorRoll:number;nutritionCount:number}
 export type CrystalRecord={count:number;variants:Variant[];firstAt:number;origin:Scenery}
 export type Journey={id:string;destination:Scenery;start:number;end:number;hours:TripHours;settled:boolean}
