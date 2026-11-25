@@ -69,7 +69,7 @@ const STAR=P('M0-14L3.5-4.8L13.5-4.4L5.7 2L8.3 11.8L0 6.8L-8.3 11.8L-5.7 2L-13.5
 const SKIN='#e7c4b5',SLEEVE='#263960'
 
 function lin(c:Ctx,x0:number,y0:number,x1:number,y1:number,stops:[number,string][]){const g=c.createLinearGradient(x0,y0,x1,y1);stops.forEach(([o,col])=>g.addColorStop(o,col));return g}
-function stroke(c:Ctx,d:Path2D|string,color:string,w:number,a=1,cap:CanvasLineCap='round'){c.save();c.globalAlpha=a;c.strokeStyle=color;c.lineWidth=w;c.lineCap=cap;c.stroke(typeof d==='string'?P(d):d);c.restore()}
+function stroke(c:Ctx,d:Path2D|string,color:string,w:number,a=1,cap:CanvasLineCap='round'){c.save();c.globalAlpha=w<=1.4?a*.84:w<=2.2?a*.93:a;c.strokeStyle=color;c.lineWidth=w;c.lineCap=cap;c.stroke(typeof d==='string'?P(d):d);c.restore()}
 function fill(c:Ctx,d:Path2D|string,color:string|CanvasGradient,a=1){c.save();c.globalAlpha=a;c.fillStyle=color;c.fill(typeof d==='string'?P(d):d);c.restore()}
 
 /** 어깨-팔꿈치-손목을 둥근 관절로 이은 소매. 테두리 → 본색 순서로 칠해 이음매가 보이지 않는다. */
@@ -402,7 +402,7 @@ function foregroundWeather(c:Ctx,palette:Palette,weather:Weather,t:number,calm:b
       stroke(c,`M${x} ${y}l-5 13`,mix(palette.moon,'#e1edff',.5),.85,.17+(i%3)*.055)
     }
   }else if(weather==='aurora'){
-    softEllipse(c,280,345,125,125,'#9debd4',.045)
+    softEllipse(c,280,345,125,125,'#a6d8c8',.045)
   }
 }
 
@@ -411,7 +411,7 @@ export function drawVistaPeople(
 ){
   const palette=palettes[scenery][light]
   const cold=weather==='snow'||weather==='rain'||scenery==='snowfield'
-  const glowColor=weather==='aurora'?'#89e8cd':cold?mix(palette.moon,'#c6ddf7',.5):palette.horizon
+  const glowColor=weather==='aurora'?'#a4d4c5':cold?mix(palette.moon,'#c6d5e5',.5):palette.horizon
 
   // v2.9.3 — 둘의 발아래에만 각각 접지 그림자를 놓습니다.
   // CanvasPaint의 공통 타원 그림자는 제거했으므로 이중 그림자가 생기지 않습니다.
@@ -432,7 +432,7 @@ export function drawVistaPeople(
   // 소녀는 천/머리카락의 계조를 보존하고, 하얀 고양이는 채도를 더 낮게 유지합니다.
   c.save()
   c.globalCompositeOperation='source-atop'
-  const top=weather==='aurora'?mix(palette.sky[1],'#9debd4',.47):mix(palette.sky[1],palette.moon,.33)
+  const top=weather==='aurora'?mix(palette.sky[1],'#b9d9cc',.38):mix(palette.sky[1],palette.moon,.33)
   const bottom=cold?mix(palette.platformTop,'#c7e0f8',.36):mix(palette.platformTop,palette.horizon,.28)
   const grade=c.createLinearGradient(175,290,312,469)
   const strength=light==='night'?.22:light==='dusk'?.17:.13

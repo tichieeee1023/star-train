@@ -1,15 +1,16 @@
 import {palettes,type Light,type Palette} from './Palette'
 import type {Scenery} from './routeData'
 import type {MomentAction} from './PlaceMoment'
-import {W,H,TAU,clamp,lerp,mix,rgba,fbm,rng,surface,ctxOf,Lru,disc,glow,softEllipse,line,polygon,vgrad,sparkle,drawCloud,cloudTexture,grainPattern,drawPlanet,ridgeLayer,type Ctx,type PlanetOpts} from './PaintKit'
+import {W,H,TAU,clamp,lerp,mix,rgba,fbm,rng,surface,ctxOf,Lru,disc,glow as paintGlow,softEllipse,line,polygon,vgrad,sparkle,drawCloud,cloudTexture,grainPattern,drawPlanet,ridgeLayer,type Ctx,type PlanetOpts} from './PaintKit'
 
 export type Weather = 'clear'|'rain'|'snow'|'meteor'|'aurora'
 function random(seed:number){let n=seed>>>0;return ()=>{n=(Math.imul(1664525,n)+1013904223)>>>0;return n/4294967296}}
 const rnd=random(44073)
 const stars=Array.from({length:210},(_,i)=>({x:rnd()*W,y:rnd()*395,r: i%19===0?2.1:i%7===0?1.15:.35+rnd()*.65,a:.28+rnd()*.6,twinkle:i%5===0,phase:rnd()*TAU,cross:i%29===0}))
-const closeDust=Array.from({length:52},(_,i)=>({x:rnd()*W,y:160+rnd()*330,r:.5+rnd()*1.6,phase:rnd()*TAU,i}))
+const closeDust=Array.from({length:36},(_,i)=>({x:rnd()*W,y:160+rnd()*330,r:.5+rnd()*1.45,phase:rnd()*TAU,i}))
 const snow=Array.from({length:85},(_,i)=>({x:rnd()*W,y:rnd()*H,r: .9+rnd()*2.1,v:10+rnd()*25,phase:rnd()*TAU,i}))
 const rain=Array.from({length:89},(_,i)=>({x:rnd()*W,y:rnd()*H,shift:rnd()*H,len:10+rnd()*22,v:90+rnd()*70,i}))
+function glow(c:Ctx,x:number,y:number,r:number,color:string,alpha:number){paintGlow(c,x,y,r,color,alpha*.84)}
 function circle(c:CanvasRenderingContext2D,x:number,y:number,r:number,color:string,opacity=1){c.save();c.globalAlpha=opacity;c.fillStyle=color;c.beginPath();c.arc(x,y,r,0,TAU);c.fill();c.restore()}
 function ellipse(c:CanvasRenderingContext2D,x:number,y:number,rx:number,ry:number,fill:string,opacity=1,rotation=0){c.save();c.globalAlpha=opacity;c.fillStyle=fill;c.beginPath();c.ellipse(x,y,rx,ry,rotation,0,TAU);c.fill();c.restore()}
 function poly(c:CanvasRenderingContext2D,points:number[][],fill:string,opacity=1){c.save();c.globalAlpha=opacity;c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();c.restore()}
@@ -34,28 +35,28 @@ function paintBodies(c:Ctx,kind:Scenery,p:Palette){
     // CG composition: a tilted, luminous spiral filling the upper sky.
     const r=rng(15159),cx=590,cy=156,tilt=-.48
     const project=(x:number,y:number)=>[cx+x*Math.cos(tilt)-y*Math.sin(tilt),cy+x*Math.sin(tilt)+y*Math.cos(tilt)]
-    softEllipse(c,cx,cy,440,128,'#9455ed',.55,tilt)
-    softEllipse(c,cx,cy,230,70,'#e1a1ff',.63,tilt)
+    softEllipse(c,cx,cy,440,128,'#827d9f',.42,tilt)
+    softEllipse(c,cx,cy,230,70,'#b99fc2',.48,tilt)
     for(let arm=0;arm<2;arm++){
       const pts:number[][]=[]
       for(let i=0;i<180;i++){const q=i/179,a=q*5.2+arm*Math.PI,rad=22+q*385;pts.push(project(Math.cos(a)*rad,Math.sin(a)*rad*.34))}
-      for(const [w,alpha,col] of [[52,.07,'#b97cff'],[30,.14,'#b77bff'],[15,.18,'#d3a0ff'],[5,.22,'#f5bcff']] as [number,number,string][])line(c,pts,col,w,alpha)
-      for(let i=0;i<3900;i++){const q=r(),a=q*5.2+arm*Math.PI+(r()-.5)*.62,rad=22+q*385+(r()-.5)*36;const [x,y]=project(Math.cos(a)*rad,Math.sin(a)*rad*.34+(r()-.5)*18);disc(c,x,y,.25+r()*1.05,i%5===0?'#fff2e7':'#e5b2ff',.12+r()*.58)}
+      for(const [w,alpha,col] of [[52,.055,'#a89eb7'],[30,.10,'#aaa0bc'],[15,.14,'#c2b0cc'],[5,.18,'#ead0d6']] as [number,number,string][])line(c,pts,col,w,alpha)
+      for(let i=0;i<2100;i++){const q=r(),a=q*5.2+arm*Math.PI+(r()-.5)*.62,rad=22+q*385+(r()-.5)*36;const [x,y]=project(Math.cos(a)*rad,Math.sin(a)*rad*.34+(r()-.5)*18);disc(c,x,y,.25+r()*.9,i%5===0?'#fff2e7':'#c9b9d2',.08+r()*.37)}
     }
-    softEllipse(c,cx,cy,90,34,'#ffd3fc',.95,tilt);softEllipse(c,cx,cy,46,19,'#fff7eb',1,tilt)
+    softEllipse(c,cx,cy,90,34,'#e2c8d9',.78,tilt);softEllipse(c,cx,cy,46,19,'#fff4e7',.9,tilt)
     drawPlanet(c,856,337,68,moonOpts(p,{base:'#9c7ad9',lit:'#d8bcff',shade:'#514093',atmos:'#dab5ff',craters:true,alpha:.9,seed:151}));drawPlanet(c,727,325,13,moonOpts(p,{base:'#9476d0',lit:'#d6b3ff',shade:'#4d377f',alpha:.8,seed:152}))
   }else if(kind==='nebula')drawPlanet(c,782,140,50,moonOpts(p,{ring:ring(-.30,1.55,2.15),bands:[{c:'#ffffff',a:.15},{c:p.cloudB,a:.26},{c:'#ffe6f4',a:.14}],seed:5}))
   else if(kind==='ringsea'){
-    // Oversized turquoise giant, diagonal rings and a small satellite.
-    drawPlanet(c,720,147,168,{base:mix('#239ccc',p.moon,.18),lit:'#c3ffff',shade:'#183d91',atmos:'#9fefff',alpha:.98,light:-2.75,ring:{color:'#d7b9ff',tilt:-.29,inner:1.24,outer:2.55,alpha:.84},bands:[{c:'#e3fff4',a:.34},{c:'#49d8e8',a:.4},{c:'#d1fcff',a:.26},{c:'#3772cf',a:.34},{c:'#74d8ea',a:.27},{c:'#c3f8f2',a:.18}],seed:2})
-    drawPlanet(c,886,244,14,moonOpts(p,{craters:true,seed:21,alpha:.85}))
+    // A mist-blue giant and soft, pale rings anchor the coast.
+    drawPlanet(c,720,147,168,{base:mix('#789da7',p.moon,.25),lit:'#d4e7df',shade:'#536d86',atmos:'#c6dcd7',alpha:.95,light:-2.75,ring:{color:'#d9d4df',tilt:-.29,inner:1.24,outer:2.55,alpha:.60},bands:[{c:'#e3eee5',a:.22},{c:'#9cbebc',a:.26},{c:'#d5e7df',a:.18},{c:'#738fa3',a:.23},{c:'#a9c9c5',a:.20},{c:'#d5e6df',a:.14}],seed:2})
+    drawPlanet(c,886,244,14,moonOpts(p,{craters:true,seed:21,alpha:.7}))
   }
   else if(kind==='canyon'){glow(c,773,141,120,'#ffe7b2',.3);drawPlanet(c,773,142,49,moonOpts(p,{craters:true,bands:[{c:'#ffd9a8',a:.16}],seed:8}))}
   else if(kind==='snowfield'){drawPlanet(c,744,135,53,moonOpts(p,{craters:true,seed:3}));drawPlanet(c,838,178,16,moonOpts(p,{craters:true,alpha:.7,seed:6}))}
   else if(kind==='dunes'){glow(c,700,140,150,'#fff0d0',.22);drawPlanet(c,700,140,58,moonOpts(p,{craters:true,bands:[{c:'#ffe9c8',a:.14}],seed:21}));drawPlanet(c,808,104,20,moonOpts(p,{craters:true,alpha:.8,seed:22}))}
   else if(kind==='garden'){drawPlanet(c,772,128,48,moonOpts(p,{atmos:'#ffd6ec',bands:[{c:'#ffd6ec',a:.2},{c:p.cloudA,a:.24},{c:'#ffffff',a:.12}],seed:31}));drawPlanet(c,690,190,14,moonOpts(p,{alpha:.72,seed:32}))}
   else if(kind==='ruins'){glow(c,742,126,140,'#fff0c8',.2);drawPlanet(c,742,126,50,moonOpts(p,{craters:true,ring:{color:'#f1e6c4',tilt:.45,inner:1.45,outer:1.75,alpha:.4},seed:41}))}
-  else if(kind==='volcano'){glow(c,780,150,170,'#ff9a8a',.22);drawPlanet(c,780,150,60,moonOpts(p,{atmos:'#ff9a8a',bands:[{c:'#ffb88a',a:.2},{c:p.deep,a:.28}],seed:51}))}
+  else if(kind==='volcano'){glow(c,780,150,155,'#d7a394',.11);drawPlanet(c,780,150,60,moonOpts(p,{atmos:'#d7a394',bands:[{c:'#e6c2a8',a:.16},{c:p.deep,a:.22}],seed:51}))}
   else if(kind==='lanternsea'){glow(c,760,130,190,'#ffc27a',.3);drawPlanet(c,760,130,54,moonOpts(p,{atmos:'#ffc27a',bands:[{c:'#ffd9a0',a:.2},{c:p.deep,a:.16}],craters:true,seed:61}))}
   else if(kind==='cloudwhale'){glow(c,772,120,150,'#e8dcff',.15)}
   else if(kind==='crystalcave'){glow(c,650,35,240,'#bfeaff',.42)}
@@ -73,19 +74,19 @@ function buildBg(kind:Scenery,p:Palette,twink:Twinkle[]){
   c.save();c.globalAlpha=p.starOpacity
   for(const s of stars){
     if(s.twinkle){twink.push({x:s.x,y:s.y,r:s.r,a:s.a,phase:s.phase,cross:s.cross});continue}
-    disc(c,s.x,s.y,s.r,s.x%7<3?'#fff9ee':'#e5efff',s.a)
+    disc(c,s.x,s.y,s.r,s.x%7<3?mix('#fff7ec',p.moon,.18):mix('#e7edf0',p.cloudB,.2),s.a)
     if(s.cross)sparkle(c,s.x,s.y,5,'#fff2db',s.a*.8)
   }
-  for(let i=0;i<330;i++){
+  for(let i=0;i<(kind==='ringsea'||kind==='volcano'?170:260);i++){
     const x=r()*W,y=r()*390,d=(y-yc(x))/150
     if(r()>.2+.8*Math.exp(-d*d))continue
-    disc(c,x,y,.3+r()*.6,r()>.8?'#ffe4cc':'#dfeaff',.18+r()*.5)
+    disc(c,x,y,.3+r()*.6,r()>.8?mix('#fff4e3',p.moon,.18):mix('#e7edf0',p.cloudB,.2),.14+r()*.36)
   }
   c.restore()
   if(kind==='ringsea'||kind==='starcherry'||kind==='nebula'||kind==='dunes'||kind==='snowfield'){
-    softEllipse(c,320,112,370,42,'#8c91ff',kind==='starcherry'?.58:.35,-.50)
-    softEllipse(c,320,112,320,23,'#b5caff',.22,-.50)
-    for(let i=0;i<(kind==='starcherry'?2300:1000);i++){const q=r(),x=q*670-20,y=270-x*.52+(r()-.5)*65;disc(c,x,y,.25+r()*.65,i%4?'#d5dfff':'#fff0e5',.12+r()*.55)}
+    softEllipse(c,320,112,370,42,kind==='ringsea'?'#aeb8cc':p.cloudB,kind==='ringsea'?.17:kind==='starcherry'?.38:.26,-.50)
+    softEllipse(c,320,112,320,23,kind==='ringsea'?'#c4d2d5':mix(p.cloudB,p.moon,.32),kind==='ringsea'?.12:.17,-.50)
+    for(let i=0;i<(kind==='ringsea'?360:kind==='starcherry'?1450:760);i++){const q=r(),x=q*670-20,y=270-x*.52+(r()-.5)*65;disc(c,x,y,.25+r()*.65,i%4?mix('#e6e9ec',p.cloudB,.22):mix('#fff0e5',p.moon,.16),kind==='ringsea'?.08+r()*.30:.09+r()*.36)}
   }
   paintBodies(c,kind,p)
   return cv
@@ -93,8 +94,8 @@ function buildBg(kind:Scenery,p:Palette,twink:Twinkle[]){
 function buildClouds(kind:Scenery,p:Palette,which:0|1){
   const forest=kind==='auroraforest',s=seedOf[kind]
   return which===0
-    ?cloudTexture({seed:s,a:p.cloudA,b:p.cloudB,dust:mix(p.sky[0],'#000000',.25),cover:.38,soft:.34,alpha:.52,band:{cy:forest?120:200,slope:-.16,width:170,floor:.3}})
-    :cloudTexture({seed:s+37,a:p.cloudB,b:p.cloudA,dust:mix(p.sky[0],'#000000',.3),cover:.4,soft:.36,alpha:.4,band:{cy:forest?190:275,slope:-.12,width:150,floor:.3}})
+    ?cloudTexture({seed:s,a:p.cloudA,b:p.cloudB,dust:mix(p.sky[0],'#000000',.25),cover:.35,soft:.38,alpha:.46,band:{cy:forest?120:200,slope:-.16,width:170,floor:.3}})
+    :cloudTexture({seed:s+37,a:p.cloudB,b:p.cloudA,dust:mix(p.sky[0],'#000000',.3),cover:.37,soft:.4,alpha:.35,band:{cy:forest?190:275,slope:-.12,width:150,floor:.3}})
 }
 
 /* ───────── 지형 도구 ───────── */
@@ -158,16 +159,16 @@ function groundRingsea(c:Ctx,p:Palette){
   const hy=324,r=rng(2026)
   // Pale coastal cliffs with natural openings; silhouettes remain on the left.
   const cliff=surface(W,H),cc=ctxOf(cliff)
-  polygon(cc,[[-10,168],[39,186],[80,211],[123,218],[148,235],[193,245],[239,276],[285,300],[330,324],[-10,324]],vgrad(cc,170,325,[[0,'#a6b8da'],[.5,'#7899c9'],[1,'#426da4']]))
-  for(let i=0;i<45;i++){const x=r()*300,y=190+x*.43+r()*30;line(cc,[[x,y],[x-5,y+25],[x+3,324]],i%3?'#d4dcf5':'#425f9e',1+r()*3,.24+r()*.18)}
+  polygon(cc,[[-10,168],[39,186],[80,211],[123,218],[148,235],[193,245],[239,276],[285,300],[330,324],[-10,324]],vgrad(cc,170,325,[[0,mix('#c4d0d1',p.horizon,.22)],[.5,mix('#92afb8',p.ridge,.24)],[1,mix('#698b9d',p.deep,.32)]]))
+  for(let i=0;i<35;i++){const x=r()*300,y=190+x*.43+r()*30;line(cc,[[x,y],[x-5,y+25],[x+3,324]],i%3?'#d9e0dc':'#718a9c',1+r()*2,.14+r()*.14)}
   cc.save();cc.globalCompositeOperation='destination-out';for(const [x,y,rx,ry] of [[133,327,45,71],[250,328,29,39]]){cc.beginPath();cc.ellipse(x,y,rx,ry,0,Math.PI,TAU);cc.lineTo(x+rx,340);cc.lineTo(x-rx,340);cc.closePath();cc.fill()}cc.restore()
   c.drawImage(cliff,0,0)
-  c.fillStyle=vgrad(c,hy,H,[[0,mix('#3764b3',p.deep,.35)],[.22,mix('#197abb',p.deep,.25)],[.62,mix('#24b6cc',p.deep,.35)],[1,mix('#72d5de',p.foreground,.28)]]);c.fillRect(0,hy,W,H-hy)
-  c.save();c.beginPath();c.rect(0,hy,W,H-hy);c.clip();c.globalAlpha=.19;c.translate(0,hy*2);c.scale(1,-1);c.drawImage(cliff,0,0);c.restore()
-  line(c,[[0,hy],[960,hy]],'#f6d8da',1,.65)
-  for(let i=0;i<260;i++){const k=r(),y=hy+k*216,x=r()*W,w=3+k*50*r();line(c,[[x,y],[x+w*.4,y-1],[x+w,y]],i%4?'#a6e8f4':'#fdf2df',.4+k*1.4,.12+r()*.25)}
+  c.fillStyle=vgrad(c,hy,H,[[0,mix('#466e91',p.deep,.45)],[.22,mix('#6c9faa',p.deep,.38)],[.62,mix('#83bdc5',p.deep,.42)],[1,mix('#c1e5dc',p.foreground,.45)]]);c.fillRect(0,hy,W,H-hy)
+  c.save();c.beginPath();c.rect(0,hy,W,H-hy);c.clip();c.globalAlpha=.14;c.translate(0,hy*2);c.scale(1,-1);c.drawImage(cliff,0,0);c.restore()
+  line(c,[[0,hy],[960,hy]],'#e9ded7',1,.38)
+  for(let i=0;i<145;i++){const k=r(),y=hy+k*216,x=r()*W,w=3+k*50*r();line(c,[[x,y],[x+w*.4,y-1],[x+w,y]],i%4?'#c2dcd8':'#f1e6d3',.4+k*1.1,.07+r()*.17)}
   // Shallow shore: curved foam seams become wider toward the viewer.
-  for(let i=0;i<8;i++){const pts:number[][]=[];for(let x=360;x<=980;x+=12)pts.push([x,498+i*8-(x-360)*.105+Math.sin(x*.023+i*.7)*(3+i*.55)]);line(c,pts,'#d7fbff',1.1+i*.17,.22+i*.025)}
+  for(let i=0;i<8;i++){const pts:number[][]=[];for(let x=360;x<=980;x+=12)pts.push([x,498+i*8-(x-360)*.105+Math.sin(x*.023+i*.7)*(3+i*.55)]);line(c,pts,'#d6e9e3',.9+i*.14,.13+i*.015)}
 }
 function groundGalaxyend(c:Ctx,p:Palette){
   const r=rng(15156),hy=382
@@ -436,7 +437,7 @@ function animateRuins(c:Ctx,p:Palette,time:number){
 }
 
 function groundVolcano(c:Ctx,p:Palette){
-  ridgeLayer(c,ridgeFn(51,384,14,150),mix(p.horizon,p.sky[3],.3),mix(p.ridge,p.horizon,.4),{haze:p.horizon,hazeA:.5,rim:'#ffd9b0',rimA:.25})
+  ridgeLayer(c,ridgeFn(51,384,14,150),mix(p.horizon,p.sky[3],.3),mix(p.ridge,p.horizon,.4),{haze:p.horizon,hazeA:.5,rim:'#e8c9ae',rimA:.18})
   const cone=(px:number,top:number,base:number,half:number,lit:string,dark:string)=>{
     const Lp:number[][]=[],Rp:number[][]=[]
     for(let i=0;i<=20;i++){const t=i/20,off=15*(1-t)+half*Math.pow(t,1.45),y=top+(base-top)*t;Lp.push([px-off,y]);Rp.push([px+off,y])}
@@ -447,35 +448,35 @@ function groundVolcano(c:Ctx,p:Palette){
   cone(190,336,440,150,mix(p.ridge,p.horizon,.35),p.deep);cone(905,352,440,130,mix(p.ridge,p.horizon,.35),p.deep)
   mist(c,420,30,p.horizon,.3)
   cone(560,190,440,330,lit,dark)
-  const vr=rng(5152);for(let i=0;i<18;i++){const q=(i-9)/10,pts:number[][]=[[560+q*13,195]];for(let j=1;j<=10;j++){const t=j/10;pts.push([560+q*330*Math.pow(t,1.45)+(vr()-.5)*t*22,190+t*250])}line(c,pts,i%2?'#ffad83':'#402d4f',1+vr()*5,.16+vr()*.16)}
-  for(let i=0;i<16;i++){const q=vr(),x=560+q*70+(vr()-.5)*46,y=183-q*105;softEllipse(c,x,y,15+q*34,10+q*20,i%3?'#e67b6e':'#ffb16c',.16+vr()*.23)}
-  glow(c,560,190,130,'#ff9a6a',.48);ellipse(c,560,190,20,5,'#ff7a4a',.95);ellipse(c,560,189,12,3,'#ffd098',.9)
+  const vr=rng(5152);for(let i=0;i<18;i++){const q=(i-9)/10,pts:number[][]=[[560+q*13,195]];for(let j=1;j<=10;j++){const t=j/10;pts.push([560+q*330*Math.pow(t,1.45)+(vr()-.5)*t*22,190+t*250])}line(c,pts,i%2?'#d9a494':'#675361',1+vr()*4,.11+vr()*.13)}
+  for(let i=0;i<12;i++){const q=vr(),x=560+q*70+(vr()-.5)*46,y=183-q*105;softEllipse(c,x,y,15+q*34,10+q*20,i%3?'#b98986':'#dfb09a',.12+vr()*.16)}
+  glow(c,560,190,115,'#dca38c',.22);ellipse(c,560,190,20,5,'#d29580',.8);ellipse(c,560,189,12,3,'#efcbb0',.75)
   // 용암 줄기
   for(const pts of LAVA)for(let i=0;i<pts.length-1;i++){const t=i/20,seg=[pts[i],pts[i+1]]
-    line(c,seg,'#ff6a3a',5+t*13,.13);line(c,seg,'#ff8a52',1.6+t*3.6,.9);line(c,seg,'#ffe0a0',.6+t*1.2,.85)}
-  ridgeLayer(c,ridgeFn(52,452,8,120),mix(p.ridge,p.foreground,.4),p.foreground,{rim:'#ff9a6a',rimA:.3})
-  c.fillStyle=vgrad(c,470,H,[[0,p.foreground],[1,mix(p.foreground,'#000000',.45)]]);c.fillRect(0,474,W,H-473)
+    line(c,seg,'#bc8078',5+t*13,.10);line(c,seg,'#dfa18b',1.6+t*3.6,.68);line(c,seg,'#efd0ad',.6+t*1.2,.55)}
+  ridgeLayer(c,ridgeFn(52,452,8,120),mix(p.ridge,p.foreground,.4),p.foreground,{rim:'#d9a28f',rimA:.18})
+  c.fillStyle=vgrad(c,470,H,[[0,p.foreground],[1,mix(p.foreground,'#34313d',.35)]]);c.fillRect(0,474,W,H-473)
   // 땅 틈에서 새어 나오는 붉은 빛
   const r=rng(5151)
   for(let i=0;i<14;i++){
     let x=(i*71+20)%900,y=486+(i*19)%40;const pts:number[][]=[[x,y]]
     for(let k=0;k<4;k++){x+=10+r()*20;y+=(r()-.5)*10;pts.push([x,y])}
-    line(c,pts,'#ff7a4a',3,.18);line(c,pts,'#ff8a52',1.6,.6);line(c,pts,'#ffd098',.6,.6)
+    line(c,pts,'#bf8a7f',3,.13);line(c,pts,'#dca18d',1.6,.40);line(c,pts,'#e9c5a5',.6,.42)
   }
 }
 function animateVolcano(c:Ctx,p:Palette,time:number){
   const pulse=.7+.3*Math.sin(time*1.1)
-  glow(c,560,186,110,'#ff8a5a',.22*pulse)
+  glow(c,560,186,95,'#dca38d',.12*pulse)
   // 연기 기둥
   for(let i=0;i<7;i++){const ph=(time*.03+i*.143)%1,x=560+ph*70+Math.sin(time*.4+i)*10,y=186-ph*130;softEllipse(c,x,y,22+ph*50,14+ph*26,mix(p.deep,p.horizon,.4),.22*(1-ph))}
   // 올라가는 불씨
-  for(let i=0;i<34;i++){
-    const ph=(time*.07+i*.0294)%1,x=560+Math.sin(i*2.3+time*.5)*(10+ph*70)+ph*30,y=186-ph*155,a=1-ph
-    glow(c,x,y,6,'#ffb070',.35*a);disc(c,x,y,1+(i%3)*.4,'#ffe2b0',.8*a)
+  for(let i=0;i<20;i++){
+    const ph=(time*.07+i*.05)%1,x=560+Math.sin(i*2.3+time*.5)*(10+ph*70)+ph*30,y=186-ph*155,a=1-ph
+    glow(c,x,y,6,'#dbad96',.16*a);disc(c,x,y,1+(i%3)*.35,'#f1d5b6',.55*a)
   }
   // 용암 줄기 깜빡임
-  LAVA.forEach((pts,k)=>stroke(c,pts,'#ffc080',2,.2+.2*Math.sin(time*1.6+k*2)))
-  for(let i=0;i<8;i++){const x=(i*113+50)%960,y=490+(i*31)%36,a=.5+.5*Math.sin(time*1.3+i*1.7);glow(c,x,y,16,'#ff7a4a',.14+.14*a)}
+  LAVA.forEach((pts,k)=>stroke(c,pts,'#e7bd9f',2,.12+.12*Math.sin(time*1.6+k*2)))
+  for(let i=0;i<6;i++){const x=(i*113+50)%960,y=490+(i*31)%36,a=.5+.5*Math.sin(time*1.3+i*1.7);glow(c,x,y,14,'#d09a89',.08+.08*a)}
 }
 
 
@@ -771,6 +772,7 @@ function buildGround(kind:Scenery,p:Palette,light:Light){
   else if(kind==='crystalcave')groundCrystalcave(c,p)
   else if(kind==='starcherry')groundStarcherry(c,p)
   else groundCity(c,p,light)
+  c.save();c.globalCompositeOperation='source-atop';c.globalAlpha=.36;c.fillStyle=grainPattern(c);c.fillRect(0,0,W,H);c.restore()
   return cv
 }
 function buildLayers(kind:Scenery,light:Light):Layers{
@@ -787,7 +789,7 @@ function comet(c:Ctx,t:number){
     stroke(c,[[x+120,y-52],[x,y]],g,2.6,1);glow(c,x,y,22,'#fff7e0',.5*a);circle(c,x,y,2.6,'#fff8e2',a)}
 }
 function rayAurora(c:Ctx,time:number,strong:boolean){
-  const cols:[string,string][]=[['#90eecb','#52d0a8'],['#c5a0ed','#8a78e0'],['#9cdee0','#58bfd0']]
+  const cols:[string,string][]=[['#a9d9c7','#78bda7'],['#c2adc9','#9a88b3'],['#a9ced0','#7faeb5']]
   const k0=Math.sin(time*.15)*12
   for(let k=0;k<3;k++){
     const [top,base]=cols[k],ph=.6+k*.7
@@ -797,7 +799,7 @@ function rayAurora(c:Ctx,time:number,strong:boolean){
       const by=150+k*30+k0+Math.sin(x/160+time*.17+ph)*30+Math.sin(x/65-time*.12+ph)*11
       const ray=.62+.38*Math.sin(x*.085+time*.45+k*2)*Math.sin(x*.031-time*.2+ph)
       const h=(strong?70:48)+Math.max(0,ray)*(strong?170:110)
-      c.save();c.translate(x,by);c.scale(1,h/200);c.globalAlpha=(strong?.2:.11)*(.55+.45*Math.max(0,ray))*(1-k*.14);c.fillRect(0,-200,10,208);c.restore()
+      c.save();c.translate(x,by);c.scale(1,h/200);c.globalAlpha=(strong?.16:.09)*(.55+.45*Math.max(0,ray))*(1-k*.14);c.fillRect(0,-200,10,208);c.restore()
     }
     c.restore()
   }
@@ -833,7 +835,7 @@ function drawLookout(c:Ctx,p:Palette,kind:Scenery){
   const materials:Record<Scenery,[string,string,string]>={
     galaxyend:['#b6a0d9','#544477','#f5dcff'],
     nebula:['#b7a7d0','#575779','#ebd4ff'],
-    ringsea:['#8298c7','#394f84','#d7efff'],
+    ringsea:['#91a9ad','#5a7384','#d6e5dd'],
     snowfield:['#ebf5fc','#6d9ab9','#ffffff'],
     auroraforest:['#547f70','#234b4c','#aae8ba'],
     canyon:['#d8a17b','#795067','#ffe2ac'],
@@ -841,7 +843,7 @@ function drawLookout(c:Ctx,p:Palette,kind:Scenery){
     dunes:['#dfbea5','#8b6686','#fff0cf'],
     garden:['#84b391','#436d68','#f8d9e6'],
     ruins:['#aaa2ab','#55536e','#efdece'],
-    volcano:['#4b4053','#251e34','#ff9568'],
+    volcano:['#78636b','#4c414d','#d6aa96'],
     lanternsea:['#7d6f9c','#34325c','#ffc78a'],
     cloudwhale:['#cfd0ee','#6a74a8','#ffffff'],
     crystalcave:['#6d7fa8','#2c3560','#9fe8f4'],
@@ -872,7 +874,7 @@ function drawLookout(c:Ctx,p:Palette,kind:Scenery){
   }else if(kind==='volcano'){
     for(let i=0;i<13;i++){
       const x=-35+sr()*510,y=480+sr()*58
-      stroke(c,[[x-25,y+5],[x,y-3],[x+22,y]],i%4===0?'#ff9868':mix(shadow,'#e6a2af',.35),i%4===0?2:.9,i%4===0?.30:.22)
+      stroke(c,[[x-25,y+5],[x,y-3],[x+22,y]],i%4===0?'#d5a18e':mix(shadow,'#c6a2a5',.35),i%4===0?1.5:.9,i%4===0?.22:.18)
     }
   }else{
     for(let i=0;i<18;i++){
@@ -903,13 +905,13 @@ function drawLookout(c:Ctx,p:Palette,kind:Scenery){
     // 물에 닳은 둥근 자갈과 젖은 표면의 가느다란 물결.
     for(let i=0;i<45;i++){
       const x=-15+r()*545,y=422+r()*88,rx=1.4+r()*5,ry=1+r()*1.8
-      ellipse(c,x,y,rx,ry,i%4===0?'#c8e6dc':mix('#5b93a6',tint,.45),.16+r()*.21,r()*.3)
+      ellipse(c,x,y,rx,ry,i%4===0?'#cfdfd6':mix('#83a5aa',tint,.45),.12+r()*.17,r()*.3)
     }
     for(let i=0;i<7;i++){
       const x=386+i*20,y=454+i*5
       stroke(c,[[x-12,y],[x+4,y-2],[x+19,y]],edge,1.1,.3)
     }
-    for(let i=0;i<6;i++){const x=10+i*24,y=466+(i%2)*6;disc(c,x,y,.8,'#e2fff8',.5)}
+    for(let i=0;i<6;i++){const x=10+i*24,y=466+(i%2)*6;disc(c,x,y,.8,'#e2e9dc',.32)}
   }else if(kind==='snowfield'){
     // 눈층이 살짝 쌓인 얼음 단면. 인물이 서 있는 자리 아래는 평탄하게 유지.
     for(let i=0;i<6;i++){
@@ -997,14 +999,14 @@ function drawLookout(c:Ctx,p:Palette,kind:Scenery){
     // 거친 흑요석 단층과 균열 속 용암의 희미한 잔광.
     for(let i=0;i<22;i++){
       const x=-25+r()*550,y=423+r()*89,sz=2+r()*14
-      poly(c,[[x-sz,y],[x-2,y-sz*.28],[x+sz*.7,y+2],[x+1,y+sz*.35]],i%2?'#5e4e68':'#2d243c',.22+r()*.2)
+      poly(c,[[x-sz,y],[x-2,y-sz*.28],[x+sz*.7,y+2],[x+1,y+sz*.35]],i%2?'#806a75':'#574a55',.18+r()*.16)
     }
     for(const [x,y,w] of [[8,456,47],[393,447,67],[448,482,80]]){
       const pts=[[x-14,y-8],[x,y],[x+w*.45,y+3],[x+w*.75,y-2],[x+w,y+3]]
-      stroke(c,pts,'#ffad70',3,.20)
-      stroke(c,pts,'#ffce83',.9,.39)
+      stroke(c,pts,'#d6a18c',3,.14)
+      stroke(c,pts,'#e5c1a2',.9,.28)
     }
-    for(let i=0;i<12;i++)disc(c,380+r()*150,431+r()*63,.5+r()*.8,'#ff9b72',.37)
+    for(let i=0;i<8;i++)disc(c,380+r()*150,431+r()*63,.5+r()*.8,'#d5a28f',.25)
   }
   // 광원에 의해 땅 표면에 얇은 반사가 맺히지만 캐릭터 발밑에 덮이지 않습니다.
   const lightG=c.createRadialGradient(240,456,8,240,456,240)
@@ -1027,12 +1029,12 @@ function animate(c:Ctx,kind:Scenery,p:Palette,light:Light,time:number){
     for(let i=0;i<8;i++)sparkle(c,520+i*58,330+(i%3)*18,3+(i%2)*2,'#ffffff',.3+.4*Math.sin(time*1.3+i*1.9)**2)
   }else if(kind==='ringsea'){
     // 고리행성이 물에 길게 비친다
-    for(let i=0;i<44;i++){
-      const k=i/43,y=326+k*210,w=lerp(34,130,k),x=670+Math.sin(time*.9+i*.7)*(3+k*14)
-      const sg=c.createLinearGradient(x-w,0,x+w,0);sg.addColorStop(0,rgba(p.moon,0));sg.addColorStop(.5,rgba('#fff0c9',(.48-k*.20)*(.6+.4*Math.sin(time*1.1+i))));sg.addColorStop(1,rgba(p.moon,0))
-      c.fillStyle=sg;c.fillRect(x-w,y,w*2,2.6+k*2)
+    for(let i=0;i<30;i++){
+      const k=i/29,y=326+k*210,w=lerp(34,130,k),x=670+Math.sin(time*.9+i*.7)*(3+k*14)
+      const sg=c.createLinearGradient(x-w,0,x+w,0);sg.addColorStop(0,rgba(p.moon,0));sg.addColorStop(.5,rgba('#eee1cb',(.26-k*.11)*(.6+.4*Math.sin(time*1.1+i))));sg.addColorStop(1,rgba(p.moon,0))
+      c.fillStyle=sg;c.fillRect(x-w,y,w*2,2+k*1.5)
     }
-    for(let i=0;i<40;i++){const x=(i*73)%960,y=332+(i*31)%200,b=Math.sin(time*.8+i*.9);stroke(c,[[x,y],[x+13+i%5*5,y-1]],i%3===0?'#fff0da':'#c9eeec',1.1,.12+(b+1)*.09)}
+    for(let i=0;i<28;i++){const x=(i*73)%960,y=332+(i*31)%200,b=Math.sin(time*.8+i*.9);stroke(c,[[x,y],[x+13+i%5*5,y-1]],i%3===0?'#efe3d1':'#c7ddd7',1,.08+(b+1)*.06)}
   }else if(kind==='snowfield'){
     for(let i=0;i<34;i++){const x=(i*113+31)%960,y=440+(i*47)%90,tw=Math.sin(time*1.4+i*2.3);if(tw>.2)sparkle(c,x,y,2.2+tw*2.2,'#ffffff',tw*.8)}
   }else if(kind==='auroraforest'){
@@ -1110,20 +1112,20 @@ function drawMoment(c:CanvasRenderingContext2D,kind:Scenery,time:number,action:M
       const x=713,y=471
       for(let i=0;i<4;i++){
         const t=Math.max(0,Math.min(1,(age-i*.67)/4.1))
-        if(t>0&&t<1){c.save();c.globalAlpha=envelope*(1-t)*.68;c.strokeStyle=i%2?'#d2fff7':'#fff3db';c.lineWidth=1.6
+        if(t>0&&t<1){c.save();c.globalAlpha=envelope*(1-t)*.48;c.strokeStyle=i%2?'#d5e8df':'#f0e4d3';c.lineWidth=1.4
           c.beginPath();c.ellipse(x,y,9+t*119,2+t*22,0,0,TAU);c.stroke();c.restore()}
       }
-      spark(x+Math.sin(age)*7,458+Math.cos(age*.8)*1,3,'#e9ffef')
+      spark(x+Math.sin(age)*7,458+Math.cos(age*.8)*1,2.5,'#e4eadc')
     }else{
       c.save();c.translate(717,160);c.rotate(-.30)
-      c.globalAlpha=envelope*(.55+.22*Math.sin(age*2));c.strokeStyle='#f9f4d8';c.lineWidth=5
+      c.globalAlpha=envelope*(.38+.15*Math.sin(age*2));c.strokeStyle='#ece5d7';c.lineWidth=4
       c.beginPath();c.ellipse(0,0,158,30,0,0,TAU);c.stroke();c.restore()
       for(let i=0;i<9;i++){
         const x=680+i*12,y=451+i%3*7+age*3
-        circle(c,x,y,1.5+i%3*.5,'#e7fff5',envelope*(.68-i*.035))
-        if(i%3===0)glow(x,y,17,'#c6f4f0',.22)
+        circle(c,x,y,1.5+i%3*.5,'#dcebe1',envelope*(.48-i*.025))
+        if(i%3===0)glow(x,y,15,'#c6ded8',.12)
       }
-      glow(716,480,94,'#b8f3ef',.18)
+      glow(716,480,85,'#c2dcd6',.10)
     }
   }else if(kind==='snowfield'){
     if(action===0){
@@ -1232,12 +1234,12 @@ function drawMoment(c:CanvasRenderingContext2D,kind:Scenery,time:number,action:M
     if(action===0){
       const pts:number[][]=[]
       for(let i=0;i<=10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?14:30;pts.push([560+Math.cos(a)*r,168+Math.sin(a)*r])}
-      lineReveal(pts,Math.min(1,age/3),'#ffd9a0',2.6,.85)
-      if(age>2.6){spark(560,168,3.4,'#fff2d0');glow(560,168,60,'#ff9a6a',.5)}
-      for(let i=0;i<26;i++){const ph=(age*.18+i*.0385)%1,x=560+Math.sin(i*2.1)*(12+ph*70),y=256-ph*100;circle(c,x,y,1.4,'#ffd9a0',envelope*(1-ph)*.8)}
+      lineReveal(pts,Math.min(1,age/3),'#e9c4a6',2.2,.65)
+      if(age>2.6){spark(560,168,3,'#f5e2c8');glow(560,168,55,'#d8a18d',.25)}
+      for(let i=0;i<18;i++){const ph=(age*.18+i/18)%1,x=560+Math.sin(i*2.1)*(12+ph*70),y=256-ph*100;circle(c,x,y,1.3,'#e9c4a6',envelope*(1-ph)*.55)}
     }else{
-      LAVA.forEach((pts,k)=>lineReveal(pts,Math.max(0,Math.min(1,(age-.2-k*.5)/3.2)),'#ffcf8a',3,.85))
-      LAVA.forEach((pts,k)=>{const q=pts[pts.length-1],on=Math.max(0,Math.min(1,(age-k*.5-2)/1.5));if(on>0){glow(q[0],q[1],34,'#ff9a5a',on*.5);spark(q[0],q[1],2.4,'#fff0cc')}})
+      LAVA.forEach((pts,k)=>lineReveal(pts,Math.max(0,Math.min(1,(age-.2-k*.5)/3.2)),'#e9bea1',2.6,.65))
+      LAVA.forEach((pts,k)=>{const q=pts[pts.length-1],on=Math.max(0,Math.min(1,(age-k*.5-2)/1.5));if(on>0){glow(q[0],q[1],30,'#d6a18d',on*.28);spark(q[0],q[1],2.1,'#f2dfc8')}})
     }
   }else if(kind==='lanternsea')drawLanternsea(c,time,action,age,envelope,travel,lineReveal,spark)
   else if(kind==='galaxyend'){const pts=Array.from({length:24},(_,i)=>{const a=i*.32+action*1.5;return [620+Math.cos(a)*(20+i*7),140+Math.sin(a)*(10+i*2)]});lineReveal(pts,travel,'#f6d7ff',2,.7);pts.forEach(([x,y],i)=>{if(travel*24>i)spark(x,y,2,'#fff0ff')})}
@@ -1274,7 +1276,7 @@ function drawWeather(c:CanvasRenderingContext2D,weather:Weather,time:number,p:Pa
     for(let i=0;i<4;i++){const t=(time+i*3.7)%(11+i%2*3);if(t>1.3)continue;const x=860+i*35-t*158,y=32+i*30+t*85;stroke(c,[[x+72,y-44],[x,y]],'#fcf0dd',2.3,Math.sin(t/1.3*Math.PI)*.75);circle(c,x,y,2.4,'#fff7dc',.85)}
   }else if(weather==='aurora')paintAurora(c,p,time,true)
 }
-function drawDust(c:CanvasRenderingContext2D,time:number){for(const s of closeDust){const y=s.y+Math.sin(time*.33+s.phase)*3;circle(c,s.x,y,s.r,'#fff4df',.09+(Math.sin(time+s.phase)+1)*.07)}}
+function drawDust(c:CanvasRenderingContext2D,time:number){for(const s of closeDust){const y=s.y+Math.sin(time*.33+s.phase)*3;circle(c,s.x,y,s.r,'#f3eee6',.045+(Math.sin(time+s.phase)+1)*.035)}}
 
 /** 모든 풍경의 색·형태·대기·움직임을 Canvas 2D 명령으로 그립니다. 정적 레이어는 캐시하고 움직임만 매 프레임 덧그립니다. */
 export function paintWorld(c:CanvasRenderingContext2D,kind:Scenery,light:Light,weather:Weather,time:number,moment=0,mode:'cabin'|'vista'='vista',momentAction:MomentAction|null=null,momentAge=99){
@@ -1288,7 +1290,7 @@ export function paintWorld(c:CanvasRenderingContext2D,kind:Scenery,light:Light,w
   c.save();c.globalAlpha=p.starOpacity
   for(const s of L.twink){
     const a=s.a*(.55+.45*(.5+.5*Math.sin(time*(.9+(s.x%9)*.12)+s.phase)))
-    circle(c,s.x,s.y,s.r,s.x%7<3?'#fff9ee':'#e5efff',a)
+    circle(c,s.x,s.y,s.r,s.x%7<3?mix('#fff7ec',p.moon,.18):mix('#e7edf0',p.cloudB,.2),a)
     if(s.cross)sparkle(c,s.x,s.y,5,'#fff2db',a*.8)
   }
   c.restore()
