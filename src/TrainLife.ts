@@ -71,6 +71,10 @@ export function planConductor(life:LifeState,journeyId:string,start:number,end:n
  const special=discountable[Math.floor(random()*discountable.length)] // 오늘의 추천: 40% 할인
  return {...life,conductor:{journeyId,appearAt:start+(end-start)*(.16+random()*.48),greeted:false,offers,purchases:{},special}}
 }
+/** Cart access ends at arrival, including before the settlement tick. */
+export function activeConductorJourneyId(journey:{id:string;end:number;settled:boolean}|null|undefined,now:number):string|undefined{
+ return journey&&!journey.settled&&now<journey.end?journey.id:undefined
+}
 export function conductorReady(life:LifeState,journeyId:string|undefined,now:number):boolean{
  return !!(journeyId&&life.conductor&&life.conductor.journeyId===journeyId&&now>=life.conductor.appearAt)
 }

@@ -2,11 +2,11 @@ import {useState} from 'react'
 import {moonbreadStockLine} from './WorldStories'
 import {fertilizers,fertilizerIds,species,speciesIds,rarityNames,type CrystalGame,type CrystalId,type Fertilizer} from './Crystals'
 import {seedPrices,nutrientPrices,crystalSeedPrice,featuredSeed,shopSeedIds} from './CrystalShop'
-import {snacks,snackIds,snackPrice,conductorReady,dailyKey,dailyDealId,snackStoryCount,snackPurchaseLimit,type SnackId,type MemoryId,memoryNames,memorySnack} from './TrainLife'
+import {snacks,snackIds,snackPrice,conductorReady,activeConductorJourneyId,dailyKey,dailyDealId,snackStoryCount,snackPurchaseLimit,type SnackId,type MemoryId,memoryNames,memorySnack} from './TrainLife'
 
 export function TrainShop({game,now,onDaily,onBuy,onEat,onReplay,onConductor,onSeedBuy,onNutrientBuy,onGarden,initialSection}:{game:CrystalGame;now:number;onDaily:()=>void;onBuy:(id:SnackId,from:'shop'|'conductor')=>void;onEat:(id:SnackId)=>void;onReplay:(id:MemoryId)=>void;onConductor:()=>void;onSeedBuy:(id:CrystalId)=>void;onNutrientBuy:(id:Fertilizer)=>void;onGarden:()=>void;initialSection?:'seed'|'nutrient'|'snack'}){
  const [section,setSection]=useState<'seed'|'nutrient'|'snack'>(initialSection??'seed')
- const life=game.life!,journeyId=game.journey?.id
+ const life=game.life!,journeyId=activeConductorJourneyId(game.journey,now)
  const visitor=conductorReady(life,journeyId,now)?life.conductor:null
  return <section className="train-shop" aria-label="열차 별빛 상점">
   <div className="shop-heading"><div><small>GALACTIC TRAIN MARKET</small><h1>별빛 열차 상점</h1></div><strong>✧ {life.coins} 코인</strong></div>

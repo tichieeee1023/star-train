@@ -13,7 +13,7 @@ import {AutoDialogue} from './AutoDialogue'
 import {buyCrystalSeed,buyNutrient,crystalSeedPrice,nutrientPrices} from './CrystalShop'
 import {SpecialCG} from './SpecialCG'
 import {triggerSnack,triggerPet} from './Companions'
-import {snacks,conductorReady,greetConductor,claimDaily,buySnack,eatSnack,snackStories,snackStory,trainBanter,conductorStoryFor,memoryNames,memorySnack,type SnackId,type MemoryId,type Story} from './TrainLife'
+import {snacks,conductorReady,activeConductorJourneyId,greetConductor,claimDaily,buySnack,eatSnack,snackStories,snackStory,trainBanter,conductorStoryFor,memoryNames,memorySnack,type SnackId,type MemoryId,type Story} from './TrainLife'
 import {CabinCare} from './CabinCare'
 import {petCat,talkGirl,talkCanary,grantBondRewards,levelOf,bondStories} from './CabinBond'
 import {firstMoonbread,moonbreadStockStory,moonbreadCartStory,revisitStories} from './WorldStories'
@@ -111,9 +111,9 @@ function App(){
   setFeedback('별빛 영양액을 구매했어요. 수정 재배실에서 사용할 수 있어요.')
  }
  function handleBuy(id:SnackId,source:'shop'|'conductor'){
-  const life=crystal.life!;const next=buySnack(life,id,source,crystal.journey?.id,Date.now())
+  const at=Date.now(),life=crystal.life!;const next=buySnack(life,id,source,activeConductorJourneyId(crystal.journey,at),at)
   if(next===life){setFeedback('코인이 부족하거나 현재 구매할 수 없는 간식입니다.');return}
-  setCrystal(prev=>({...prev,life:buySnack(prev.life!,id,source,prev.journey?.id,Date.now())}));setFeedback(id==='moonbread'&&(next.conductor?.purchases.moonbread??0)===5?'보름달 다섯 개를 모두 샀어요! 내일 먹을 몫도 충분하겠네요.':`${snacks[id].name}을(를) 구매했어요.`)
+  setCrystal(prev=>({...prev,life:buySnack(prev.life!,id,source,activeConductorJourneyId(prev.journey,at),at)}));setFeedback(id==='moonbread'&&(next.conductor?.purchases.moonbread??0)===5?'보름달 다섯 개를 모두 샀어요! 내일 먹을 몫도 충분하겠네요.':`${snacks[id].name}을(를) 구매했어요.`)
  }
  function handleEat(id:SnackId){
   if((crystal.life?.stock[id]??0)<=0)return
@@ -150,10 +150,11 @@ function handlePet(){
   openStory({...story,lines:withCameo(story.lines,bondCameos[level-1])})
  }
  function visitConductor(scroll=true){
-  if(!conductorReady(crystal.life!,crystal.journey?.id,Date.now()))return
+  const at=Date.now()
+  if(!conductorReady(crystal.life!,activeConductorJourneyId(crystal.journey,at),at))return
   const j=crystal.journey
   const stage=j?voyageStage(Math.min(.99999,Math.max(0,(Date.now()-j.start)/(j.end-j.start))),j.hours):undefined
-  setCrystal(prev=>({...prev,life:greetConductor(prev.life!,prev.journey?.id,Date.now())}))
+  setCrystal(prev=>({...prev,life:greetConductor(prev.life!,activeConductorJourneyId(prev.journey,at),at)}))
   openStory(crystal.life?.conductor?.offers.includes('moonbread')?moonbreadCartStory:conductorStoryFor(j?.id??'',stage),scroll)
  }
  function viewVoyageEvent(event:VoyageEvent){
@@ -173,7 +174,7 @@ function handlePet(){
  const revisit=landed?.firstPlace===false&&(crystal.sceneVisits?.[scenery]??2)%2===0?revisitStories[scenery]:undefined
  const arrivalStory:Story=revisit??{title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])}
  const ambient=trainBanter(travelStage??undefined,crystal.journey?now-crystal.journey.start:now,crystal.journey?.start??17372591)
- const visiting=conductorReady(crystal.life!,crystal.journey?.id,now)
+ const visiting=phase==='moving'&&conductorReady(crystal.life!,activeConductorJourneyId(crystal.journey,now),now)
  const journeyPlan=crystal.journey?planVoyageEvents(crystal.journey):[]
  const journeyPending=pendingEvents(crystal,now)
  const journeyStats=voyageLog(crystal,now)
@@ -243,11 +244,27 @@ function handlePet(){
    <div className="arrival-cta-copy"><strong>✦ {station.name}</strong><small>도착했어요 · 이제 풍경 속으로</small></div>
    <button type="button" className="arrival-cta-button" onClick={stepOutside}>✧ 내려서 풍경 보기 <span aria-hidden="true">›</span></button>
   </div>}
+  {atPlatform&&<section className="platform-quick-panel" aria-label="행성에서 할 수 있는 일">
+   <div className="platform-primary-actions"><button type="button" className="journey-button primary" onClick={()=>setViewer(true)}>⛶ 풍경 감상</button><button type="button" className="journey-button secondary" onClick={()=>{setStory(null);setCgMode(false);setPhase('stopped');window.scrollTo({top:0,behavior:'auto'})}}>← 객실로 돌아가기</button></div>
+    <section className="place-encounter" aria-labelledby="place-encounter-title">
+     <div className="encounter-caption"><span aria-hidden="true">✧</span><span id="place-encounter-title">이곳에서의 작은 발견</span></div>
+     <p className="encounter-result">{placeMoments[scenery].before}</p>
+     {landed&&!landed.experienced?<div className="place-encounter-choices"><button className="place-encounter-button" type="button" onClick={()=>experiencePlace(landed.action??0)}>
+      <span aria-hidden="true">✦</span><span>{placeMoments[scenery].actions[landed.action??0].label}<small>이번 여행에서 마주친 단 하나의 순간</small></span>
+     </button></div>:null}
+     {landed?.experienced&&<>
+      <p className="encounter-result" role="status">{placeMoments[scenery].actions[landed.action??0].lines[landed.dialogue??0]}</p>
+      <button type="button" className="journey-button secondary" onClick={()=>openStory({title:'이곳에서의 작은 발견',lines:withCameo(interactionConversations[scenery][landed.action??0][landed.dialogue??0],momentCameos[scenery][landed.action??0][landed.dialogue??0])})}>✦ 세 친구의 대화 다시 듣기</button>
+      <p className="encounter-footnote">이 여행의 발견을 기억했어요. 다음번에는 다른 순간이 찾아올 수 있어요.</p>
+     </>}
+    </section>
+   <div className="platform-secondary-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory(arrivalStory)}>✧ 세 친구와 대화</button><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
+  </section>}
   {!story&&phase!=='stopped'&&<AutoDialogue key={phase+":"+scenery+":"+(crystal.journey?.id??"idle")} lines={sceneTalk.lines} active={!viewer&&!routeDialogOpen} repeat={phase==='moving'}/>}
-  <div className="train-quick-panel">
+  {!atPlatform&&<div className="train-quick-panel">
    {phase==='moving'&&crystal.journey&&!crystal.journey.settled&&<div className="train-journey-snapshot" aria-label="항해 진행 상황"><div><small>✦ 이번 항해</small><strong>{routeInfo[crystal.journey.destination].label}으로 가는 길</strong><span>{fmtWait(crystal.journey.end-now)} 남았어요</span></div><progress value={progress*100} max={100} aria-label="항해 진행률"/></div>}
    <div className="train-quick-actions"><button type="button" onClick={()=>openStory(sceneTalk)}>✧ 대화하기</button><button type="button" onClick={()=>{if(phase==='moving')careRef.current?.scrollIntoView({block:'start',behavior:'smooth'});else setViewer(true)}}>{phase==='moving'?'♡ 친구 돌보기':'⛶ 풍경 감상'}</button><button type="button" onClick={()=>changePage('shop')}>◇ 상점</button></div>
-  </div>
+  </div>}
   <section className="body">
    <div className="intro-rule"><span>✦</span><span>{atPlatform?'별 사이의 풍경':phase==='moving'?'다음 정거장으로':'열차가 잠시 멈추는 곳'}</span><span>✦</span></div>
    {phase==='moving'&&!crystal.journey&&<>
@@ -288,20 +305,6 @@ function handlePet(){
    {atPlatform&&<>
     <div className="vista-intro"><h1>{title}</h1><p>{station.caption}</p></div>
     <p className="weather-memory">✧ 이번 행성의 하늘은 <b>{lights[skyLight]} · {weathers[skyWeather]}</b>입니다. 다음에 돌아오면 다른 모습일지도 몰라요.</p>
-    <section className="place-encounter" aria-labelledby="place-encounter-title">
-     <div className="encounter-caption"><span aria-hidden="true">✧</span><span id="place-encounter-title">이곳에서의 작은 발견</span></div>
-     <p className="encounter-result">{placeMoments[scenery].before}</p>
-     {landed&&!landed.experienced?<div className="place-encounter-choices"><button className="place-encounter-button" type="button" onClick={()=>experiencePlace(landed.action??0)}>
-      <span aria-hidden="true">✦</span><span>{placeMoments[scenery].actions[landed.action??0].label}<small>이번 여행에서 마주친 단 하나의 순간</small></span>
-     </button></div>:null}
-     {landed?.experienced&&<>
-      <p className="encounter-result" role="status">{placeMoments[scenery].actions[landed.action??0].lines[landed.dialogue??0]}</p>
-      <button type="button" className="journey-button secondary" onClick={()=>openStory({title:'이곳에서의 작은 발견',lines:withCameo(interactionConversations[scenery][landed.action??0][landed.dialogue??0],momentCameos[scenery][landed.action??0][landed.dialogue??0])})}>✦ 세 친구의 대화 다시 듣기</button>
-      <p className="encounter-footnote">이 여행의 발견을 기억했어요. 다음번에는 다른 순간이 찾아올 수 있어요.</p>
-     </>}
-    </section>
-    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
-    <div className="journey-actions vista-actions"><button className="journey-button primary" onClick={()=>setViewer(true)}>⛶ 가로 풍경 감상</button><button className="journey-button secondary" onClick={()=>setPhase('stopped')}>← 객실로 돌아가기</button></div>
    </>}
    {phase==='moving'&&<div ref={careRef} className="train-care-anchor"><CabinCare game={crystal} note={careNote} onPet={handlePet} onTalk={handleTalk} onCanary={handleCanaryTalk} onCanaryChapter={listenCanaryChapter} onListen={listenBond} onShop={()=>changePage('shop','snack')} onMoonStory={()=>{if((crystal.life?.used.moonbread??0)>0)openStory(firstMoonbread)}} onMoonStock={()=>openStory(moonbreadStockStory(crystal.life?.stock.moonbread??0))}/></div>}
    <p className="stage-footnote">다음 목적지 두 곳과 도착 기후는 항해마다 달라집니다. 같은 행성에서도 새로운 풍경을 만날 수 있어요. 씨앗 보상과 발견 기록은 기기에 저장됩니다.</p>

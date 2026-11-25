@@ -93,7 +93,7 @@ export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void})
   </>}
   <dialog className="album-dialog" ref={dialog} onClose={close} aria-label="수집한 풍경 다시 보기">
    {selected&&<>
-    <div className="album-dialog-top"><div className="album-dialog-heading"><small>✧ 우리의 여행 기록</small><strong>{routeInfo[selected].label}</strong></div><button className="album-dialog-close" type="button" onClick={()=>dialog.current?.close()} aria-label="도감 사진 닫기">×</button></div>
+    <div className="album-dialog-top"><div className="album-dialog-heading"><small>✧ 우리의 여행 기록</small><strong>{routeInfo[selected].label}</strong></div><button className="album-dialog-close" type="button" onClick={()=>dialog.current?.close()} aria-label="도감 사진 닫기"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <button type="button" className="album-landscape" onClick={()=>setFull(true)} aria-label="전체 화면으로 풍경 감상하기"><Vista scenery={selected} light={light} weather={weather}/><span className="album-landscape-fullscreen" aria-hidden="true">⛶</span></button>
     <div className="album-scenic-controls">
      <div className="album-choice-group album-light-controls">
