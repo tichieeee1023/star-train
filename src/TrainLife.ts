@@ -38,12 +38,12 @@ export function normalizeBond(value?:Partial<BondState>):BondState{
  const n=(x:unknown)=>typeof x==='number'&&Number.isFinite(x)?Math.max(0,Math.floor(x)):0
  return {points:n(value.points),rewarded:n(value.rewarded),unheard:Array.isArray(value.unheard)?value.unheard.filter(x=>Number.isInteger(x)&&x>0):[],lastPet:n(value.lastPet),lastTalk:n(value.lastTalk),lastCanaryTalk:n(value.lastCanaryTalk),pets:n(value.pets),talks:n(value.talks),canaryTalks:n(value.canaryTalks)}
 }
-export type LifeState={bond:BondState;coins:number;credits:string[];stock:Partial<Record<SnackId,number>>;used:Partial<Record<SnackId,number>>;memories:MemoryId[];daily:string;conductor:ConductorVisit|null;events:string[]}
-export const newLife=():LifeState=>({bond:newBond(),coins:0,credits:[],stock:{},used:{},memories:[],daily:'',conductor:null,events:[]})
+export type LifeState={bond:BondState;coins:number;credits:string[];stock:Partial<Record<SnackId,number>>;used:Partial<Record<SnackId,number>>;memories:MemoryId[];daily:string;conductor:ConductorVisit|null;lastConductorOffers?:SnackId[];events:string[]}
+export const newLife=():LifeState=>({bond:newBond(),coins:0,credits:[],stock:{},used:{},memories:[],daily:'',conductor:null,lastConductorOffers:[],events:[]})
 export function normalizeLife(value?:Partial<LifeState>):LifeState{
  const fresh=newLife()
  if(!value||typeof value!=='object')return fresh
- return {...fresh,...value,bond:normalizeBond(value.bond),coins:Number.isFinite(value.coins)?Math.max(0,Math.floor(value.coins!)):0,credits:Array.isArray(value.credits)?value.credits:[],stock:value.stock??{},used:value.used??{},memories:Array.isArray(value.memories)?value.memories:[],events:Array.isArray(value.events)?value.events:[],conductor:value.conductor??null}
+ return {...fresh,...value,bond:normalizeBond(value.bond),coins:Number.isFinite(value.coins)?Math.max(0,Math.floor(value.coins!)):0,credits:Array.isArray(value.credits)?value.credits:[],stock:value.stock??{},used:value.used??{},memories:Array.isArray(value.memories)?value.memories:[],events:Array.isArray(value.events)?value.events:[],conductor:value.conductor??null,lastConductorOffers:(Array.isArray(value.lastConductorOffers)?value.lastConductorOffers:Array.isArray(value.conductor?.offers)?value.conductor.offers:[]).filter(id=>snackIds.includes(id))}
 }
 export function addCoins(life:LifeState,key:string,amount:number):LifeState{
  if(life.credits.includes(key)||amount<=0)return life
@@ -60,16 +60,27 @@ export function journeyCoinReward(hours:TripHours,rare:boolean,firstPlace:boolea
 }
 export function planConductor(life:LifeState,journeyId:string,start:number,end:number,hours:TripHours,random:()=>number=Math.random):LifeState{
  const chance=hours===8?1:hours===3?.8:.55
- if(random()>=chance)return {...life,conductor:null}
+ const previous=life.lastConductorOffers?.length?life.lastConductorOffers:life.conductor?.offers??[]
+ if(random()>=chance)return {...life,conductor:null,lastConductorOffers:[...previous]}
  const regular:SnackId[]=snackIds.filter(id=>!snacks[id].exclusive)
  const order=[...regular].sort((a,b)=>a.localeCompare(b))
  for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
  const limited=snackIds.filter(id=>snacks[id].exclusive)
  for(let i=limited.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[limited[i],limited[j]]=[limited[j],limited[i]]}
- const offers:SnackId[]=[...order.slice(0,4),...limited.slice(0,hours===8?3:2)]
+ // Keep the random draw, but prevent an identical assortment in either category.
+ const pickChanged=(pool:SnackId[],count:number):SnackId[]=>{
+  const selected=pool.slice(0,count)
+  const last=previous.filter(id=>pool.includes(id))
+  if(last.length===count&&selected.every(id=>last.includes(id))){
+   const replacement=pool.slice(count).filter(id=>!last.includes(id))
+   if(replacement.length)selected[Math.floor(random()*selected.length)]=replacement[Math.floor(random()*replacement.length)]
+  }
+  return selected
+ }
+ const offers:SnackId[]=[...pickChanged(order,4),...pickChanged(limited,hours===8?3:2)]
  const discountable=offers.filter(id=>id!=='moonbread')
  const special=discountable[Math.floor(random()*discountable.length)] // 오늘의 추천: 40% 할인
- return {...life,conductor:{journeyId,appearAt:start+(end-start)*(.16+random()*.48),greeted:false,offers,purchases:{},special}}
+ return {...life,lastConductorOffers:[...offers],conductor:{journeyId,appearAt:start+(end-start)*(.16+random()*.48),greeted:false,offers,purchases:{},special}}
 }
 /** Cart access ends at arrival, including before the settlement tick. */
 export function activeConductorJourneyId(journey:{id:string;end:number;settled:boolean}|null|undefined,now:number):string|undefined{
