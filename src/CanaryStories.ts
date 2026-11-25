@@ -7,6 +7,7 @@ import type {Stage} from './VoyageSky'
 import type {Scenery} from './routeData'
 import type {SnackId,Story} from './TrainLife'
 import {crystalBirdPast,passengerTickets,libraryStories} from './WorldStories'
+import {companionDailyStories,companionMemoryChapters} from './CompanionStories'
 
 export const scene=(title:string,...lines:[Speaker,string][]):Story=>({title,lines:lines.map(([speaker,text])=>({speaker,text}))})
 
@@ -49,13 +50,15 @@ export const canaryChapters:readonly Story[]=[
   ['canary','창밖의 별빛도 훌륭하지. 하지만…… 서로 다른 우리가 같은 창을 보고 있다는 게 더 마음에 드는구나.'],
   ['cat','냐아. 좋은 말이다. 그럼 이제 조금 자도 되겠지?']),
  crystalBirdPast,
- passengerTickets
+ passengerTickets,
+ ...companionMemoryChapters
 ]
-/** 마음 단계와 무관하게 아가씨와 대화한 1, 3, 6, 10, 15, 20, 25번째에 열리는 작은 연속 이야기. */
-export const canaryChapterTurns=[0,2,5,9,14,19,24] as const
+/** 마음 단계와 무관하게 아가씨와 대화한 1, 3, 6, 10, 15, 20, 25, 28, 32번째에 열리는 작은 연속 이야기. */
+export const canaryChapterTurns=[0,2,5,9,14,19,24,27,31] as const
 
 export const canaryBanters:readonly Story[]=[
  ...libraryStories,
+ ...companionDailyStories,
  scene('아가씨의 취향',['canary','저쪽 별은 꼭 황금빛 비단 같구나.'],['girl','아가씨는 어떤 색을 제일 좋아해?'],['canary','빛을 받았을 때 깊이가 생기는 색. 노란색만 좋아할 거라 생각했다면 오산이란다.'],['cat','나는 맛있어 보이는 색.']),
  scene('깃털 정리 시간',['girl','아가씨는 왜 자꾸 깃털을 고르는 거야?'],['canary','작은 날개도 품위를 잃으면 안 되는 법이지.'],['cat','내 털은 자고 일어나면 알아서 정돈되던데.'],['canary','……그래서 네 머리털이 늘 그 모양이구나.']),
  scene('고양이의 청중석',['canary','♪ ♬~ 오늘은 저 별에게 노래를 들려줄 생각이란다.'],['cat','좋아. 아주 멀리 있는 별이면 좋겠어.'],['girl','왜?'],['cat','거기서는 안 들릴 테니까.'],['canary','청중을 가려 받는 것도 예술가의 소양이지. 흥.']),
