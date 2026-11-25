@@ -4,7 +4,7 @@ import type {Stage} from './VoyageSky'
 import type {TripHours} from './Crystals'
 import {extraBanters,extraStageBanters} from './CabinExtras'
 import {snackExtras} from './SnackExtras'
-import {firstMoonbread,moonbreadFollowup} from './WorldStories'
+import {firstMoonbread,moonbreadFollowup,trainLoreStories} from './WorldStories'
 import {canaryBanters,canaryStageBanters,canarySnackStories} from './CanaryStories'
 import {withCameo,stageCameos,conductorStageCameos,conductorGeneralCameos,generalCameos,snackCameos} from './CanaryCameos'
 
@@ -200,7 +200,8 @@ export const conductorStories:readonly Story[]=[
   {speaker:'conductor',text:'돌아오는 길에 보이는 작은 별입니다. 그곳에는 따뜻한 식사가 있거든요.'},
   {speaker:'cat',text:'냐아아! 차장님, 저랑 취향이 아주 비슷하시네요.'},
   {speaker:'girl',text:'둘 다 먹는 얘기로 끝나는 건가요? ㅋㅋㅋ'}
- ]}
+ ]},
+ ...trainLoreStories
 ]
 const cs=(...l:[string,string][]):Conversation=>l.map(([speaker,text])=>({speaker:speaker==='conductor'?'conductor':speaker==='girl'?'girl':'cat',text}))
 /** 지금 지나는 구간에 맞춘 차장의 이야기. */
@@ -216,6 +217,7 @@ export const conductorStageStories:Record<Stage,Story>={
 export function conductorStoryFor(journeyId:string,stage?:Stage):Story{
  const hash=[...journeyId].reduce((acc,c)=>acc+c.charCodeAt(0),0)
  if(stage&&hash%3!==0){const s=conductorStageStories[stage];return {...s,lines:withCameo(s.lines,conductorStageCameos[stage])}}
- const i=hash%conductorStories.length,s=conductorStories[i]
+ // 구간 대화 선택과 같은 나머지를 다시 쓰면 일부 일반 이야기가 영영 선택되지 않는다.
+ const i=(stage?Math.floor(hash/3):hash)%conductorStories.length,s=conductorStories[i]
  return {...s,lines:withCameo(s.lines,conductorGeneralCameos[i])}
 }

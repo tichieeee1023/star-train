@@ -6,7 +6,7 @@ import type {Conversation,Speaker} from './Dialogue'
 import type {Stage} from './VoyageSky'
 import type {Scenery} from './routeData'
 import type {SnackId,Story} from './TrainLife'
-import {crystalBirdPast,passengerTickets} from './WorldStories'
+import {crystalBirdPast,passengerTickets,libraryStories} from './WorldStories'
 
 export const scene=(title:string,...lines:[Speaker,string][]):Story=>({title,lines:lines.map(([speaker,text])=>({speaker,text}))})
 
@@ -55,6 +55,7 @@ export const canaryChapters:readonly Story[]=[
 export const canaryChapterTurns=[0,2,5,9,14,19,24] as const
 
 export const canaryBanters:readonly Story[]=[
+ ...libraryStories,
  scene('아가씨의 취향',['canary','저쪽 별은 꼭 황금빛 비단 같구나.'],['girl','아가씨는 어떤 색을 제일 좋아해?'],['canary','빛을 받았을 때 깊이가 생기는 색. 노란색만 좋아할 거라 생각했다면 오산이란다.'],['cat','나는 맛있어 보이는 색.']),
  scene('깃털 정리 시간',['girl','아가씨는 왜 자꾸 깃털을 고르는 거야?'],['canary','작은 날개도 품위를 잃으면 안 되는 법이지.'],['cat','내 털은 자고 일어나면 알아서 정돈되던데.'],['canary','……그래서 네 머리털이 늘 그 모양이구나.']),
  scene('고양이의 청중석',['canary','♪ ♬~ 오늘은 저 별에게 노래를 들려줄 생각이란다.'],['cat','좋아. 아주 멀리 있는 별이면 좋겠어.'],['girl','왜?'],['cat','거기서는 안 들릴 테니까.'],['canary','청중을 가려 받는 것도 예술가의 소양이지. 흥.']),

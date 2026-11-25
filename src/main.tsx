@@ -16,7 +16,7 @@ import {triggerSnack,triggerPet} from './Companions'
 import {snacks,conductorReady,greetConductor,claimDaily,buySnack,eatSnack,snackStories,snackStory,trainBanter,conductorStoryFor,memoryNames,memorySnack,type SnackId,type MemoryId,type Story} from './TrainLife'
 import {CabinCare} from './CabinCare'
 import {petCat,talkGirl,talkCanary,grantBondRewards,levelOf,bondStories} from './CabinBond'
-import {firstMoonbread,moonbreadStockStory,moonbreadCartStory} from './WorldStories'
+import {firstMoonbread,moonbreadStockStory,moonbreadCartStory,revisitStories} from './WorldStories'
 import {canaryConversation,canaryChapters,canaryChapterTurns,canaryArrivalStories} from './CanaryStories'
 import {TravelCGViewer,TravelCGImage,type TravelCGId} from './TravelCG'
 import {voyageStage,stageNames} from './VoyageSky'
@@ -169,6 +169,9 @@ function handlePet(){
  const progress=crystal.journey?Math.min(1,Math.max(0,(now-crystal.journey.start)/(crystal.journey.end-crystal.journey.start))):0
  const travelStage=crystal.journey&&!crystal.journey.settled?voyageStage(progress,crystal.journey.hours):null
  const landed=crystal.landing?.destination===scenery?crystal.landing:null
+ // 실제 도착 기록을 활용하며 첫 방문 및 기존 일반 도착 대화는 유지한다.
+ const revisit=landed?.firstPlace===false&&(crystal.sceneVisits?.[scenery]??2)%2===0?revisitStories[scenery]:undefined
+ const arrivalStory:Story=revisit??{title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])}
  const ambient=trainBanter(travelStage??undefined,crystal.journey?now-crystal.journey.start:now,crystal.journey?.start??17372591)
  const visiting=conductorReady(crystal.life!,crystal.journey?.id,now)
  const journeyPlan=crystal.journey?planVoyageEvents(crystal.journey):[]
@@ -183,7 +186,7 @@ function handlePet(){
  useEffect(()=>{
   const journeyId=crystal.journey?.id
   if(page==='train'&&phase==='stopped'&&journeyId&&lastArrivalStory.current!==journeyId&&!story&&!viewer&&!routeDialogOpen&&!cg){
-   lastArrivalStory.current=journeyId;openStory({title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])},false)
+   lastArrivalStory.current=journeyId;openStory(arrivalStory,false)
   }
  },[phase,page,crystal.journey?.id,story,viewer,routeDialogOpen])
  useEffect(()=>{
@@ -218,7 +221,7 @@ function handlePet(){
   if(!landed?.firstPlace||seenCG.current.has(landed.journeyId))return
   seenCG.current.add(landed.journeyId);setCg({id:scenery,first:true})
  }
- const sceneTalk=atPlatform||phase==='stopped'?{title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])}:ambient
+ const sceneTalk=atPlatform||phase==='stopped'?arrivalStory:ambient
  const title=atPlatform||phase==='stopped'?station.name:phase==='arriving'?'곧 역에 도착합니다':crystal.journey?'별 사이를 건너는 중':'별빛이 머무는 선실'
  return <main className="app">
   {cg&&<TravelCGViewer id={cg.id} first={cg.first} onClose={()=>setCg(null)}/>}
@@ -279,7 +282,7 @@ function handlePet(){
      <button onClick={()=>changePage('crystal')}>◇ 수정 재배실 열기</button>
     </div>}
 
-    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory({title:'창가에서 나눈 이야기',lines:withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0])})}>✦ 세 친구의 창가 대화 듣기</button><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
+    <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={()=>openStory(arrivalStory)}>✦ 세 친구의 창가 대화 듣기</button><button type="button" className="journey-button secondary" onClick={()=>openStory(canaryArrivalStories[scenery][(landed?.dialogue??0)%canaryArrivalStories[scenery].length])}>♪ 아가씨와 풍경 감상</button></div>
     <div className="journey-actions"><button type="button" className="journey-button secondary" onClick={depart}>다음 항로 출발 ›</button></div>
    </>}
    {atPlatform&&<>
@@ -323,7 +326,7 @@ function handlePet(){
   </dialog>
   <details className="train-app-options"><summary>앱 및 설치 안내</summary><InstallApp/></details>
   <nav className="bottom-nav" aria-label="주 메뉴"><button className={page==='train'?'active-tab':''} aria-current={page==='train'?'page':undefined} onClick={()=>changePage('train')}><span aria-hidden="true">✧</span> 열차</button><button className={page==='crystal'?'active-tab':''} aria-current={page==='crystal'?'page':undefined} onClick={()=>changePage('crystal')}><span aria-hidden="true">◇</span> 수정 재배 <small>{crystal.seeds.length?`씨앗 ${crystal.seeds.length}`:''}</small></button><button className={page==='album'?'active-tab':''} aria-current={page==='album'?'page':undefined} onClick={()=>changePage('album')}><span aria-hidden="true">▤</span> 별 도감 <small>{crystal.sceneCards?.length??0}/15</small></button><button className={page==='shop'?'active-tab':''} aria-current={page==='shop'?'page':undefined} onClick={()=>changePage('shop')}><span aria-hidden="true">▣</span> 별빛 상점 <small>✧ {crystal.life?.coins??0}</small></button></nav>
-  {viewer&&<Suspense fallback={loadingScreen}><ScenicViewer scenery={scenery} phase={phase} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction} journey={skyJourney} conversation={story?.lines??(atPlatform||phase==='stopped'?withCameo(arrivalConversations[scenery][landed?.dialogue??0],arrivalCameos[scenery][landed?.dialogue??0]):ambient.lines)} onClose={hideViewer}/></Suspense>}
+  {viewer&&<Suspense fallback={loadingScreen}><ScenicViewer scenery={scenery} phase={phase} light={skyLight} weather={skyWeather} moment={moment} momentAction={momentAction} journey={skyJourney} conversation={story?.lines??(atPlatform||phase==='stopped'?arrivalStory.lines:ambient.lines)} onClose={hideViewer}/></Suspense>}
  </main>
 }
 createRoot(document.getElementById('root')!).render(<App/>)
