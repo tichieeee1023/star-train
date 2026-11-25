@@ -720,4 +720,76 @@ button:focus-visible{outline:2px solid #ffe3b9;outline-offset:3px}
 @media(max-width:480px){.album-sections button{flex:1 1 42%}.travel-cg-toggle button{font-size:11px;padding:5px 8px}.travel-cg-toggle{bottom:8px;right:8px}}
 
 .travel-cg-viewport{position:relative;width:100%;height:100%;background:#090c18}
+
+/* Storybook art direction: scene-first album, soft controls, and one clear cabin action. */
+.album-dialog{width:min(92vw,620px);max-height:88dvh;padding:12px;background:#252e43;border:1px solid #d9c6bb45;border-radius:14px;box-shadow:0 20px 70px #070d1bb0}
+.album-dialog-top{margin-bottom:9px}
+.album-dialog-heading small{color:#cbbca9;letter-spacing:.04em}
+.album-dialog-heading strong{font-size:18px;color:#f1e7dd}
+.album-dialog-close{width:42px;height:42px;background:#394356;border-color:#d9d2c833}
+.album-landscape{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;overflow:hidden;border:1px solid #d7d7d22b;border-radius:10px;background:#1e293c;box-shadow:none;cursor:zoom-in}
+.album-landscape>.vista{width:100%;height:100%;display:block}
+.album-landscape-fullscreen{position:absolute;right:9px;bottom:9px;display:grid;place-items:center;width:39px;height:39px;border:1px solid #f4ead977;border-radius:50%;background:#1c2639c9;color:#f5eddf;font-size:20px;line-height:1;box-shadow:0 2px 8px #111b2b70}
+.album-choices-heading{margin-top:8px;color:#d5c5b2;font-size:11px}
+.album-choices-heading small{color:#9eaabd}
+.album-selector{gap:6px;margin:5px 0 7px}
+.album-selector button{min-height:38px;padding:7px 11px;border-radius:9px;background:#343f54;border-color:#d6d2cf2c;color:#e5e4e1;font-size:11px}
+.album-selector button[aria-pressed=true]{background:#6b6477;border-color:#d6c3a2;color:#fff1dc}
+.album-selector button:disabled{opacity:.38}
+.album-reminiscence{margin:9px 0 0;padding:8px 0 0;border-top:1px solid #d2d7d31d}
+.album-reminiscence-label{margin:0 0 5px;color:#cbbca9;font-size:10px}
+.album-reminiscence .auto-dialogue-compact{padding:7px 10px;border:1px solid #d6d0c828;border-radius:9px;background:#202a3c;box-shadow:none;backdrop-filter:none}
+.album-reminiscence .auto-dialogue-content{min-height:52px}
+.album-reminiscence .auto-dialogue-speaker{margin-bottom:3px;color:#d8c7ad;font-size:10px}
+.album-reminiscence .auto-dialogue-line p{font-size:12px;line-height:1.5;color:#ede8e2}
+.album-reminiscence .auto-dialogue-controls{font-size:9px}
+.album-reminiscence .auto-dialogue-controls button{min-height:34px;min-width:36px}
+.scenic-viewport{background:#182235}
+.scenic-topbar{padding-top:calc(10px + env(safe-area-inset-top,0px));background:linear-gradient(180deg,#172236d9,transparent)}
+.scenic-heading>span{color:#d7c7b3}
+.scenic-heading strong{color:#f1e8dc}
+.scenic-toolbar button,.scenic-reveal{border:1px solid #e4ddd345;border-radius:22px;background:#202b40b8;color:#eee9e1;backdrop-filter:blur(7px)}
+.scenic-dialogue-dock{bottom:max(10px,env(safe-area-inset-bottom,0px));width:min(510px,calc(100% - 22px))}
+.scenic-dialogue-dock .auto-dialogue-compact{border:1px solid #e0d6c62e;border-radius:10px;background:#1c293bdc;box-shadow:none;backdrop-filter:blur(9px);padding:7px 11px}
+.scenic-dialogue-dock .auto-dialogue-compact .auto-dialogue-content{min-height:50px}
+.scenic-dialogue-dock .auto-dialogue-speaker{color:#d7c3a8}
+.scenic-dialogue-dock .auto-dialogue-line p{font-size:12px;line-height:1.5}
+.scenic-dialogue-dock .auto-dialogue-controls button{min-height:36px;min-width:38px}
+.scenic-stage{box-shadow:0 0 42px #07101f70}
+.train-stage-dialogue{background:#202b40;border-top-color:#d9d0c41e}
+.train-stage-dialogue .cabin-story{background:#202b40;padding:10px 14px}
+.train-stage-dialogue .cabin-story-line{color:#e7e1da}
+.train-quick-panel{padding:10px 13px 12px;background:#252f43;border-bottom-color:#d7d0c41d}
+.train-journey-snapshot{padding-bottom:9px;margin-bottom:8px;border-bottom-color:#e7e1d41a}
+.train-quick-actions{gap:7px}
+.train-quick-actions button{min-height:44px;border-color:#e4ddd329;border-radius:10px;background:#354158;color:#eee9e1}
+.train-quick-actions button:first-child{background:#70677a;border-color:#d7c4a173;color:#fff2df}
+.train-hero .train-scene-caption{background:#273246;border-top-color:#dfd6c424}
+@media(max-width:480px){
+ .album-dialog{width:calc(100vw - 22px);max-height:88dvh;padding:10px}
+ .album-dialog-heading strong{font-size:17px}
+ .album-selector{gap:5px}
+ .album-selector button{min-height:38px;padding:7px 9px}
+ .scenic-topbar{gap:7px;padding-left:max(9px,env(safe-area-inset-left,0px));padding-right:max(9px,env(safe-area-inset-right,0px))}
+ .scenic-toolbar{gap:4px}
+ .scenic-toolbar button{min-height:38px;padding:7px 9px;font-size:11px}
+ .train-quick-actions{gap:5px}
+ .train-quick-actions button{font-size:11px}
+}
+@media(max-height:470px) and (orientation:landscape){
+ .album-dialog{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(250px,.82fr);column-gap:12px;width:min(94vw,820px);max-height:94dvh;padding:10px}
+ .album-dialog-top{margin-bottom:5px}
+ .album-dialog-top{grid-column:1/-1}
+ .album-dialog-heading strong{font-size:16px}
+ .album-landscape{grid-column:1;grid-row:2;align-self:start}
+ .album-scenic-controls{grid-column:2;grid-row:2;min-width:0;align-self:start}
+ .album-choices-heading{margin-top:5px}
+ .album-selector{margin:3px 0 4px}
+ .album-selector button{min-height:33px;padding:5px 8px}
+ .album-reminiscence{margin-top:5px;padding-top:5px}
+ .album-reminiscence .auto-dialogue-content{min-height:42px}
+ .album-reminiscence .auto-dialogue-line p{font-size:11px;line-height:1.35}
+ .album-reminiscence .auto-dialogue-controls button{min-height:31px}
+}
+@media(prefers-reduced-motion:reduce){.album-landscape-fullscreen{transition:none}}
 .feature-loading{padding:32px 20px;text-align:center;color:#e9d5cc}

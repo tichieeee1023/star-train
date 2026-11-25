@@ -3,7 +3,7 @@ import {TravelCGGallery} from './TravelCG'
 import {createPortal} from 'react-dom'
 import {paintWorld} from './CanvasPaint'
 import {ScenicViewer} from './ScenicViewer'
-import {ScenicDialogue} from './ScenicDialogue'
+import {AutoDialogue} from './AutoDialogue'
 import {arrivalConversations} from './Dialogue'
 import {arrivalCameos,withCameo} from './CanaryCameos'
 import {Vista,lights,weathers,type Weather,type Light} from './Vista'
@@ -43,7 +43,6 @@ export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void})
  const [light,setLight]=useState<Light>('dusk')
  const [weather,setWeather]=useState<Weather>('clear')
  const [full,setFull]=useState(false)
- const [dialogueIndex,setDialogueIndex]=useState(0)
  const [selectedCrystal,setSelectedCrystal]=useState<{id:CrystalId;variant:Variant}|null>(null)
  const dialog=useRef<HTMLDialogElement>(null)
  const shots=new Set(game.sceneShots??[])
@@ -56,10 +55,10 @@ export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void})
  const specialCount=[...weatherShots].length
  const discovered=game.sceneDiscoveries??[]
  useEffect(()=>{if(selected&&dialog.current&&!dialog.current.open)dialog.current.showModal()},[selected])
- function open(p:Scenery){const first=owned(p)[0];if(!first)return;setWeather('clear');setLight(first);setDialogueIndex(0);setSelected(p)}
+ function open(p:Scenery){const first=owned(p)[0];if(!first)return;setWeather('clear');setLight(first);setSelected(p)}
  function chooseLight(next:Light){if(!selected||!shots.has(shotKey(selected,next)))return;setLight(next);setWeather('clear')}
  function chooseWeather(next:Weather){if(!selected)return;if(next!=='clear'&&!weatherShots.has(specialKey(selected,light,next)))return;setWeather(next)}
- function close(){setSelected(null);setFull(false);setDialogueIndex(0)}
+ function close(){setSelected(null);setFull(false)}
  const visitVariant=selected?Math.max(0,(game.sceneVisits?.[selected]??1)-1)%3:0
  const conversation=selected?withCameo(arrivalConversations[selected][visitVariant],arrivalCameos[selected][visitVariant]):null
  return <section className="galaxy-album" aria-label="여행 도감">
@@ -95,13 +94,18 @@ export function SceneryGallery({game,onSail}:{game:CrystalGame;onSail:()=>void})
   <dialog className="album-dialog" ref={dialog} onClose={close} aria-label="수집한 풍경 다시 보기">
    {selected&&<>
     <div className="album-dialog-top"><div className="album-dialog-heading"><small>✧ 우리의 여행 기록</small><strong>{routeInfo[selected].label}</strong></div><button className="album-dialog-close" type="button" onClick={()=>dialog.current?.close()} aria-label="도감 사진 닫기">×</button></div>
-    <div className="album-landscape"><Vista scenery={selected} light={light} weather={weather}/></div>
-    <button type="button" className="album-scenic-launch" onClick={()=>setFull(true)}>⛶ &nbsp; 풍경 크게 감상하기 <span aria-hidden="true">›</span></button>
-    <div className="album-choices-heading"><span>빛의 시간</span><small>수집한 풍경만 선택할 수 있어요</small></div>
-    <div className="album-selector" role="group" aria-label="발견한 시간대">{moods.map(m=><button type="button" key={m} aria-pressed={m===light} disabled={!shots.has(shotKey(selected,m))} onClick={()=>chooseLight(m)}>{lights[m]}</button>)}</div>
-    <div className="album-choices-heading"><span>그날의 하늘</span></div>
-    <div className="album-selector" role="group" aria-label="발견한 특별한 하늘"><button type="button" aria-pressed={weather==='clear'} onClick={()=>chooseWeather('clear')}>평온한 하늘</button>{weatherAt(selected,light).map(w=><button type="button" key={w} aria-pressed={weather===w} onClick={()=>chooseWeather(w)}>✦ {weathers[w]}</button>)}</div>
-    {conversation&&<div className="album-reminiscence"><div className="album-reminiscence-label">✦ 그 별에서 나눈 이야기</div><ScenicDialogue lines={conversation} index={dialogueIndex} onIndex={setDialogueIndex}/></div>}
+    <button type="button" className="album-landscape" onClick={()=>setFull(true)} aria-label="전체 화면으로 풍경 감상하기"><Vista scenery={selected} light={light} weather={weather}/><span className="album-landscape-fullscreen" aria-hidden="true">⛶</span></button>
+    <div className="album-scenic-controls">
+     <div className="album-choice-group album-light-controls">
+      <div className="album-choices-heading"><span>빛의 시간</span><small>수집한 시간대</small></div>
+      <div className="album-selector" role="group" aria-label="발견한 시간대">{moods.map(m=><button type="button" key={m} aria-pressed={m===light} disabled={!shots.has(shotKey(selected,m))} onClick={()=>chooseLight(m)}>{lights[m]}</button>)}</div>
+     </div>
+     <div className="album-choice-group album-weather-controls">
+      <div className="album-choices-heading"><span>그날의 하늘</span></div>
+      <div className="album-selector" role="group" aria-label="발견한 특별한 하늘"><button type="button" aria-pressed={weather==='clear'} onClick={()=>chooseWeather('clear')}>평온한 하늘</button>{weatherAt(selected,light).map(w=><button type="button" key={w} aria-pressed={weather===w} onClick={()=>chooseWeather(w)}>✦ {weathers[w]}</button>)}</div>
+     </div>
+     {conversation&&<div className="album-reminiscence"><div className="album-reminiscence-label">✦ 그 별에서 나눈 이야기</div><AutoDialogue key={`${selected}:${light}:${weather}`} lines={conversation} compact/></div>}
+    </div>
    </>}
   </dialog>
   {selected&&full&&<ScenicViewer scenery={selected} phase="platform" light={light} weather={weather} conversation={conversation??undefined} onClose={()=>setFull(false)}/>}

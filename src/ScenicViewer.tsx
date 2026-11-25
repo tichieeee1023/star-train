@@ -62,7 +62,7 @@ export function ScenicViewer({scenery,phase,light,weather,moment=0,momentAction=
    <button className="scenic-stage" type="button" onClick={()=>setControls(v=>!v)} aria-label={controls?'감상 메뉴 숨기기':'감상 메뉴 펼치기'}>
      {station?<Vista scenery={scenery} light={light} weather={weather} moment={moment} momentAction={momentAction}/>:<Cabin scenery={scenery} state={phase} light={light} weather={weather} journey={journey}/>}
    </button>
-   {conversation&&dialogueOpen&&controls&&<div className="scenic-dialogue-dock"><AutoDialogue key={scenery+':'+phase} lines={conversation} repeat={phase==='moving'} compact/></div>}
+   {conversation&&dialogueOpen&&controls&&<div className="scenic-dialogue-dock"><AutoDialogue key={`${scenery}:${phase}:${light}:${weather}`} lines={conversation} active={controls&&dialogueOpen} repeat={phase==='moving'} compact/></div>}
    <div className="scenic-bottom" data-visible={controls&&!dialogueOpen}>
     <span>{['세 친구가 같은 풍경을 조용히 바라보고 있어요.','고양이가 꼬리를 느릿느릿 흔들고 있어요.','카나리아 아가씨가 작은 노래를 흥얼거려요. ♪'][quietLine]}</span>
     <span>풍경을 터치하면 메뉴가 사라져요.</span>
