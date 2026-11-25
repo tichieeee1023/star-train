@@ -88,12 +88,14 @@ function limb(c:Ctx,pts:[number,number][],radii:number[]){
 }
 
 /* ───────── 간식 ───────── */
-type SnackShape='cookie'|'cup'|'milk'|'corn'|'jelly'|'cone'|'box'|'fish'
-const shapeOf:Record<SnackId,SnackShape>={stardust:'cookie',cocoa:'cup',moonmilk:'milk',cometcorn:'corn',nebula:'jelly',icecream:'cone',moontart:'fish',galaxybox:'box',cloudbread:'cookie',starchai:'cup',planetpie:'cookie',nightfish:'fish',cherrymoon:'cookie',nebularice:'box'}
+type SnackShape='bread'|'cookie'|'cup'|'milk'|'corn'|'jelly'|'cone'|'box'|'fish'
+const shapeOf:Record<SnackId,SnackShape>={moonbread:'bread',stardust:'cookie',cocoa:'cup',moonmilk:'milk',cometcorn:'corn',nebula:'jelly',icecream:'cone',moontart:'fish',galaxybox:'box',cloudbread:'cookie',starchai:'cup',planetpie:'cookie',nightfish:'fish',cherrymoon:'cookie',nebularice:'box'}
 function snackItem(c:Ctx,shape:SnackShape,x:number,y:number,s:number,t:number){
   if(s<=.04)return
   c.save();c.translate(x,y);c.scale(s,s)
-  if(shape==='cookie'){
+  if(shape==='bread'){
+    const g=c.createLinearGradient(0,-9,0,9);g.addColorStop(0,'#ffe8ad');g.addColorStop(.65,'#e8b86b');g.addColorStop(1,'#bf854c');c.fillStyle=g;c.strokeStyle='#bb854b';c.lineWidth=1;c.beginPath();c.ellipse(0,0,10,8,0,0,TAU);c.fill();c.stroke();c.fillStyle='#fff2db';c.beginPath();c.ellipse(0,3,8,1.3,0,0,TAU);c.fill();c.fillStyle='#d5ac73';for(const [dx,dy,r] of [[-4,-3,1.5],[3,-4,1],[2,0,1.1]]){c.beginPath();c.arc(dx,dy,r,0,TAU);c.fill()}
+  }else if(shape==='cookie'){
     c.fillStyle='#e8bd86';c.strokeStyle='#b78558';c.lineWidth=1.4;c.beginPath();c.arc(0,0,9,0,TAU);c.fill();c.stroke()
     fill(c,STAR,'#fff5d6',.9);c.fillStyle='#8f6644';for(const [dx,dy] of [[-4,-3],[4,3],[-3,4],[5,-4]]){c.beginPath();c.arc(dx,dy,.9,0,TAU);c.fill()}
   }else if(shape==='cup'||shape==='milk'){
@@ -250,7 +252,7 @@ function drawProps(c:Ctx,p:Pose,t:number,calm:boolean){
     c.fillStyle='#d8c6c8';c.strokeStyle='#fff3e8';c.lineWidth=1;c.beginPath();c.ellipse(792,498,19,4.6,0,0,TAU);c.fill();c.stroke()
     const sh=shapeOf[p.snack],milk=sh==='cup'||sh==='milk'
     if(milk){c.fillStyle='#fffaf0';c.beginPath();c.ellipse(792,497,14,3,0,0,TAU);c.fill()}
-    else snackItem(c,'fish',792,494.5,.9*(1-p.catBite*.3),t)
+    else snackItem(c,sh==='bread'?'bread':'fish',792,494.5,.9*(1-p.catBite*.3),t)
     c.restore()
   }
 }

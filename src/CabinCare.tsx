@@ -4,10 +4,10 @@ import {normalizeBond} from './TrainLife'
 import {canaryChapters,canaryChapterTurns,canaryChapterUnlocked} from './CanaryStories'
 import {CANARY_TALK_COOLDOWN,PET_COOLDOWN,TALK_COOLDOWN,bondStories,bondThresholds,fmtWait,levelOf,maxBondLevel,rewardText,waitLeft} from './CabinBond'
 
-type Props={game:CrystalGame;note:string;onPet:()=>void;onTalk:()=>void;onCanary:()=>void;onCanaryChapter:(index:number)=>void;onListen:(level:number)=>void;onShop:()=>void}
+type Props={game:CrystalGame;note:string;onPet:()=>void;onTalk:()=>void;onCanary:()=>void;onCanaryChapter:(index:number)=>void;onListen:(level:number)=>void;onShop:()=>void;onMoonStory:()=>void;onMoonStock:()=>void}
 
 /** 항해를 기다리는 동안 할 수 있는 일: 고양이 쓰다듬기, 소녀와 이야기, 간식 나눠 먹기. */
-export function CabinCare({game,note,onPet,onTalk,onCanary,onCanaryChapter,onListen,onShop}:Props){
+export function CabinCare({game,note,onPet,onTalk,onCanary,onCanaryChapter,onListen,onShop,onMoonStory,onMoonStock}:Props){
  const [tick,setTick]=useState(()=>Date.now())
  useEffect(()=>{const id=window.setInterval(()=>setTick(Date.now()),1000);return ()=>window.clearInterval(id)},[])
  const bond=normalizeBond(game.life?.bond),level=levelOf(bond.points),maxed=level>=maxBondLevel
@@ -33,6 +33,7 @@ export function CabinCare({game,note,onPet,onTalk,onCanary,onCanaryChapter,onLis
     <button key={i} type="button" onClick={()=>onCanaryChapter(i)}>{i+1}. {story.title}</button>:
     <span key={i}>🔒 {i+1}. {i===0?'아가씨에게 첫 인사하기':`아가씨와 ${canaryChapterTurns[i]+1}번 대화`}</span>)}</div>
   </details>
+  <details className="care-log"><summary>● 고양이의 보름달 이야기</summary><div>{(game.life?.used.moonbread??0)>0?<button type="button" onClick={onMoonStory}>고양이의 첫 번째 보름달 · 다시 듣기</button>:<span>🔒 보름달 빵을 처음 함께 먹으면 열려요.</span>}<button type="button" onClick={onMoonStock}>보름달 보관함 · {game.life?.stock.moonbread??0}개</button></div></details>
   <details className="care-log"><summary>마음 대화 기록 {Math.min(level,maxBondLevel)} / {maxBondLevel}</summary>
    <div>{bondStories.map((s,i)=>i<level?<button key={i} type="button" onClick={()=>onListen(i+1)}>Lv.{i+1} · {s.title.replace('마음 대화 · ','')}</button>:<span key={i}>🔒 Lv.{i+1} · 마음 {bondThresholds[i]}점</span>)}</div>
   </details>

@@ -6,6 +6,7 @@ import type {Conversation,Speaker} from './Dialogue'
 import type {Stage} from './VoyageSky'
 import type {Scenery} from './routeData'
 import type {SnackId,Story} from './TrainLife'
+import {crystalBirdPast,passengerTickets,libraryStories} from './WorldStories'
 
 export const scene=(title:string,...lines:[Speaker,string][]):Story=>({title,lines:lines.map(([speaker,text])=>({speaker,text}))})
 
@@ -13,7 +14,7 @@ export const scene=(title:string,...lines:[Speaker,string][]):Story=>({title,lin
 export const canaryChapters:readonly Story[]=[
  scene('아가씨의 첫 인사',
   ['girl','앗, 여기 작은 노란 새가 있어! 우리 열차에 언제 탔어?'],
-  ['canary','처음부터 있었단다. 아름다운 풍경을 감상하기에 이 열차만 한 곳이 없더구나.'],
+  ['canary','얼마 전 같은 열차에 탔단다. 아름다운 풍경을 감상하기에 이 열차만 한 곳이 없더구나.'],
   ['cat','냐아…… 손님이야? 내 쿠션은 이미 찼는데.'],
   ['canary','걱정 마렴. 남의 쿠션을 탐낼 만큼 격이 낮지는 않으니까.'],
   ['girl','그럼 앞으로 함께 여행하는 거야?'],
@@ -46,12 +47,15 @@ export const canaryChapters:readonly Story[]=[
   ['canary','각자 아름다움을 즐기는 방법이 다른 법이란다.'],
   ['girl','그럼 아가씨는 지금 가장 아름다운 게 뭐야?'],
   ['canary','창밖의 별빛도 훌륭하지. 하지만…… 서로 다른 우리가 같은 창을 보고 있다는 게 더 마음에 드는구나.'],
-  ['cat','냐아. 좋은 말이다. 그럼 이제 조금 자도 되겠지?'])
+  ['cat','냐아. 좋은 말이다. 그럼 이제 조금 자도 되겠지?']),
+ crystalBirdPast,
+ passengerTickets
 ]
-/** 마음 단계와 무관하게 아가씨와 대화한 1, 3, 6, 10, 15번째에 열리는 작은 연속 이야기. */
-export const canaryChapterTurns=[0,2,5,9,14] as const
+/** 마음 단계와 무관하게 아가씨와 대화한 1, 3, 6, 10, 15, 20, 25번째에 열리는 작은 연속 이야기. */
+export const canaryChapterTurns=[0,2,5,9,14,19,24] as const
 
 export const canaryBanters:readonly Story[]=[
+ ...libraryStories,
  scene('아가씨의 취향',['canary','저쪽 별은 꼭 황금빛 비단 같구나.'],['girl','아가씨는 어떤 색을 제일 좋아해?'],['canary','빛을 받았을 때 깊이가 생기는 색. 노란색만 좋아할 거라 생각했다면 오산이란다.'],['cat','나는 맛있어 보이는 색.']),
  scene('깃털 정리 시간',['girl','아가씨는 왜 자꾸 깃털을 고르는 거야?'],['canary','작은 날개도 품위를 잃으면 안 되는 법이지.'],['cat','내 털은 자고 일어나면 알아서 정돈되던데.'],['canary','……그래서 네 머리털이 늘 그 모양이구나.']),
  scene('고양이의 청중석',['canary','♪ ♬~ 오늘은 저 별에게 노래를 들려줄 생각이란다.'],['cat','좋아. 아주 멀리 있는 별이면 좋겠어.'],['girl','왜?'],['cat','거기서는 안 들릴 테니까.'],['canary','청중을 가려 받는 것도 예술가의 소양이지. 흥.']),
@@ -66,12 +70,12 @@ export const canaryBanters:readonly Story[]=[
  scene('아가씨의 침묵',['girl','어? 오늘은 노래 안 해?'],['canary','가끔은 고요함도 음악이란다.'],['cat','냐아…… 드디어 내 마음을 알아주는구나.'],['canary','그래서 특별히 네 숨소리를 듣고 있었지. 우렁차더구나.'],['cat','……그것도 평가하는 거야?']),
  scene('바람이 없는 곳',['girl','우주에는 바람이 없는데 어떻게 날아다녀?'],['canary','별빛이 닿는 쪽을 따라 조금씩 날개를 움직이면 된단다.'],['cat','설명은 우아한데.'],['canary','너도 한번 날아 볼래?'],['cat','난 바닥과 아주 사이가 좋아서.']),
  scene('작은 티파티',['canary','오늘 차는 향이 참 좋구나. 찻잔도 예쁘고.'],['girl','아가씨는 차도 마셔?'],['canary','향기를 즐기는 건 누구에게나 허락된 사치지.'],['cat','컵 옆에 있는 과자도?'],['canary','넌 이미 허락받기 전에 먹었잖니.']),
- scene('유리빛 날개',['girl','날개 끝이 반짝이는 건 수정 때문이야?'],['canary','내가 좋아하는 빛을 조금 오래 품고 있었거든.'],['cat','그럼 나도 생선 과자 빛을 품을 수 있을까?'],['canary','그건 배 속에 이미 충분히 품고 있지 않니.']),
+ scene('유리빛 날개',['girl','날개 끝이 반짝이는 건 수정 때문이야?'],['canary','작은 별빛 결정은 내 승차권이란다.'],['cat','그럼 나도 생선 과자 빛을 품을 수 있을까?'],['canary','그건 배 속에 이미 충분히 품고 있지 않니.']),
  scene('칭찬을 받으면',['girl','오늘 노래 정말 잘했어!'],['canary','당연한 일이지만…… 고맙구나.'],['cat','방금 깃털이 조금 더 반짝인 것 같은데.'],['canary','그건 조명 탓이란다.'],['girl','칭찬받아서 기분 좋은 거지?'],['canary','흥. 눈치 빠른 아이구나.']),
  scene('고양이의 낮잠 자리',['canary','그곳은 햇빛도 별빛도 잘 드는 자리구나.'],['cat','응. 내가 발견했어.'],['canary','굉장한 안목이네. 조금만 비켜 주겠니?'],['cat','같이 있어도 돼. 단, 노래는 안 돼.'],['canary','조건이 까다롭구나. ……알았어.']),
  scene('노래를 멈춘 이유',['girl','왜 갑자기 조용해졌어?'],['canary','고양이가 꿈꾸는 얼굴이 꽤 평화로워 보여서.'],['cat','……안 자는데.'],['canary','그럼 이제 다시 부르마. ♪~'],['cat','아냐. 자고 있어. 아주 깊이.']),
  scene('밤의 보석함',['canary','밤하늘은 뚜껑 없는 보석함 같구나.'],['girl','그럼 우리가 그 안을 여행하는 거네!'],['cat','보석함 안에도 이불은 있을까?'],['canary','넌 아름다운 비유를 아주 현실적으로 만드는 재주가 있구나.']),
- scene('차장의 인사',['girl','차장님이 아가씨한테도 인사했어!'],['canary','물론이지. 나도 정식 승객이니까.'],['cat','표 검사는 받았어?'],['canary','내 노래 한 소절이 표라고 하시더구나.'],['cat','……차장님도 대단하시다.'])
+ scene('차장의 인사',['girl','차장님이 아가씨한테도 인사했어!'],['canary','물론이지. 나도 정식 승객이니까.'],['cat','표 검사는 받았어?'],['canary','내 날개 끝의 별빛 결정이 정식 승차권이란다.'],['cat','……차장님도 대단하시다.'])
 ]
 
 export const canaryStageBanters:Record<Stage,readonly Story[]>={
@@ -122,6 +126,7 @@ export const canaryArrivalStories:Record<Scenery,readonly Story[]>={
 
 /** 기존 추억 CG 첫 감상은 그대로. 각 간식을 반복해서 나눌 때 아가씨도 한 번씩 끼어든다. */
 export const canarySnackStories:Record<SnackId,Story>={
+ moonbread:scene('달을 나누는 예절',['cat','보름달은 맛있어! 내가 처음으로 먹어 본 달이야.'],['girl','우리도 한 조각 맛볼까?'],['cat','응! 같이 먹으면 더 좋아.'],['canary','어머, 오늘은 제법 의젓하구나.']),
  stardust:scene('아가씨의 쿠키 예절',['canary','별 모양이 참 단정하게 구워졌구나.'],['cat','냐. 이제 먹을게.'],['canary','잠깐 감상하는 예의는 어디 갔니?'],['girl','아가씨, 쿠키 하나는 특별히 남겨 둘게!'],['canary','그 정도면 됐단다. 나머지는 맛있게 먹으렴.']),
  cocoa:scene('코코아 위의 황금빛',['canary','거품에 비친 조명이 꼭 작은 달 같구나.'],['girl','아가씨도 한 모금 마실래?'],['canary','향기만으로도 충분하단다.'],['cat','그럼 나머지는 내 거네.'],['canary','……그런 뜻은 아니었는데.']),
  moonmilk:scene('잠자기 전의 우유',['canary','우유가 식기 전에 마시렴.'],['cat','그러면 더 잘 잘 수 있을까?'],['canary','그럴지도 모르지. 대신 자장가는 내가 불러 주마.'],['cat','그냥 우유만 마실게.']),
